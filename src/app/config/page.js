@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react';
 import ConfigTable from '../components/ConfigTable';
 import { dealFields, webhookFields } from '../constants/fields';
+import Topbar from '../components/TopBar';
+import { Container } from '@mui/material';
 
 export default function ConfigPage() {
     const [mapping, setMapping] = useState({});
@@ -61,19 +63,21 @@ export default function ConfigPage() {
     };
 
     return (
-        <div style={{ padding: '20px' }}>
-            <h1>Cấu hình ánh xạ Deal cho Web 2</h1>
-            <ConfigTable
-                dealFields={dealFields}
-                webhookFields={webhookFields}
-                mapping={mapping}
-                inputTypes={inputTypes}
-                onInputTypeChange={handleInputTypeChange}
-                onMappingChange={handleMappingChange}
-            />
-            <button onClick={handleSubmit} style={{ marginTop: '20px' }}>
-                Lưu cấu hình
-            </button>
-        </div>
+        <>
+            <Topbar onSaveConfig={handleSubmit} />
+            <Container sx={{ mt: 4 }}>
+                <div style={{ padding: '20px' }}>
+                    <h1>Cấu hình ánh xạ Deal cho Web 2</h1>
+                    <ConfigTable
+                        dealFields={dealFields}
+                        webhookFields={webhookFields}
+                        mapping={mapping}
+                        inputTypes={inputTypes}
+                        onInputTypeChange={handleInputTypeChange}
+                        onMappingChange={handleMappingChange}
+                    />
+                </div>
+            </Container>
+        </>
     );
 }

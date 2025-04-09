@@ -1,14 +1,12 @@
-'use client';
-import { ThemeProvider } from '@mui/material/styles';
-import theme from './theme';
+import ClientProvider from './components/ClientProvider';
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <ThemeProvider theme={theme}>
+        <ClientProvider>
           {children}
-        </ThemeProvider>
+        </ClientProvider>
       </body>
     </html>
   );
