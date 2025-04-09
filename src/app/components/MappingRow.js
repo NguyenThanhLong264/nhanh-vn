@@ -1,235 +1,116 @@
-import {
-    TableRow,
-    TableCell,
-    Switch,
-    TextField,
-    MenuItem,
-    FormControlLabel,
-    Table,
-    TableHead,
-    TableBody,
-    Collapse,
-    Box,
-    IconButton,
-    Typography
-} from '@mui/material';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { useState } from 'react';
-
 export default function MappingRow({ field, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange }) {
-    const [expanded, setExpanded] = useState(false);
-    const fieldName = typeof field === 'string' ? field : field.name;
-    const fieldType = typeof field === 'string' ? 'string' : field.type;
-    const renderWebhookOptions = () => {
-        return webhookFields.map((wField) => {
-            if (typeof wField === 'string') {
-                return (
-                    <MenuItem key={wField} value={wField}>
-                        {wField}
-                    </MenuItem>
-                );
-            }
-            // Skip array fields in main dropdown
-            return null;
-        });
-    };
-
-    const renderArraySubFields = () => {
-        if (!isArray || !field.subFields) return null;
-
-        const productsField = webhookFields.find(f =>
-            typeof f === 'object' && f.name === 'products'
-        );
-
-        return field.subFields.map((subField) => (
-            <TableRow key={`${fieldName}.${subField.name}`}>
-                <TableCell style={{ paddingLeft: 32 }}>
-                    {subField.name}
-                </TableCell>
-                <TableCell>{subField.type}</TableCell>
-                <TableCell>
-                    <Switch
-                        checked={inputTypes[`${fieldName}.${subField.name}`] === 'custom'}
-                        onChange={() => onInputTypeChange(`${fieldName}.${subField.name}`)}
-                    />
-                </TableCell>
-                <TableCell>
-                    {inputTypes[`${fieldName}.${subField.name}`] === 'custom' ? (
-                        <TextField
-                            fullWidth
-                            value={mapping[`${fieldName}.${subField.name}`] || ''}
-                            onChange={(e) => onMappingChange(`${fieldName}.${subField.name}`, e.target.value)}
-                        />
-                    ) : (
-                        <Select
-                            fullWidth
-                            value={mapping[`${fieldName}.${subField.name}`] || ''}
-                            onChange={(e) => onMappingChange(`${fieldName}.${subField.name}`, e.target.value)}
-                        >
-                            <MenuItem value="">Select field</MenuItem>
-                            {productsField?.subFields.map(pField => (
-                                <MenuItem key={pField.name} value={`products.${pField.name}`}>
-                                    products.{pField.name}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    )}
-                </TableCell>
-            </TableRow>
-        ));
-    };
-
     const isCustom = inputTypes[field.name] === 'custom';
-    const isArray = field.type === 'array';
+    const productFields = webhookFields.find((f) => f.name === 'products' && f.type === 'array')?.subFields || [];
 
-    const arrayFields = isArray ? [
-        { name: 'sku', type: 'string' },
-        { name: 'name', type: 'string' },
-        { name: 'quantity', type: 'number' },
-        { name: 'price', type: 'number' },
-        { name: 'total', type: 'number' }
-    ] : [];
-
-    const getWebhookMenuItems = () => {
-        return webhookFields.map((webhookField) => {
-            if (typeof webhookField === 'string') {
-                return (
-                    <MenuItem key={webhookField} value={webhookField}>
-                        {webhookField}
-                    </MenuItem>
-                );
-            }
-            // Skip array type fields in the main dropdown
-            return null;
-        }).filter(Boolean);
-    };
-
-    const getProductWebhookFields = () => {
-        const productsField = webhookFields.find(field =>
-            typeof field === 'object' && field.name === 'products'
+    if (field.type === 'array' && field.subFields) {
+        return (
+            <>
+                <tr>
+                    <td>{field.name}</td>
+                    <td>{field.type}</td>
+                    <td colSpan="2">
+                        <table style={{ width: '100%', borderCollapse: 'collapse', margin: '10px 0' }}>
+                            <thead>
+                                <tr>
+                                    <th>Tên trường</th>
+                                    <th>Loại thông tin</th>
+                                    <th>Loại input</th>
+                                    <th>Webhook Data / Custom Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {field.subFields.map((subField) => {
+                                    const subFieldKey = `${field.name}.${subField.name}`;
+                                    const isSubCustom = inputTypes[subFieldKey] === 'custom';
+                                    return (
+                                        <tr key={subFieldKey}>
+                                            <td>{subField.name}</td>
+                                            <td>{subField.type}</td>
+                                            <td>
+                                                <label>
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={isSubCustom}
+                                                        onChange={() => onInputTypeChange(subFieldKey)}
+                                                    />
+                                                    {isSubCustom ? 'Custom' : 'Map with Nhanh'}
+                                                </label>
+                                            </td>
+                                            <td>
+                                                {isSubCustom ? (
+                                                    <input
+                                                        type="text"
+                                                        value={mapping[subFieldKey] || ''}
+                                                        onChange={(e) => onMappingChange(subFieldKey, e.target.value)}
+                                                        placeholder="Nhập giá trị tùy chỉnh"
+                                                        style={{ width: '100%' }}
+                                                    />
+                                                ) : (
+                                                    <select
+                                                        value={mapping[subFieldKey] || ''}
+                                                        onChange={(e) => onMappingChange(subFieldKey, e.target.value)}
+                                                        style={{ width: '100%' }}
+                                                    >
+                                                        <option value="">Chọn param từ webhook</option>
+                                                        {productFields.map((productField) => (
+                                                            <option key={productField.name} value={`products.${productField.name}`}>
+                                                                {`products.${productField.name}`}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </>
         );
-        return productsField?.subFields.map(subField => `products.${subField.name}`) || [];
-    };
+    }
 
     return (
-        <>
-            <TableRow>
-                <TableCell>
-                    {isArray && (
-                        <IconButton
-                            size="small"
-                            onClick={() => setExpanded(!expanded)}
-                        >
-                            {expanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                        </IconButton>
-                    )}
-                    {field.name}
-                </TableCell>
-                <TableCell>{field.type}</TableCell>
-                <TableCell>
-                    <FormControlLabel
-                        control={
-                            <Switch
-                                checked={isCustom}
-                                onChange={() => onInputTypeChange(field.name)}
-                            />
-                        }
-                        label={isCustom ? 'Custom' : 'Map'}
+        <tr>
+            <td>{field.name}</td>
+            <td>{field.type}</td>
+            <td>
+                <label>
+                    <input
+                        type="checkbox"
+                        checked={isCustom}
+                        onChange={() => onInputTypeChange(field.name)}
                     />
-                </TableCell>
-                <TableCell>
-                    {isCustom ? (
-                        <TextField
-                            fullWidth
-                            size="small"
-                            value={mapping[field.name] || ''}
-                            onChange={(e) => onMappingChange(field.name, e.target.value)}
-                            placeholder="Enter custom value"
-                        />
-                    ) : (
-                        <TextField
-                            select
-                            fullWidth
-                            size="small"
-                            value={mapping[field.name] || ''}
-                            onChange={(e) => onMappingChange(field.name, e.target.value)}
-                        >
-                            <MenuItem value="">Select webhook parameter</MenuItem>
-                            {getWebhookMenuItems()}
-                        </TextField>
-                    )}
-                </TableCell>
-            </TableRow>
-            {isArray && (
-                <TableRow>
-                    <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={4}>
-                        <Collapse in={expanded} timeout="auto" unmountOnExit>
-                            <Box sx={{ margin: 1 }}>
-                                <Typography variant="subtitle2" gutterBottom>
-                                    Array Item Fields
-                                </Typography>
-                                <Table size="small">
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell>Field Name</TableCell>
-                                            <TableCell>Type</TableCell>
-                                            <TableCell>Input Type</TableCell>
-                                            <TableCell>Mapping</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {arrayFields.map((arrayField) => (
-                                            <TableRow key={arrayField.name}>
-                                                <TableCell>{arrayField.name}</TableCell>
-                                                <TableCell>{arrayField.type}</TableCell>
-                                                <TableCell>
-                                                    <FormControlLabel
-                                                        control={
-                                                            <Switch
-                                                                size="small"
-                                                                checked={inputTypes[`${field.name}.${arrayField.name}`] === 'custom'}
-                                                                onChange={() => onInputTypeChange(`${field.name}.${arrayField.name}`)}
-                                                            />
-                                                        }
-                                                        label={inputTypes[`${field.name}.${arrayField.name}`] === 'custom' ? 'Custom' : 'Map'}
-                                                    />
-                                                </TableCell>
-                                                <TableCell>
-                                                    {inputTypes[`${field.name}.${arrayField.name}`] === 'custom' ? (
-                                                        <TextField
-                                                            fullWidth
-                                                            size="small"
-                                                            value={mapping[`${field.name}.${arrayField.name}`] || ''}
-                                                            onChange={(e) => onMappingChange(`${field.name}.${arrayField.name}`, e.target.value)}
-                                                            placeholder="Enter value"
-                                                        />
-                                                    ) : (
-                                                        <TextField
-                                                            select
-                                                            fullWidth
-                                                            size="small"
-                                                            value={mapping[`${field.name}.${arrayField.name}`] || ''}
-                                                            onChange={(e) => onMappingChange(`${field.name}.${arrayField.name}`, e.target.value)}
-                                                        >
-                                                            <MenuItem value="">Select field</MenuItem>
-                                                            {getProductWebhookFields().map((webhookField) => (
-                                                                <MenuItem key={webhookField} value={webhookField}>
-                                                                    {webhookField}
-                                                                </MenuItem>
-                                                            ))}
-                                                        </TextField>
-                                                    )}
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </Box>
-                        </Collapse>
-                    </TableCell>
-                </TableRow>
-            )}
-        </>
+                    {isCustom ? 'Custom' : 'Map with Nhanh'}
+                </label>
+            </td>
+            <td>
+                {isCustom ? (
+                    <input
+                        type="text"
+                        value={mapping[field.name] || ''}
+                        onChange={(e) => onMappingChange(field.name, e.target.value)}
+                        placeholder="Nhập giá trị tùy chỉnh"
+                        style={{ width: '100%' }}
+                    />
+                ) : (
+                    <select
+                        value={mapping[field.name] || ''}
+                        onChange={(e) => onMappingChange(field.name, e.target.value)}
+                        style={{ width: '100%' }}
+                    >
+                        <option value="">Chọn param từ webhook</option>
+                        {webhookFields
+                            .filter((f) => typeof f === 'string' || !f.subFields)
+                            .map((webhookField) => (
+                                <option key={webhookField.name || webhookField} value={webhookField.name || webhookField}>
+                                    {webhookField.name || webhookField}
+                                </option>
+                            ))}
+                    </select>
+                )}
+            </td>
+        </tr>
     );
 }

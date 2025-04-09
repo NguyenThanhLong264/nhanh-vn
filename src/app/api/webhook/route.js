@@ -65,7 +65,6 @@ export async function POST(request) {
             order_products: [],
         };
 
-        // Hàm thay thế placeholder
         const replacePlaceholders = (template, data) => {
             if (typeof template !== 'string') return template;
             return template.replace(/\{\{(\w+)\}\}/g, (match, param) => {
@@ -75,7 +74,6 @@ export async function POST(request) {
             });
         };
 
-        // Ánh xạ các trường thông thường
         for (const [dealField, value] of Object.entries(config.mapping)) {
             if (!dealField.startsWith('order_products.')) {
                 if (config.inputTypes[dealField] === 'custom') {
@@ -87,7 +85,6 @@ export async function POST(request) {
             }
         }
 
-        // Điều chỉnh dữ liệu thông thường
         if (deal.email === null) deal.email = '';
         if (deal.comment === null) deal.comment = '';
         if (deal.order_buyer_note === null) deal.order_buyer_note = '';
@@ -99,7 +96,6 @@ export async function POST(request) {
             deal.email = orderData.customerEmail || '';
         }
 
-        // Xử lý ánh xạ order_products
         if (orderData.products && Array.isArray(orderData.products)) {
             deal.order_products = orderData.products.map((product) => {
                 const productMapped = {

@@ -79,11 +79,11 @@ export const webhookFields = [
         name: 'products',
         type: 'array',
         subFields: [
-            { name: 'id', type: 'number' },
-            { name: 'quantity', type: 'number' },
-            { name: 'price', type: 'number' },
-            { name: 'discount', type: 'number' },
-            { name: 'weight', type: 'number' }
+            { name: 'id', type: 'string' },
+            { name: 'quantity', type: 'int' },
+            { name: 'price', type: 'float' },
+            { name: 'discount', type: 'float' },
+            { name: 'weight', type: 'float' },
         ],
     },
 ];
