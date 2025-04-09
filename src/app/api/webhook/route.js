@@ -5,11 +5,30 @@ import axios from 'axios';
 
 export async function POST(request) {
     try {
-        const body = await request.json();
+        const rawBody = await request.text();
+        console.log('Webhook - Raw body:', rawBody);
+
+        let body;
+        try {
+            body = JSON.parse(rawBody);
+        } catch (parseError) {
+            console.error('Webhook - JSON parse error:', parseError.message);
+            return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+        }
+
         console.log('Webhook - Headers:', Object.fromEntries(request.headers));
-        console.log('Webhook - Body:', body);
+        console.log('Webhook - Parsed body:', body);
+
+        console.log('Webhook - Environment variables:', {
+            VERIFY_TOKEN: process.env.VERIFY_TOKEN,
+            WEB2_API_TOKEN: process.env.WEB2_API_TOKEN,
+            WEB2_API_URL: process.env.WEB2_API_URL,
+        });
 
         const verifyToken = body.webhooksVerifyToken;
+        console.log('Webhook - Expected VERIFY_TOKEN:', process.env.VERIFY_TOKEN);
+        console.log('Webhook - Received verifyToken:', verifyToken);
+
         if (verifyToken !== process.env.VERIFY_TOKEN) {
             console.log('Webhook - Invalid token:', verifyToken);
             return NextResponse.json({ error: 'Invalid verify token' }, { status: 401 });
@@ -23,6 +42,86 @@ export async function POST(request) {
         const orderData = body.data;
         console.log('Webhook - Order data:', orderData);
 
+        // Bước xử lý customerMobile
+        const customerMobile = orderData.customerMobile;
+        if (customerMobile) {
+            console.log(`Processing customerMobile: ${customerMobile}`);
+            try {
+                const checkCustomerResponse = await axios.get(
+                    `https://api.caresoft.vn/thammydemo/api/v1/contactsByPhone?phoneNo=${customerMobile}`, // Dùng phoneNo như Postman
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${process.env.WEB2_API_TOKEN}`,
+                        },
+                    }
+                );
+                const customerData = checkCustomerResponse.data;
+                console.log('Check customer response:', customerData);
+
+                if (customerData.code === 'ok') {
+                    console.log(`Customer with phone ${customerMobile} exists, updating...`);
+                    const updateCustomerResponse = await axios.put(
+                        `https://api.caresoft.vn/thammydemo/api/v1/contacts/${customerData.contact.id}`,
+                        {
+                            contact: {
+                                phone_no: customerMobile,
+                                username: orderData.customerName || customerData.contact.username,
+                                email: orderData.customerEmail || customerData.contact.email,
+                            },
+                        },
+                        {
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${process.env.WEB2_API_TOKEN}`,
+                            },
+                        }
+                    );
+                    console.log('Update customer response:', updateCustomerResponse.data);
+                    console.log(`Updated customer with phone ${customerMobile}`);
+                } else if (customerData.code === 'errors' && customerData.message === 'Not found user') {
+                    console.log(`Customer with phone ${customerMobile} not found, creating new...`);
+                    const createCustomerResponse = await axios.post(
+                        `https://api.caresoft.vn/thammydemo/api/v1/contacts`,
+                        {
+                            contact: {
+                                phone_no: customerMobile,
+                                username: orderData.customerName || 'Unknown',
+                                email: orderData.customerEmail || '',
+                            },
+                        },
+                        {
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${process.env.WEB2_API_TOKEN}`,
+                            },
+                        }
+                    );
+                    const createData = createCustomerResponse.data;
+                    console.log('Create customer response:', createData);
+
+                    if (createData.code === 'ok') {
+                        console.log(`Created new customer with phone ${customerMobile}`);
+                    } else if (createData.code === 'errors' && createData.message === 'phone_no already exist') {
+                        console.log(`Phone ${customerMobile} already exists with ID: ${createData.extra_data.duplicate_id}, skipping creation`);
+                    } else {
+                        console.log('Unexpected response from create customer API:', createData);
+                    }
+                } else {
+                    console.log('Unexpected response from check customer API:', customerData);
+                }
+            } catch (customerError) {
+                console.error('Customer processing error:', {
+                    message: customerError.message,
+                    status: customerError.response?.status,
+                    data: customerError.response?.data,
+                });
+            }
+        } else {
+            console.log('No customerMobile found in orderData, skipping customer processing');
+        }
+
+        // Tiếp tục xử lý deal
         const configPath = path.join(process.cwd(), 'src', 'app', 'data', 'config.json');
         let config = { mapping: {}, inputTypes: {} };
         try {
@@ -33,35 +132,35 @@ export async function POST(request) {
         }
 
         const deal = {
-            username: '',
-            subject: '',
-            phone: '',
-            email: '',
+            username: orderData.customerName || 'Unknown',
+            subject: `Đơn hàng của ${orderData.customerName || 'Unknown'}`,
+            phone: orderData.customerMobile || '',
+            email: orderData.customerEmail || '',
             service_id: '',
             group_id: '',
-            assignee_id: '',
-            pipeline_id: '',
-            pipeline_stage_id: '',
+            assignee_id: '164796592',
+            pipeline_id: '24',
+            pipeline_stage_id: '174',
             estimated_closed_date: new Date().toISOString().split('T')[0],
             deal_label: [],
             custom_fields: [],
             probability: 0,
-            value: 0,
+            value: orderData.calcTotalMoney || 0, // Đảm bảo ánh xạ value
             comment: '',
             'comment.body': '',
             'comment.is_public': 1,
             'comment.author_id': '',
-            order_address_detail: '',
-            order_buyer_note: '',
-            order_city_id: '',
-            order_district_id: '',
-            order_ward_id: '',
-            order_receiver_name: '',
-            order_receiver_phone: '',
-            order_shipping_fee: 0,
-            order_status: 'New',
+            order_address_detail: orderData.customerAddress || '',
+            order_buyer_note: orderData.description || '',
+            order_city_id: orderData.shipToCityLocationId || 254,
+            order_district_id: orderData.shipToDistrictLocationId || 318,
+            order_ward_id: orderData.shipToWardLocationId || 1051,
+            order_receiver_name: orderData.customerName || 'Unknown',
+            order_receiver_phone: orderData.customerMobile || '',
+            order_shipping_fee: orderData.customerShipFee || 0,
+            order_status: orderData.status || 'New',
             order_tracking_code: '',
-            order_tracking_url: '',
+            order_tracking_url: orderData.trackingUrl || '',
             order_products: [],
         };
 
@@ -85,26 +184,15 @@ export async function POST(request) {
             }
         }
 
-        if (deal.email === null) deal.email = '';
-        if (deal.comment === null) deal.comment = '';
-        if (deal.order_buyer_note === null) deal.order_buyer_note = '';
-        if (deal.value === 0 && orderData.calcTotalMoney) deal.value = orderData.calcTotalMoney;
-
-        if (!deal.username && !deal.phone && !deal.email) {
-            deal.username = orderData.customerName || 'Unknown';
-            deal.phone = orderData.customerMobile || '';
-            deal.email = orderData.customerEmail || '';
-        }
-
         if (orderData.products && Array.isArray(orderData.products)) {
             deal.order_products = orderData.products.map((product) => {
                 const productMapped = {
-                    sku: '',
+                    sku: product.id || '',
                     is_free: 0,
-                    unit_price: 0,
-                    quantity: 0,
+                    unit_price: product.price || 0,
+                    quantity: product.quantity || 0,
                     discount_markup: 0,
-                    discount_value: 0,
+                    discount_value: product.discount || 0,
                 };
 
                 for (const [dealField, value] of Object.entries(config.mapping)) {
@@ -125,6 +213,7 @@ export async function POST(request) {
         }
 
         console.log('Webhook - Mapped deal object:', deal);
+        console.log('Webhook - Sending deal to Web 2:', JSON.stringify({ deal }));
 
         const axiosConfig = {
             method: 'post',
@@ -137,20 +226,19 @@ export async function POST(request) {
             data: JSON.stringify({ deal }),
         };
 
-        const web2Response = await axios.request(axiosConfig);
-        console.log('Webhook - Web 2 response:', JSON.stringify(web2Response.data));
-
-        return NextResponse.json({ message: 'Webhook received and processed' }, { status: 200 });
-    } catch (error) {
-        if (error.response) {
-            console.error('Webhook - Web 2 error response:', {
-                status: error.response.status,
-                data: error.response.data,
-                headers: error.response.headers,
-            });
-        } else {
-            console.error('Webhook - Error:', error.message);
+        try {
+            const web2Response = await axios.request(axiosConfig);
+            console.log('Webhook - Web 2 response:', JSON.stringify(web2Response.data));
+            return NextResponse.json({ message: 'Webhook received and processed' }, { status: 200 });
+        } catch (web2Error) {
+            console.error('Webhook - Web 2 error:', web2Error.response ? web2Error.response.data : web2Error.message);
+            return NextResponse.json(
+                { error: 'Failed to process deal in Web 2', details: web2Error.response?.data },
+                { status: 500 }
+            );
         }
+    } catch (error) {
+        console.error('Webhook - Error:', error.message);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
 }
