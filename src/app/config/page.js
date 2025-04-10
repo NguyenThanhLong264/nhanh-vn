@@ -94,13 +94,11 @@ export default function ConfigPage() {
             const cleanedMapping = {};
             const cleanedInputTypes = {};
 
-            // Duyệt qua mapping để chỉ giữ các key còn tồn tại
             for (const [key, value] of Object.entries(mapping)) {
                 if (key.startsWith('custom_fields.id_')) {
                     const valueKey = key.replace('id_', 'value_');
                     const idValue = value;
                     const valueValue = mapping[valueKey] || '';
-                    // Chỉ thêm nếu key tồn tại trong mapping
                     if (idValue !== undefined || valueValue !== undefined) {
                         cleanedMapping[key] = idValue;
                         cleanedInputTypes[key] = inputTypes[key] || 'custom';
@@ -181,18 +179,82 @@ export default function ConfigPage() {
     const handleDeleteCustomField = (index) => {
         const idKey = `custom_fields.id_${index}`;
         const valueKey = `custom_fields.value_${index}`;
+
         setMapping((prev) => {
             const newMapping = { ...prev };
             delete newMapping[idKey];
             delete newMapping[valueKey];
-            return newMapping;
+
+            // Sắp xếp lại chỉ số
+            const remainingFields = Object.keys(newMapping)
+                .filter(key => key.match(/^custom_fields\.id_(\d+)$/))
+                .map(key => parseInt(key.match(/^custom_fields\.id_(\d+)$/)[1]))
+                .sort((a, b) => a - b);
+
+            const reorderedMapping = {};
+            remainingFields.forEach((oldIndex, newIndex) => {
+                const oldIdKey = `custom_fields.id_${oldIndex}`;
+                const oldValueKey = `custom_fields.value_${oldIndex}`;
+                const newIdKey = `custom_fields.id_${newIndex}`;
+                const newValueKey = `custom_fields.value_${newIndex}`;
+                if (newMapping[oldIdKey] !== undefined) {
+                    reorderedMapping[newIdKey] = newMapping[oldIdKey];
+                }
+                if (newMapping[oldValueKey] !== undefined) {
+                    reorderedMapping[newValueKey] = newMapping[oldValueKey];
+                }
+            });
+
+            // Giữ lại các key không phải custom fields
+            Object.keys(newMapping).forEach(key => {
+                if (!key.startsWith('custom_fields.')) {
+                    reorderedMapping[key] = newMapping[key];
+                }
+            });
+
+            return reorderedMapping;
         });
+
         setInputTypes((prev) => {
             const newInputTypes = { ...prev };
             delete newInputTypes[idKey];
             delete newInputTypes[valueKey];
-            return newInputTypes;
+
+            // Sắp xếp lại chỉ số cho inputTypes
+            const remainingFields = Object.keys(newInputTypes)
+                .filter(key => key.match(/^custom_fields\.id_(\d+)$/))
+                .map(key => parseInt(key.match(/^custom_fields\.id_(\d+)$/)[1]))
+                .sort((a, b) => a - b);
+
+            const reorderedInputTypes = {};
+            remainingFields.forEach((oldIndex, newIndex) => {
+                const oldIdKey = `custom_fields.id_${oldIndex}`;
+                const oldValueKey = `custom_fields.value_${oldIndex}`;
+                const newIdKey = `custom_fields.id_${newIndex}`;
+                const newValueKey = `custom_fields.value_${newIndex}`;
+                if (newInputTypes[oldIdKey] !== undefined) {
+                    reorderedInputTypes[newIdKey] = newInputTypes[oldIdKey];
+                }
+                if (newInputTypes[oldValueKey] !== undefined) {
+                    reorderedInputTypes[newValueKey] = newInputTypes[oldValueKey];
+                }
+            });
+
+            // Giữ lại các key không phải custom fields
+            Object.keys(newInputTypes).forEach(key => {
+                if (!key.startsWith('custom_fields.')) {
+                    reorderedInputTypes[key] = newInputTypes[key];
+                }
+            });
+
+            return reorderedInputTypes;
         });
+
+        // Cập nhật customFieldCount dựa trên số lượng custom fields còn lại
+        const remainingCount = Object.keys(mapping)
+            .filter(key => key.match(/^custom_fields\.id_(\d+)$/)).length;
+        setCustomFieldCount(remainingCount);
+
         console.log(`Deleted custom field: ${idKey}, ${valueKey}`);
     };
 
