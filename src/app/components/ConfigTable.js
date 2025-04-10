@@ -1,29 +1,120 @@
 import MappingRow from './MappingRow';
 
 export default function ConfigTable({ dealFields, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange }) {
+    const regularFields = dealFields.filter(field => field.name !== 'order_products' && field.name !== 'custom_fields');
+    const orderProductsField = {
+        name: 'order_products',
+        type: 'array',
+        subFields: [
+            { name: 'sku', type: 'string' },
+            { name: 'unit_price', type: 'number' },
+            { name: 'quantity', type: 'number' },
+            { name: 'discount_markup', type: 'number' },
+            { name: 'discount_value', type: 'number' },
+        ]
+    };
+
+    // Tạo danh sách custom fields từ mapping
+    const customFields = [];
+    const customFieldIndices = new Set(
+        Object.keys(mapping)
+            .filter(key => key.startsWith('custom_fields.id_'))
+            .map(key => key.split('_')[1])
+    );
+
+    customFieldIndices.forEach(index => {
+        customFields.push({
+            name: `custom_fields_${index}`,
+            type: 'array',
+            subFields: [
+                { name: `id_${index}`, type: 'int' },
+                { name: `value_${index}`, type: 'string' },
+            ],
+        });
+    });
+
+    console.log('Custom Fields:', customFields);
+
     return (
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-                <tr>
-                    <th>Tên params</th>
-                    <th>Loại thông tin</th>
-                    <th>Loại input</th>
-                    <th>Webhook Data / Custom Value</th>
-                </tr>
-            </thead>
-            <tbody>
-                {dealFields.map((field) => (
+        <>
+            <h2>Regular Fields</h2>
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
+                <thead>
+                    <tr>
+                        <th>Tên params</th>
+                        <th>Loại thông tin</th>
+                        <th>Loại input</th>
+                        <th>Webhook Data / Custom Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {regularFields.map((field) => (
+                        <MappingRow
+                            key={field.name}
+                            field={field}
+                            webhookFields={webhookFields}
+                            mapping={mapping}
+                            inputTypes={inputTypes}
+                            onInputTypeChange={onInputTypeChange}
+                            onMappingChange={onMappingChange}
+                        />
+                    ))}
+                </tbody>
+            </table>
+
+            <h2>Order Products</h2>
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
+                <thead>
+                    <tr>
+                        <th>Tên params</th>
+                        <th>Loại thông tin</th>
+                        <th>Loại input</th>
+                        <th>Webhook Data / Custom Value</th>
+                    </tr>
+                </thead>
+                <tbody>
                     <MappingRow
-                        key={field.name}
-                        field={field}
+                        key={orderProductsField.name}
+                        field={orderProductsField}
                         webhookFields={webhookFields}
                         mapping={mapping}
                         inputTypes={inputTypes}
                         onInputTypeChange={onInputTypeChange}
                         onMappingChange={onMappingChange}
                     />
-                ))}
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+
+            <h2>Custom Fields</h2>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead>
+                    <tr>
+                        <th>Tên params</th>
+                        <th>Loại thông tin</th>
+                        <th>Loại input</th>
+                        <th>Webhook Data / Custom Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {customFields.length > 0 ? (
+                        customFields.map((field) => (
+                            <MappingRow
+                                key={field.name}
+                                field={field}
+                                webhookFields={webhookFields}
+                                mapping={mapping}
+                                inputTypes={inputTypes}
+                                onInputTypeChange={onInputTypeChange}
+                                onMappingChange={onMappingChange}
+                            />
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan="4">Chưa có custom fields nào được cấu hình.</td>
+                        </tr>
+                    )}
+                </tbody>
+            </table>
+        </>
     );
 }

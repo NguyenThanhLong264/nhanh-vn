@@ -1,6 +1,8 @@
 export default function MappingRow({ field, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange }) {
     const isCustom = inputTypes[field.name] === 'custom';
-    const productFields = webhookFields.find((f) => f.name === 'products' && f.type === 'array')?.subFields || [];
+    const productFields = webhookFields && Array.isArray(webhookFields)
+        ? (webhookFields.find((f) => f.name === 'products' && f.type === 'array')?.subFields || [])
+        : [];
 
     if (field.type === 'array' && field.subFields) {
         return (
@@ -20,8 +22,12 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
                             </thead>
                             <tbody>
                                 {field.subFields.map((subField) => {
-                                    const subFieldKey = `${field.name}.${subField.name}`;
+                                    // Key đầy đủ trong mapping: custom_fields.id_0, custom_fields.value_0
+                                    const subFieldKey = field.name.startsWith('order_products')
+                                        ? `${field.name}.${subField.name}`
+                                        : `custom_fields.${subField.name}`;
                                     const isSubCustom = inputTypes[subFieldKey] === 'custom';
+                                    console.log(`Field: ${subFieldKey}, Value: ${mapping[subFieldKey]}`);
                                     return (
                                         <tr key={subFieldKey}>
                                             <td>{subField.name}</td>
@@ -52,11 +58,13 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
                                                         style={{ width: '100%' }}
                                                     >
                                                         <option value="">Chọn param từ webhook</option>
-                                                        {productFields.map((productField) => (
-                                                            <option key={productField.name} value={`products.${productField.name}`}>
-                                                                {`products.${productField.name}`}
-                                                            </option>
-                                                        ))}
+                                                        {(field.name === 'order_products' ? productFields : (webhookFields || []))
+                                                            .filter((f) => typeof f === 'string' || !f.subFields)
+                                                            .map((webhookField) => (
+                                                                <option key={webhookField.name || webhookField} value={webhookField.name || webhookField}>
+                                                                    {webhookField.name || webhookField}
+                                                                </option>
+                                                            ))}
                                                     </select>
                                                 )}
                                             </td>
@@ -101,7 +109,7 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
                         style={{ width: '100%' }}
                     >
                         <option value="">Chọn param từ webhook</option>
-                        {webhookFields
+                        {(webhookFields || [])
                             .filter((f) => typeof f === 'string' || !f.subFields)
                             .map((webhookField) => (
                                 <option key={webhookField.name || webhookField} value={webhookField.name || webhookField}>

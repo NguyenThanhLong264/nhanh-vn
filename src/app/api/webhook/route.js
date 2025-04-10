@@ -184,6 +184,7 @@ export async function POST(request) {
             }
         }
 
+        // Xử lý order_products
         if (orderData.products && Array.isArray(orderData.products)) {
             deal.order_products = orderData.products.map((product) => {
                 const productMapped = {
@@ -211,6 +212,31 @@ export async function POST(request) {
                 return productMapped;
             });
         }
+
+        // Xử lý custom_fields
+        const customFieldsMapping = [];
+        const customFieldKeys = Object.keys(config.mapping).filter(key => key.startsWith('custom_fields.id_'));
+
+        customFieldKeys.forEach(idKey => {
+            const valueKey = idKey.replace('id_', 'value_');
+            const idValue = config.inputTypes[idKey] === 'custom' ? replacePlaceholders(config.mapping[idKey], orderData) : (orderData[config.mapping[idKey]] || '');
+            const valueValue = config.mapping[valueKey] !== undefined
+                ? (config.inputTypes[valueKey] === 'custom' ? replacePlaceholders(config.mapping[valueKey], orderData) : (orderData[config.mapping[valueKey]] || null))
+                : null;
+
+            if (idValue || valueValue) {
+                customFieldsMapping.push({
+                    id: idValue,
+                    value: valueValue,
+                });
+            }
+        });
+
+        deal.custom_fields = customFieldsMapping;
+
+        // Xóa các trường custom_fields.id và custom_fields.value
+        delete deal['custom_fields.id'];
+        delete deal['custom_fields.value'];
 
         console.log('Webhook - Mapped deal object:', deal);
         console.log('Webhook - Sending deal to Web 2:', JSON.stringify({ deal }));

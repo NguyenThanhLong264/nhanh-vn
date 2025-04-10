@@ -1,13 +1,8 @@
 'use client';
-
 import React from 'react';
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 
-const Topbar = ({ onSaveConfig }) => { // Nhận prop onSaveConfig
-    const handleAddDynamicField = () => {
-        console.log('Thêm trường động clicked');
-    };
-
+const Topbar = ({ onSaveConfig, onAddCustomField }) => {
     return (
         <AppBar position="sticky" sx={{ top: 0, zIndex: 1100 }}>
             <Toolbar>
@@ -18,7 +13,7 @@ const Topbar = ({ onSaveConfig }) => { // Nhận prop onSaveConfig
                     <Button
                         variant="contained"
                         color="secondary"
-                        onClick={handleAddDynamicField}
+                        onClick={onAddCustomField}
                         sx={{ mr: 2 }}
                     >
                         Thêm trường động
@@ -26,7 +21,7 @@ const Topbar = ({ onSaveConfig }) => { // Nhận prop onSaveConfig
                     <Button
                         variant="contained"
                         color="primary"
-                        onClick={onSaveConfig} // Gọi hàm từ props
+                        onClick={onSaveConfig}
                     >
                         Lưu cấu hình
                     </Button>
