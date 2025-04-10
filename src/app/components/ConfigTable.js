@@ -1,6 +1,6 @@
 import MappingRow from './MappingRow';
 
-export default function ConfigTable({ dealFields, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange }) {
+export default function ConfigTable({ dealFields, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange, onDeleteCustomField }) {
     const regularFields = dealFields.filter(field => field.name !== 'order_products' && field.name !== 'custom_fields');
     const orderProductsField = {
         name: 'order_products',
@@ -14,13 +14,11 @@ export default function ConfigTable({ dealFields, webhookFields, mapping, inputT
         ]
     };
 
-    // Tạo danh sách custom fields từ mapping
     const customFields = [];
     const customFieldIndices = new Set(
         Object.keys(mapping)
-            .filter(key => key.startsWith('custom_fields.id_'))
-            .map(key => key.match(/custom_fields\.id_(\d+)/)?.[1])
-            .filter(index => index !== undefined)
+            .filter(key => key.match(/^custom_fields\.id_(\d+)$/))
+            .map(key => key.match(/^custom_fields\.id_(\d+)$/)[1])
     );
 
     customFieldIndices.forEach(index => {
@@ -34,6 +32,7 @@ export default function ConfigTable({ dealFields, webhookFields, mapping, inputT
                     { name: `id_${index}`, type: 'int' },
                     { name: `value_${index}`, type: 'string' },
                 ],
+                index: parseInt(index),
             });
         }
     });
@@ -98,6 +97,7 @@ export default function ConfigTable({ dealFields, webhookFields, mapping, inputT
                         <th>Loại thông tin</th>
                         <th>Loại input</th>
                         <th>Webhook Data / Custom Value</th>
+                        <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -111,11 +111,12 @@ export default function ConfigTable({ dealFields, webhookFields, mapping, inputT
                                 inputTypes={inputTypes}
                                 onInputTypeChange={onInputTypeChange}
                                 onMappingChange={onMappingChange}
+                                onDeleteCustomField={() => onDeleteCustomField(field.index)}
                             />
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="4">Chưa có custom fields nào được cấu hình.</td>
+                            <td colSpan="5">Chưa có custom fields nào được cấu hình.</td>
                         </tr>
                     )}
                 </tbody>

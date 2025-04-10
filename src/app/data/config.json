@@ -23,12 +23,12 @@
     "order_products.discount_markup": "discount",
     "order_products.discount_value": "discount",
     "value": "calcTotalMoney",
-    "custom_fields.id_1": "10659",
-    "custom_fields.value_1": "161640",
     "custom_fields.id_0": "11217",
     "custom_fields.value_0": "164861",
-    "custom_fields.id_fields.id": "11217",
-    "custom_fields.value_fields.id": "164861"
+    "custom_fields.id_1": "10659",
+    "custom_fields.value_1": "161640",
+    "custom_fields.id_2": "7561",
+    "custom_fields.value_2": "111779"
   },
   "inputTypes": {
     "username": "map",
@@ -54,11 +54,11 @@
     "order_products.discount_markup": "map",
     "order_products.discount_value": "map",
     "value": "map",
-    "custom_fields.id_1": "custom",
-    "custom_fields.value_1": "custom",
     "custom_fields.id_0": "custom",
     "custom_fields.value_0": "custom",
-    "custom_fields.id_fields.id": "custom",
-    "custom_fields.value_fields.id": "custom"
+    "custom_fields.id_1": "custom",
+    "custom_fields.value_1": "custom",
+    "custom_fields.id_2": "custom",
+    "custom_fields.value_2": "custom"
   }
 }

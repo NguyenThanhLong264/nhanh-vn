@@ -18,7 +18,7 @@ export default function ConfigPage() {
                     const { mapping: savedMapping, inputTypes: savedInputTypes } = await response.json();
                     const cleanedMapping = {};
                     const cleanedInputTypes = {};
-                    let count = 0;
+                    let maxIndex = -1;
 
                     for (const [key, value] of Object.entries(savedMapping || {})) {
                         if (key.startsWith('custom_fields.id_')) {
@@ -30,7 +30,8 @@ export default function ConfigPage() {
                                 cleanedInputTypes[key] = savedInputTypes[key] || 'custom';
                                 cleanedMapping[valueKey] = valueValue;
                                 cleanedInputTypes[valueKey] = savedInputTypes[valueKey] || 'custom';
-                                count = Math.max(count, parseInt(key.split('_')[1]) + 1);
+                                const index = parseInt(key.split('_')[1]);
+                                if (!isNaN(index)) maxIndex = Math.max(maxIndex, index);
                             }
                         } else if (
                             key === 'username' ||
@@ -60,7 +61,7 @@ export default function ConfigPage() {
 
                     setMapping(cleanedMapping);
                     setInputTypes(cleanedInputTypes);
-                    setCustomFieldCount(count);
+                    setCustomFieldCount(maxIndex + 1);
                 }
             } catch (error) {
                 console.error('Load config error:', error);
@@ -93,7 +94,6 @@ export default function ConfigPage() {
             const cleanedMapping = {};
             const cleanedInputTypes = {};
             for (const [key, value] of Object.entries(mapping)) {
-                // Chỉ giữ các key hợp lệ
                 if (key.startsWith('custom_fields.id_')) {
                     const valueKey = key.replace('id_', 'value_');
                     const idValue = value;
@@ -150,8 +150,17 @@ export default function ConfigPage() {
     };
 
     const handleAddCustomField = () => {
-        const newIdKey = `custom_fields.id_${customFieldCount}`;
-        const newValueKey = `custom_fields.value_${customFieldCount}`;
+        // Lấy tất cả chỉ số hiện có từ mapping
+        const existingIndices = Object.keys(mapping)
+            .filter(key => key.match(/^custom_fields\.id_(\d+)$/))
+            .map(key => parseInt(key.match(/^custom_fields\.id_(\d+)$/)[1]));
+        
+        // Tìm chỉ số cao nhất, nếu không có thì bắt đầu từ 0
+        const maxIndex = existingIndices.length > 0 ? Math.max(...existingIndices) : -1;
+        const nextIndex = maxIndex + 1;
+
+        const newIdKey = `custom_fields.id_${nextIndex}`;
+        const newValueKey = `custom_fields.value_${nextIndex}`;
         setMapping((prev) => ({
             ...prev,
             [newIdKey]: '',
@@ -162,8 +171,26 @@ export default function ConfigPage() {
             [newIdKey]: 'custom',
             [newValueKey]: 'custom',
         }));
-        setCustomFieldCount(prev => prev + 1);
+        setCustomFieldCount(nextIndex + 1);
         console.log(`Added new custom field: ${newIdKey}, ${newValueKey}`);
+    };
+
+    const handleDeleteCustomField = (index) => {
+        const idKey = `custom_fields.id_${index}`;
+        const valueKey = `custom_fields.value_${index}`;
+        setMapping((prev) => {
+            const newMapping = { ...prev };
+            delete newMapping[idKey];
+            delete newMapping[valueKey];
+            return newMapping;
+        });
+        setInputTypes((prev) => {
+            const newInputTypes = { ...prev };
+            delete newInputTypes[idKey];
+            delete newInputTypes[valueKey];
+            return newInputTypes;
+        });
+        console.log(`Deleted custom field: ${idKey}, ${valueKey}`);
     };
 
     return (
@@ -179,6 +206,7 @@ export default function ConfigPage() {
                         inputTypes={inputTypes}
                         onInputTypeChange={handleInputTypeChange}
                         onMappingChange={handleMappingChange}
+                        onDeleteCustomField={handleDeleteCustomField}
                     />
                 </div>
             </Container>
