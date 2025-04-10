@@ -93,16 +93,21 @@ export default function ConfigPage() {
         try {
             const cleanedMapping = {};
             const cleanedInputTypes = {};
+
+            // Duyệt qua mapping để chỉ giữ các key còn tồn tại
             for (const [key, value] of Object.entries(mapping)) {
                 if (key.startsWith('custom_fields.id_')) {
                     const valueKey = key.replace('id_', 'value_');
                     const idValue = value;
                     const valueValue = mapping[valueKey] || '';
-                    if (idValue || valueValue) {
+                    // Chỉ thêm nếu key tồn tại trong mapping
+                    if (idValue !== undefined || valueValue !== undefined) {
                         cleanedMapping[key] = idValue;
                         cleanedInputTypes[key] = inputTypes[key] || 'custom';
-                        cleanedMapping[valueKey] = valueValue;
-                        cleanedInputTypes[valueKey] = inputTypes[valueKey] || 'custom';
+                        if (valueValue !== undefined) {
+                            cleanedMapping[valueKey] = valueValue;
+                            cleanedInputTypes[valueKey] = inputTypes[valueKey] || 'custom';
+                        }
                     }
                 } else if (
                     key === 'username' ||
@@ -150,12 +155,10 @@ export default function ConfigPage() {
     };
 
     const handleAddCustomField = () => {
-        // Lấy tất cả chỉ số hiện có từ mapping
         const existingIndices = Object.keys(mapping)
             .filter(key => key.match(/^custom_fields\.id_(\d+)$/))
             .map(key => parseInt(key.match(/^custom_fields\.id_(\d+)$/)[1]));
-        
-        // Tìm chỉ số cao nhất, nếu không có thì bắt đầu từ 0
+
         const maxIndex = existingIndices.length > 0 ? Math.max(...existingIndices) : -1;
         const nextIndex = maxIndex + 1;
 

@@ -7,17 +7,10 @@ export async function POST(request) {
   const configPath = path.join(process.cwd(), 'src', 'app', 'data', 'config.json');
 
   try {
-    let currentConfig = { mapping: {}, inputTypes: {} };
-    try {
-      const configData = await fs.readFile(configPath, 'utf8');
-      currentConfig = JSON.parse(configData);
-    } catch (error) {
-      console.log('Save config - No existing config found, creating new one');
-    }
-
+    // Ghi đè hoàn toàn bằng dữ liệu mới
     const config = {
-      mapping: { ...currentConfig.mapping, ...newMapping },
-      inputTypes: { ...currentConfig.inputTypes, ...newInputTypes },
+      mapping: newMapping,
+      inputTypes: newInputTypes,
     };
 
     await fs.writeFile(configPath, JSON.stringify(config, null, 2));
