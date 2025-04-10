@@ -19,18 +19,23 @@ export default function ConfigTable({ dealFields, webhookFields, mapping, inputT
     const customFieldIndices = new Set(
         Object.keys(mapping)
             .filter(key => key.startsWith('custom_fields.id_'))
-            .map(key => key.split('_')[1])
+            .map(key => key.match(/custom_fields\.id_(\d+)/)?.[1])
+            .filter(index => index !== undefined)
     );
 
     customFieldIndices.forEach(index => {
-        customFields.push({
-            name: `custom_fields_${index}`,
-            type: 'array',
-            subFields: [
-                { name: `id_${index}`, type: 'int' },
-                { name: `value_${index}`, type: 'string' },
-            ],
-        });
+        const idKey = `custom_fields.id_${index}`;
+        const valueKey = `custom_fields.value_${index}`;
+        if (mapping[idKey] !== undefined || mapping[valueKey] !== undefined) {
+            customFields.push({
+                name: `custom_fields_${index}`,
+                type: 'array',
+                subFields: [
+                    { name: `id_${index}`, type: 'int' },
+                    { name: `value_${index}`, type: 'string' },
+                ],
+            });
+        }
     });
 
     console.log('Custom Fields:', customFields);
