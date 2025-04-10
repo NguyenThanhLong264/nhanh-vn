@@ -4,7 +4,81 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
         ? (webhookFields.find((f) => f.name === 'products' && f.type === 'array')?.subFields || [])
         : [];
 
+    // Danh sách trạng thái cố định của Web 2 cho order_status
+    const orderStatusOptions = [
+        
+        'ORDER_STARTED',
+        'BUYER_CONFIRMED',
+        'SELLER_CONFIRMED',
+        'SHIPPING',
+        'RETURNED',
+        'CANCELED',
+        'RECEIVED',
+        'COMPLETED'
+    ];
+
+    // Giả định danh sách trạng thái từ Nhanh.vn (cập nhật sau khi bạn cung cấp)
+    const nhanhStatusOptions = [
+        'New',
+        'Confirming',
+        'CustomerConfirming',
+        'Confirmed',
+        'Packing',
+        'Packed',
+        'ChangeDepot',
+        'Pickup',
+        'Shipping',
+        'Success',
+        'Failed',
+        'Canceled',
+        'Aborted',
+        'CarrierCanceled',
+        'SoldOut',
+        'Returning',
+        'Returned'
+    ];
+    if (field.name === 'order_status') {
+        return (
+            <tr>
+                <td>{field.name}</td>
+                <td>{field.type}</td>
+                <td colSpan={2}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', margin: '10px 0' }}>
+                        <thead>
+                            <tr>
+                                <th>Trạng thái Web 2</th>
+                                <th>Trạng thái Nhanh.vn</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {orderStatusOptions.map((status) => (
+                                <tr key={status}>
+                                    <td>{status}</td>
+                                    <td>
+                                        <select
+                                            value={mapping[`order_status.${status}`] || ''}
+                                            onChange={(e) => onMappingChange(`order_status.${status}`, e.target.value)}
+                                            style={{ width: '100%' }}
+                                        >
+                                            <option value="">Chọn trạng thái Nhanh.vn</option>
+                                            {nhanhStatusOptions.map((nhanhStatus) => (
+                                                <option key={nhanhStatus} value={nhanhStatus}>
+                                                    {nhanhStatus}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        );
+    }
+
     if (field.type === 'array' && field.subFields) {
+        // Logic hiện tại cho array fields (giữ nguyên)
         return (
             <tr>
                 <td>{field.name}</td>

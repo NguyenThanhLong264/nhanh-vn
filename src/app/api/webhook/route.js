@@ -19,16 +19,7 @@ export async function POST(request) {
         console.log('Webhook - Headers:', Object.fromEntries(request.headers));
         console.log('Webhook - Parsed body:', body);
 
-        console.log('Webhook - Environment variables:', {
-            VERIFY_TOKEN: process.env.VERIFY_TOKEN,
-            WEB2_API_TOKEN: process.env.WEB2_API_TOKEN,
-            WEB2_API_URL: process.env.WEB2_API_URL,
-        });
-
         const verifyToken = body.webhooksVerifyToken;
-        console.log('Webhook - Expected VERIFY_TOKEN:', process.env.VERIFY_TOKEN);
-        console.log('Webhook - Received verifyToken:', verifyToken);
-
         if (verifyToken !== process.env.VERIFY_TOKEN) {
             console.log('Webhook - Invalid token:', verifyToken);
             return NextResponse.json({ error: 'Invalid verify token' }, { status: 401 });
@@ -145,7 +136,7 @@ export async function POST(request) {
             deal_label: [],
             custom_fields: [],
             probability: 0,
-            value: orderData.calcTotalMoney || 0, // Đảm bảo ánh xạ value
+            value: orderData.calcTotalMoney || 0,
             comment: '',
             'comment.body': '',
             'comment.is_public': 1,
@@ -158,7 +149,7 @@ export async function POST(request) {
             order_receiver_name: orderData.customerName || 'Unknown',
             order_receiver_phone: orderData.customerMobile || '',
             order_shipping_fee: orderData.customerShipFee || 0,
-            order_status: orderData.status || 'New',
+            order_status: 'ORDER_STARTED', // Giá trị mặc định
             order_tracking_code: '',
             order_tracking_url: orderData.trackingUrl || '',
             order_products: [],
@@ -173,8 +164,27 @@ export async function POST(request) {
             });
         };
 
+        // Ánh xạ order_status: Từ trạng thái Nhanh.vn sang trạng thái Web 2
+        const nhanhStatus = orderData.status || '';
+        let statusMapped = false;
+        for (const [key, value] of Object.entries(config.mapping)) {
+            if (key.startsWith('order_status.')) {
+                const web2Status = key.replace('order_status.', '');
+                if (value === nhanhStatus) {
+                    deal.order_status = web2Status; // Gán trạng thái Web 2
+                    console.log(`Mapped order_status: ${nhanhStatus} -> ${web2Status}`);
+                    statusMapped = true;
+                    break; // Thoát sau khi tìm thấy ánh xạ đầu tiên
+                }
+            }
+        }
+        if (!statusMapped) {
+            console.log(`No mapping found for Nhanh.vn status: ${nhanhStatus}, using default: ${deal.order_status}`);
+        }
+
+        // Ánh xạ các field khác (giữ nguyên)
         for (const [dealField, value] of Object.entries(config.mapping)) {
-            if (!dealField.startsWith('order_products.')) {
+            if (!dealField.startsWith('order_products.') && !dealField.startsWith('order_status.')) {
                 if (config.inputTypes[dealField] === 'custom') {
                     console.log(`Processing custom field ${dealField} with value: ${value}`);
                     deal[dealField] = replacePlaceholders(value, orderData);
@@ -184,7 +194,7 @@ export async function POST(request) {
             }
         }
 
-        // Xử lý order_products
+        // Xử lý order_products (giữ nguyên)
         if (orderData.products && Array.isArray(orderData.products)) {
             deal.order_products = orderData.products.map((product) => {
                 const productMapped = {
@@ -213,10 +223,9 @@ export async function POST(request) {
             });
         }
 
-        // Xử lý custom_fields
+        // Xử lý custom_fields (giữ nguyên)
         const customFieldsMapping = [];
         const customFieldKeys = Object.keys(config.mapping).filter(key => key.startsWith('custom_fields.id_'));
-
         customFieldKeys.forEach(idKey => {
             const valueKey = idKey.replace('id_', 'value_');
             const idValue = config.inputTypes[idKey] === 'custom' ? replacePlaceholders(config.mapping[idKey], orderData) : (orderData[config.mapping[idKey]] || '');
@@ -231,10 +240,8 @@ export async function POST(request) {
                 });
             }
         });
-
         deal.custom_fields = customFieldsMapping;
 
-        // Xóa các trường custom_fields.id và custom_fields.value
         delete deal['custom_fields.id'];
         delete deal['custom_fields.value'];
 

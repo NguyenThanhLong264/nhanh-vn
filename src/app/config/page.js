@@ -29,31 +29,11 @@ export default function ConfigPage() {
                                 cleanedMapping[key] = idValue;
                                 cleanedInputTypes[key] = savedInputTypes[key] || 'custom';
                                 cleanedMapping[valueKey] = valueValue;
-                                cleanedInputTypes[valueKey] = savedInputTypes[valueKey] || 'custom';
+                                cleanedInputTypes[key] = savedInputTypes[valueKey] || 'custom';
                                 const index = parseInt(key.split('_')[1]);
                                 if (!isNaN(index)) maxIndex = Math.max(maxIndex, index);
                             }
-                        } else if (
-                            key === 'username' ||
-                            key === 'subject' ||
-                            key === 'phone' ||
-                            key === 'assignee_id' ||
-                            key === 'value' ||
-                            key === 'comment' ||
-                            key === 'order_address_detail' ||
-                            key === 'order_buyer_note' ||
-                            key === 'order_city_id' ||
-                            key === 'order_district_id' ||
-                            key === 'order_ward_id' ||
-                            key === 'order_receiver_name' ||
-                            key === 'order_receiver_phone' ||
-                            key === 'order_shipping_fee' ||
-                            key === 'order_tracking_url' ||
-                            key === 'pipeline_id' ||
-                            key === 'pipeline_stage_id' ||
-                            key === 'email' ||
-                            key.startsWith('order_products.')
-                        ) {
+                        } else {
                             cleanedMapping[key] = value;
                             cleanedInputTypes[key] = savedInputTypes[key] || 'map';
                         }
@@ -95,6 +75,10 @@ export default function ConfigPage() {
             const cleanedInputTypes = {};
 
             for (const [key, value] of Object.entries(mapping)) {
+                // Bỏ qua "order_status" nếu nó không phải là ánh xạ chi tiết
+                if (key === 'order_status') {
+                    continue; // Không lưu "order_status": "status" vào config.json
+                }
                 if (key.startsWith('custom_fields.id_')) {
                     const valueKey = key.replace('id_', 'value_');
                     const idValue = value;
@@ -107,27 +91,7 @@ export default function ConfigPage() {
                             cleanedInputTypes[valueKey] = inputTypes[valueKey] || 'custom';
                         }
                     }
-                } else if (
-                    key === 'username' ||
-                    key === 'subject' ||
-                    key === 'phone' ||
-                    key === 'assignee_id' ||
-                    key === 'value' ||
-                    key === 'comment' ||
-                    key === 'order_address_detail' ||
-                    key === 'order_buyer_note' ||
-                    key === 'order_city_id' ||
-                    key === 'order_district_id' ||
-                    key === 'order_ward_id' ||
-                    key === 'order_receiver_name' ||
-                    key === 'order_receiver_phone' ||
-                    key === 'order_shipping_fee' ||
-                    key === 'order_tracking_url' ||
-                    key === 'pipeline_id' ||
-                    key === 'pipeline_stage_id' ||
-                    key === 'email' ||
-                    key.startsWith('order_products.')
-                ) {
+                } else {
                     cleanedMapping[key] = value;
                     cleanedInputTypes[key] = inputTypes[key] || 'map';
                 }
@@ -185,7 +149,6 @@ export default function ConfigPage() {
             delete newMapping[idKey];
             delete newMapping[valueKey];
 
-            // Sắp xếp lại chỉ số
             const remainingFields = Object.keys(newMapping)
                 .filter(key => key.match(/^custom_fields\.id_(\d+)$/))
                 .map(key => parseInt(key.match(/^custom_fields\.id_(\d+)$/)[1]))
@@ -205,7 +168,6 @@ export default function ConfigPage() {
                 }
             });
 
-            // Giữ lại các key không phải custom fields
             Object.keys(newMapping).forEach(key => {
                 if (!key.startsWith('custom_fields.')) {
                     reorderedMapping[key] = newMapping[key];
@@ -220,7 +182,6 @@ export default function ConfigPage() {
             delete newInputTypes[idKey];
             delete newInputTypes[valueKey];
 
-            // Sắp xếp lại chỉ số cho inputTypes
             const remainingFields = Object.keys(newInputTypes)
                 .filter(key => key.match(/^custom_fields\.id_(\d+)$/))
                 .map(key => parseInt(key.match(/^custom_fields\.id_(\d+)$/)[1]))
@@ -240,7 +201,6 @@ export default function ConfigPage() {
                 }
             });
 
-            // Giữ lại các key không phải custom fields
             Object.keys(newInputTypes).forEach(key => {
                 if (!key.startsWith('custom_fields.')) {
                     reorderedInputTypes[key] = newInputTypes[key];
@@ -250,7 +210,6 @@ export default function ConfigPage() {
             return reorderedInputTypes;
         });
 
-        // Cập nhật customFieldCount dựa trên số lượng custom fields còn lại
         const remainingCount = Object.keys(mapping)
             .filter(key => key.match(/^custom_fields\.id_(\d+)$/)).length;
         setCustomFieldCount(remainingCount);
