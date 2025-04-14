@@ -1,7 +1,13 @@
 import MappingRow from './MappingRow';
 
-export default function ConfigTable({ dealFields, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange, onDeleteCustomField }) {
-    const regularFields = dealFields.filter(field => field.name !== 'order_products' && field.name !== 'custom_fields');
+export default function ConfigTable({ dealFields, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange, onDeleteCustomField, onAddPipelineStageMapping, onDeletePipelineStageMapping }) {
+    const regularFields = dealFields.filter(field =>
+        field.name !== 'order_products' &&
+        field.name !== 'custom_fields' &&
+        field.name !== 'pipeline_id' &&
+        field.name !== 'pipeline_stage_id' &&
+        field.name !== 'order_status'
+    );
     const orderProductsField = {
         name: 'order_products',
         type: 'array',
@@ -13,6 +19,11 @@ export default function ConfigTable({ dealFields, webhookFields, mapping, inputT
             { name: 'discount_value', type: 'number' },
         ]
     };
+    const specialFields = dealFields.filter(field =>
+        field.name === 'pipeline_id' ||
+        field.name === 'pipeline_stage_id' ||
+        field.name === 'order_status'
+    );
 
     const customFields = [];
     const customFieldIndices = new Set(
@@ -86,6 +97,34 @@ export default function ConfigTable({ dealFields, webhookFields, mapping, inputT
                         onInputTypeChange={onInputTypeChange}
                         onMappingChange={onMappingChange}
                     />
+                </tbody>
+            </table>
+
+            <h2>Special Fields</h2>
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
+                <thead>
+                    <tr>
+                        <th>Tên params</th>
+                        <th>Loại thông tin</th>
+                        <th>Loại input</th>
+                        <th>Webhook Data / Custom Value</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {specialFields.map((field) => (
+                        <MappingRow
+                            key={field.name}
+                            field={field}
+                            webhookFields={webhookFields}
+                            mapping={mapping}
+                            inputTypes={inputTypes}
+                            onInputTypeChange={onInputTypeChange}
+                            onMappingChange={onMappingChange}
+                            onAddPipelineStageMapping={field.name === 'pipeline_stage_id' ? onAddPipelineStageMapping : null}
+                            onDeletePipelineStageMapping={field.name === 'pipeline_stage_id' ? onDeletePipelineStageMapping : null}
+                        />
+                    ))}
                 </tbody>
             </table>
 

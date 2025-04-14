@@ -16,6 +16,12 @@ export async function POST(request) {
             case 'orderUpdate':
                 endpoint = '/api/orderUpdate';
                 break;
+            case 'webhooksEnabled':
+                console.log('Webhook - Webhooks enabled, registered events:', body.data.registeredEvents);
+                return NextResponse.json({ message: 'Webhook enabled received' }, { status: 200 });
+            case 'orderDelete':
+                console.log('Webhook - Order delete event received, not processed yet');
+                return NextResponse.json({ message: 'Order delete received, not processed' }, { status: 200 });
             default:
                 console.log(`Webhook - Unsupported event: ${event}`);
                 return NextResponse.json({ message: 'Event not supported' }, { status: 400 });

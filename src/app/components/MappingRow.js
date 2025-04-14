@@ -1,4 +1,4 @@
-export default function MappingRow({ field, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange, onDeleteCustomField }) {
+export default function MappingRow({ field, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange, onDeleteCustomField, onAddPipelineStageMapping, onDeletePipelineStageMapping }) {
     const isCustom = inputTypes[field.name] === 'custom';
     const productFields = webhookFields && Array.isArray(webhookFields)
         ? (webhookFields.find((f) => f.name === 'products' && f.type === 'array')?.subFields || [])
@@ -6,7 +6,6 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
 
     // Danh sách trạng thái cố định của Web 2 cho order_status
     const orderStatusOptions = [
-        
         'ORDER_STARTED',
         'BUYER_CONFIRMED',
         'SELLER_CONFIRMED',
@@ -17,7 +16,7 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
         'COMPLETED'
     ];
 
-    // Giả định danh sách trạng thái từ Nhanh.vn (cập nhật sau khi bạn cung cấp)
+    // Danh sách trạng thái từ Nhanh.vn
     const nhanhStatusOptions = [
         'New',
         'Confirming',
@@ -37,6 +36,7 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
         'Returning',
         'Returned'
     ];
+
     if (field.name === 'order_status') {
         return (
             <tr>
@@ -77,8 +77,74 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
         );
     }
 
+    if (field.name === 'pipeline_stage_id') {
+        const pipelineStageMappings = Object.keys(mapping)
+            .filter(key => key.startsWith('pipeline_stage_id.') && key !== 'pipeline_stage_id')
+            .map(key => ({
+                status: key.replace('pipeline_stage_id.', ''),
+                id: mapping[key]
+            }));
+
+        return (
+            <tr>
+                <td>{field.name}</td>
+                <td>{field.type}</td>
+                <td colSpan={2}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', margin: '10px 0' }}>
+                        <thead>
+                            <tr>
+                                <th>Trạng thái Nhanh.vn</th>
+                                <th>ID</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {pipelineStageMappings.map(({ status, id }) => (
+                                <tr key={status}>
+                                    <td>
+                                        <select
+                                            value={status}
+                                            onChange={(e) => {
+                                                const newStatus = e.target.value;
+                                                if (newStatus) {
+                                                    onMappingChange(`pipeline_stage_id.${newStatus}`, id);
+                                                    onMappingChange(`pipeline_stage_id.${status}`, undefined);
+                                                }
+                                            }}
+                                            style={{ width: '100%' }}
+                                        >
+                                            <option value="">Chọn trạng thái Nhanh.vn</option>
+                                            {nhanhStatusOptions.map((nhanhStatus) => (
+                                                <option key={nhanhStatus} value={nhanhStatus}>
+                                                    {nhanhStatus}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input
+                                            type="text"
+                                            value={id || ''}
+                                            onChange={(e) => onMappingChange(`pipeline_stage_id.${status}`, e.target.value)}
+                                            placeholder="Nhập ID"
+                                            style={{ width: '100%' }}
+                                        />
+                                    </td>
+                                    <td>
+                                        <button onClick={() => onDeletePipelineStageMapping(status)}>Xóa</button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    <button onClick={onAddPipelineStageMapping}>Thêm ánh xạ</button>
+                </td>
+                <td></td>
+            </tr>
+        );
+    }
+
     if (field.type === 'array' && field.subFields) {
-        // Logic hiện tại cho array fields (giữ nguyên)
         return (
             <tr>
                 <td>{field.name}</td>

@@ -9,6 +9,7 @@ export default function ConfigPage() {
     const [mapping, setMapping] = useState({});
     const [inputTypes, setInputTypes] = useState({});
     const [customFieldCount, setCustomFieldCount] = useState(0);
+    const [pipelineStageCount, setPipelineStageCount] = useState(0);
 
     useEffect(() => {
         const fetchConfig = async () => {
@@ -18,7 +19,8 @@ export default function ConfigPage() {
                     const { mapping: savedMapping, inputTypes: savedInputTypes } = await response.json();
                     const cleanedMapping = {};
                     const cleanedInputTypes = {};
-                    let maxIndex = -1;
+                    let maxCustomIndex = -1;
+                    let maxPipelineStageIndex = -1;
 
                     for (const [key, value] of Object.entries(savedMapping || {})) {
                         if (key.startsWith('custom_fields.id_')) {
@@ -29,10 +31,15 @@ export default function ConfigPage() {
                                 cleanedMapping[key] = idValue;
                                 cleanedInputTypes[key] = savedInputTypes[key] || 'custom';
                                 cleanedMapping[valueKey] = valueValue;
-                                cleanedInputTypes[key] = savedInputTypes[valueKey] || 'custom';
-                                const index = parseInt(key.split('_')[1]);
-                                if (!isNaN(index)) maxIndex = Math.max(maxIndex, index);
+                                cleanedInputTypes[valueKey] = savedInputTypes[valueKey] || 'custom';
+                                const index = parseInt(key.split('_')[2]);
+                                if (!isNaN(index)) maxCustomIndex = Math.max(maxCustomIndex, index);
                             }
+                        } else if (key.startsWith('pipeline_stage_id.') && key !== 'pipeline_stage_id') {
+                            cleanedMapping[key] = value;
+                            cleanedInputTypes[key] = savedInputTypes[key] || 'map';
+                            const index = parseInt(key.split('.')[1] || '0');
+                            if (!isNaN(index)) maxPipelineStageIndex = Math.max(maxPipelineStageIndex, index);
                         } else {
                             cleanedMapping[key] = value;
                             cleanedInputTypes[key] = savedInputTypes[key] || 'map';
@@ -41,7 +48,8 @@ export default function ConfigPage() {
 
                     setMapping(cleanedMapping);
                     setInputTypes(cleanedInputTypes);
-                    setCustomFieldCount(maxIndex + 1);
+                    setCustomFieldCount(maxCustomIndex + 1);
+                    setPipelineStageCount(maxPipelineStageIndex + 1);
                 }
             } catch (error) {
                 console.error('Load config error:', error);
@@ -75,9 +83,8 @@ export default function ConfigPage() {
             const cleanedInputTypes = {};
 
             for (const [key, value] of Object.entries(mapping)) {
-                // Bỏ qua "order_status" nếu nó không phải là ánh xạ chi tiết
-                if (key === 'order_status') {
-                    continue; // Không lưu "order_status": "status" vào config.json
+                if (key === 'order_status' || key === 'pipeline_stage_id') {
+                    continue;
                 }
                 if (key.startsWith('custom_fields.id_')) {
                     const valueKey = key.replace('id_', 'value_');
@@ -217,6 +224,51 @@ export default function ConfigPage() {
         console.log(`Deleted custom field: ${idKey}, ${valueKey}`);
     };
 
+    const handleAddPipelineStageMapping = () => {
+        const existingIndices = Object.keys(mapping)
+            .filter(key => key.match(/^pipeline_stage_id\.(.+)$/))
+            .map(key => {
+                const match = key.match(/^pipeline_stage_id\.(\d+)$/);
+                return match ? parseInt(match[1]) : 0;
+            });
+
+        const maxIndex = existingIndices.length > 0 ? Math.max(...existingIndices) : -1;
+        const nextIndex = maxIndex + 1;
+
+        setMapping((prev) => ({
+            ...prev,
+            [`pipeline_stage_id.New`]: ''
+        }));
+        setInputTypes((prev) => ({
+            ...prev,
+            [`pipeline_stage_id.New`]: 'map'
+        }));
+        setPipelineStageCount(nextIndex + 1);
+        console.log(`Added new pipeline stage mapping: pipeline_stage_id.New`);
+    };
+
+    const handleDeletePipelineStageMapping = (status) => {
+        setMapping((prev) => {
+            const newMapping = { ...prev };
+            delete newMapping[`pipeline_stage_id.${status}`];
+
+            return newMapping;
+        });
+
+        setInputTypes((prev) => {
+            const newInputTypes = { ...prev };
+            delete newInputTypes[`pipeline_stage_id.${status}`];
+
+            return newInputTypes;
+        });
+
+        const remainingCount = Object.keys(mapping)
+            .filter(key => key.match(/^pipeline_stage_id\.(.+)$/)).length;
+        setPipelineStageCount(remainingCount);
+
+        console.log(`Deleted pipeline stage mapping: pipeline_stage_id.${status}`);
+    };
+
     return (
         <>
             <Topbar onSaveConfig={handleSubmit} onAddCustomField={handleAddCustomField} />
@@ -231,6 +283,8 @@ export default function ConfigPage() {
                         onInputTypeChange={handleInputTypeChange}
                         onMappingChange={handleMappingChange}
                         onDeleteCustomField={handleDeleteCustomField}
+                        onAddPipelineStageMapping={handleAddPipelineStageMapping}
+                        onDeletePipelineStageMapping={handleDeletePipelineStageMapping}
                     />
                 </div>
             </Container>

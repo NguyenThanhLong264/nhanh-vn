@@ -22,7 +22,6 @@
     "order_shipping_fee": "customerShipFee",
     "order_tracking_url": "trackingUrl",
     "pipeline_id": "24",
-    "pipeline_stage_id": "174",
     "email": "customerEmail",
     "order_products.sku": "id",
     "order_products.unit_price": "price",
@@ -38,7 +37,12 @@
     "order_status.CANCELED": "Canceled",
     "order_status.RECEIVED": "Pickup",
     "order_status.COMPLETED": "Success",
-    "comment": "description"
+    "comment": "description",
+    "pipeline_stage_id.New": "174",
+    "pipeline_stage_id.Confirming": "175",
+    "pipeline_stage_id.CustomerConfirming": "604",
+    "pipeline_stage_id.Shipping": "408",
+    "pipeline_stage_id.Success": "178"
   },
   "inputTypes": {
     "custom_fields.id_0": "custom",
@@ -63,7 +67,6 @@
     "order_shipping_fee": "map",
     "order_tracking_url": "map",
     "pipeline_id": "custom",
-    "pipeline_stage_id": "custom",
     "email": "map",
     "order_products.sku": "map",
     "order_products.unit_price": "map",
@@ -79,6 +82,11 @@
     "order_status.CANCELED": "map",
     "order_status.RECEIVED": "map",
     "order_status.COMPLETED": "map",
-    "comment": "map"
+    "comment": "map",
+    "pipeline_stage_id.New": "map",
+    "pipeline_stage_id.Confirming": "map",
+    "pipeline_stage_id.CustomerConfirming": "map",
+    "pipeline_stage_id.Shipping": "map",
+    "pipeline_stage_id.Success": "map"
   }
 }

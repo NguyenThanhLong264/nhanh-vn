@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import axios from 'axios';
 import FormData from 'form-data';
 import { getDealIdByOrderId, saveOrderDealMapping } from '../../lib/db';
-import { loadConfig, replacePlaceholders, mapOrderStatus } from '../../lib/webhookUtils';
+import { loadConfig, replacePlaceholders, mapOrderStatus, mapPipelineStageId } from '../../lib/webhookUtils';
 
 export async function POST(request) {
     try {
@@ -161,7 +161,7 @@ export async function POST(request) {
                 group_id: '',
                 assignee_id: '164796592',
                 pipeline_id: '24',
-                pipeline_stage_id: '174',
+                pipeline_stage_id: mapPipelineStageId(fullOrderData.statusCode || fullOrderData.status || '', config),
                 estimated_closed_date: fullOrderData.createdDateTime
                     ? new Date(fullOrderData.createdDateTime).toISOString().split('T')[0]
                     : new Date().toISOString().split('T')[0],
@@ -219,7 +219,7 @@ export async function POST(request) {
             }
 
             for (const [dealField, value] of Object.entries(config.mapping)) {
-                if (!dealField.startsWith('order_products.') && !dealField.startsWith('order_status.')) {
+                if (!dealField.startsWith('order_products.') && !dealField.startsWith('order_status.') && !dealField.startsWith('pipeline_stage_id.')) {
                     if (config.inputTypes[dealField] === 'custom') {
                         deal[dealField] = replacePlaceholders(value, { ...fullOrderData, orderId });
                     } else {
@@ -313,13 +313,15 @@ export async function POST(request) {
         const nhanhStatus = orderData.status || '';
         if (nhanhStatus) {
             dealUpdate.order_status = mapOrderStatus(nhanhStatus, config);
+            dealUpdate.pipeline_stage_id = mapPipelineStageId(nhanhStatus, config);
         }
 
         for (const [dealField, value] of Object.entries(config.mapping)) {
             if (
                 !dealField.startsWith('order_products.') &&
                 !dealField.startsWith('order_status.') &&
-                !dealField.startsWith('custom_fields.')
+                !dealField.startsWith('custom_fields.') &&
+                !dealField.startsWith('pipeline_stage_id.')
             ) {
                 if (config.inputTypes[dealField] === 'custom') {
                     const mappedValue = replacePlaceholders(value, orderData);

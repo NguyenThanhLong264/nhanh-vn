@@ -41,3 +41,23 @@ export function mapOrderStatus(nhanhStatus, config) {
     }
     return mappedStatus;
 }
+
+export function mapPipelineStageId(nhanhStatus, config) {
+    let idMapped = false;
+    let mappedId = '174'; // Default ID
+    for (const [key, value] of Object.entries(config.mapping)) {
+        if (key.startsWith('pipeline_stage_id.') && key !== 'pipeline_stage_id') {
+            const status = key.replace('pipeline_stage_id.', '');
+            if (status === nhanhStatus) {
+                mappedId = value;
+                console.log(`Mapped pipeline_stage_id: ${nhanhStatus} -> ${value}`);
+                idMapped = true;
+                break;
+            }
+        }
+    }
+    if (!idMapped && nhanhStatus) {
+        console.log(`No pipeline_stage_id mapping found for Nhanh.vn status: ${nhanhStatus}, using default: ${mappedId}`);
+    }
+    return mappedId;
+}
