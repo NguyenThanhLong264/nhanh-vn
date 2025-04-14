@@ -3,46 +3,53 @@ import axios from 'axios';
 
 export async function POST(request) {
     try {
-        const rawBody = await request.text();
-        console.log('Webhook - Raw body:', rawBody);
-
-        let body;
-        try {
-            body = JSON.parse(rawBody);
-        } catch (parseError) {
-            console.error('Webhook - JSON parse error:', parseError.message);
-            return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
-        }
-
-        const verifyToken = body.webhooksVerifyToken;
-        if (verifyToken !== process.env.VERIFY_TOKEN) {
-            console.log('Webhook - Invalid token:', verifyToken);
-            return NextResponse.json({ error: 'Invalid verify token' }, { status: 401 });
-        }
+        const body = await request.json();
+        console.log('Webhook - Raw body:', JSON.stringify(body));
 
         const event = body.event;
-        const internalUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+        let endpoint;
 
-        let response;
-        if (event === 'orderAdd') {
-            response = await axios.post(`${internalUrl}/api/orderAdd`, body, {
-                headers: { 'Content-Type': 'application/json' },
-            });
-            return NextResponse.json(response.data, { status: response.status });
-        } else if (event === 'orderUpdate') {
-            response = await axios.post(`${internalUrl}/api/orderUpdate`, body, {
-                headers: { 'Content-Type': 'application/json' },
-            });
-            return NextResponse.json(response.data, { status: response.status });
-        } else if (event === 'webhooksEnabled') {
-            console.log('Webhook - Webhooks enabled confirmed');
-            return NextResponse.json({ message: 'Webhooks enabled' }, { status: 200 });
-        } else {
-            console.log(`Webhook - Skipping event: ${event}`);
-            return NextResponse.json({ message: 'Event not supported' }, { status: 400 });
+        switch (event) {
+            case 'orderAdd':
+                endpoint = '/api/orderAdd';
+                break;
+            case 'orderUpdate':
+                endpoint = '/api/orderUpdate';
+                break;
+            default:
+                console.log(`Webhook - Unsupported event: ${event}`);
+                return NextResponse.json({ message: 'Event not supported' }, { status: 400 });
         }
+
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+        if (!baseUrl) {
+            console.error('Webhook - NEXT_PUBLIC_BASE_URL is not defined');
+            return NextResponse.json(
+                { message: 'Webhook received, but base URL is not configured' },
+                { status: 200 }
+            );
+        }
+
+        console.log(`Webhook - Forwarding to ${baseUrl}${endpoint}`);
+
+        const response = await axios.post(
+            `${baseUrl}${endpoint}`,
+            body,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+
+        console.log(`Webhook - Response from ${endpoint}:`, response.data);
+        return NextResponse.json(response.data, { status: response.status });
     } catch (error) {
         console.error('Webhook - Error:', error.message);
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+        console.error('Webhook - Error details:', error.response?.data || error);
+        return NextResponse.json(
+            { message: 'Webhook received, but processing failed', error: error.message },
+            { status: 200 }
+        );
     }
 }

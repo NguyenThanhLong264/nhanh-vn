@@ -12,7 +12,6 @@
     "subject": "Đơn hàng của {{customerName}}",
     "phone": "customerMobile",
     "assignee_id": "164796592",
-    "comment": "comment 2",
     "order_address_detail": "customerAddress",
     "order_buyer_note": "description",
     "order_city_id": "shipToCityLocationId",
@@ -32,13 +31,14 @@
     "order_products.discount_value": "discount",
     "value": "calcTotalMoney",
     "order_status.ORDER_STARTED": "New",
-    "order_status.BUYER_CONFIRMED": "Confirming",
+    "order_status.BUYER_CONFIRMED": "CustomerConfirming",
     "order_status.SELLER_CONFIRMED": "Confirmed",
     "order_status.SHIPPING": "Shipping",
     "order_status.RETURNED": "Returning",
     "order_status.CANCELED": "Canceled",
     "order_status.RECEIVED": "Pickup",
-    "order_status.COMPLETED": "Success"
+    "order_status.COMPLETED": "Success",
+    "comment": "description"
   },
   "inputTypes": {
     "custom_fields.id_0": "custom",
@@ -53,7 +53,6 @@
     "subject": "custom",
     "phone": "map",
     "assignee_id": "custom",
-    "comment": "custom",
     "order_address_detail": "map",
     "order_buyer_note": "map",
     "order_city_id": "map",
@@ -79,6 +78,7 @@
     "order_status.RETURNED": "map",
     "order_status.CANCELED": "map",
     "order_status.RECEIVED": "map",
-    "order_status.COMPLETED": "map"
+    "order_status.COMPLETED": "map",
+    "comment": "map"
   }
 }

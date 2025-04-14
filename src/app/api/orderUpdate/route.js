@@ -29,9 +29,50 @@ export async function POST(request) {
         if (!dealId) {
             console.log(`OrderUpdate - No deal found for order_id=${orderId}, fetching from Nhanh.vn`);
 
-            // Bước xử lý customerMobile
+            let fullOrderData = orderData;
+            try {
+                const formData = new FormData();
+                formData.append('version', '2.0');
+                formData.append('appId', '75230');
+                formData.append('businessId', body.businessId.toString() || '205142');
+                formData.append('accessToken', process.env.NHANH_API_TOKEN);
+                formData.append('data', JSON.stringify({ page: 1, id: orderId.toString() }));
+
+                console.log('OrderUpdate - Sending Nhanh.vn API request:', {
+                    version: '2.0',
+                    appId: '75230',
+                    businessId: body.businessId.toString() || '205142',
+                    orderId: orderId.toString(),
+                });
+
+                const nhanhResponse = await axios.post('https://open.nhanh.vn/api/order/index', formData, {
+                    headers: formData.getHeaders(),
+                });
+                console.log('OrderUpdate - Nhanh.vn API response:', nhanhResponse.data);
+
+                if (nhanhResponse.data.code !== 1 || !nhanhResponse.data.data || !nhanhResponse.data.data.orders) {
+                    console.warn('OrderUpdate - Invalid Nhanh.vn response:', nhanhResponse.data);
+                    console.log(`OrderUpdate - Falling back to webhook data for order_id=${orderId}`);
+                } else {
+                    fullOrderData = nhanhResponse.data.data.orders[orderId];
+                    if (!fullOrderData) {
+                        console.warn(`OrderUpdate - Order ${orderId} not found in Nhanh.vn response`);
+                        console.log(`OrderUpdate - Falling back to webhook data for order_id=${orderId}`);
+                    } else {
+                        console.log('OrderUpdate - Fetched order data from Nhanh.vn:', fullOrderData);
+                    }
+                }
+            } catch (nhanhError) {
+                console.error('OrderUpdate - Nhanh.vn API error:', {
+                    message: nhanhError.message,
+                    status: nhanhError.response?.status,
+                    data: nhanhError.response?.data,
+                });
+                console.log(`OrderUpdate - Falling back to webhook data for order_id=${orderId}`);
+            }
+
             let contactId = null;
-            const customerMobile = orderData.customerMobile;
+            const customerMobile = fullOrderData.customerMobile;
             if (customerMobile) {
                 console.log(`OrderUpdate - Processing customerMobile: ${customerMobile}`);
                 try {
@@ -55,8 +96,8 @@ export async function POST(request) {
                             {
                                 contact: {
                                     phone_no: customerMobile,
-                                    username: orderData.customerName || customerData.contact.username,
-                                    email: orderData.customerEmail || customerData.contact.email,
+                                    username: fullOrderData.customerName || customerData.contact.username,
+                                    email: fullOrderData.customerEmail || customerData.contact.email,
                                 },
                             },
                             {
@@ -68,15 +109,15 @@ export async function POST(request) {
                         );
                         console.log('OrderUpdate - Update customer response:', updateCustomerResponse.data);
                         console.log(`OrderUpdate - Updated customer with phone ${customerMobile}`);
-                    } else if (customerData.code === 'errors' && customerData.message === 'Not found user') {
+                    } else {
                         console.log(`OrderUpdate - Customer with phone ${customerMobile} not found, creating new...`);
                         const createCustomerResponse = await axios.post(
                             `https://api.caresoft.vn/thammydemo/api/v1/contacts`,
                             {
                                 contact: {
                                     phone_no: customerMobile,
-                                    username: orderData.customerName || 'Unknown',
-                                    email: orderData.customerEmail || '',
+                                    username: fullOrderData.customerName || 'Unknown',
+                                    email: fullOrderData.customerEmail || '',
                                 },
                             },
                             {
@@ -96,10 +137,8 @@ export async function POST(request) {
                             contactId = createData.extra_data.duplicate_id;
                             console.log(`OrderUpdate - Phone ${customerMobile} already exists with ID: ${contactId}`);
                         } else {
-                            console.log('OrderUpdate - Unexpected response from create customer API:', createData);
+                            console.error('OrderUpdate - Failed to create customer:', createData);
                         }
-                    } else {
-                        console.log('OrderUpdate - Unexpected response from check customer API:', customerData);
                     }
                 } catch (customerError) {
                     console.error('OrderUpdate - Customer processing error:', {
@@ -112,92 +151,41 @@ export async function POST(request) {
                 console.log('OrderUpdate - No customerMobile found in orderData, skipping customer processing');
             }
 
-            const formData = new FormData();
-            formData.append('version', '2.0');
-            formData.append('appId', '75230');
-            formData.append('businessId', '203978');
-            formData.append('accessToken', process.env.NHANH_API_TOKEN);
-            formData.append('data', JSON.stringify({ page: 1, id: orderId.toString() }));
-
-            const nhanhResponse = await axios.post('https://open.nhanh.vn/api/order/index', formData, {
-                headers: formData.getHeaders(),
-            });
-            const fullOrderData = nhanhResponse.data.data.orders[orderId];
-            console.log('OrderUpdate - Fetched order data from Nhanh.vn:', fullOrderData);
-
-            if (!fullOrderData) {
-                console.error('OrderUpdate - Order not found in Nhanh.vn');
-                return NextResponse.json({ error: 'Order not found' }, { status: 404 });
-            }
-
             const deal = {
                 contact_id: contactId || '',
-                username: orderData.customerName || 'Unknown',
-                subject: `Đơn hàng của ${orderData.customerName || 'Unknown'}`,
-                phone: orderData.customerMobile || '',
-                email: orderData.customerEmail || '',
+                username: fullOrderData.customerName || 'Unknown',
+                subject: `Đơn hàng của ${fullOrderData.customerName || 'Unknown'}`,
+                phone: fullOrderData.customerMobile || '',
+                email: fullOrderData.customerEmail || '',
                 service_id: '',
                 group_id: '',
                 assignee_id: '164796592',
                 pipeline_id: '24',
                 pipeline_stage_id: '174',
-                estimated_closed_date: orderData.createdDateTime ? new Date(orderData.createdDateTime).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+                estimated_closed_date: fullOrderData.createdDateTime
+                    ? new Date(fullOrderData.createdDateTime).toISOString().split('T')[0]
+                    : new Date().toISOString().split('T')[0],
                 deal_label: [],
                 custom_fields: [],
                 probability: 0,
-                value: orderData.calcTotalMoney || 0,
+                value: fullOrderData.calcTotalMoney || 0,
                 comment: '',
-                'comment.body': '',
+                'comment.body': fullOrderData.reason || fullOrderData.statusDescription || '',
                 'comment.is_public': 1,
                 'comment.author_id': '',
-                order_address_detail: orderData.customerAddress || '',
-                order_buyer_note: orderData.description || '',
-                order_city_id: orderData.shipToCityLocationId || 254,
-                order_district_id: orderData.shipToDistrictLocationId || 318,
-                order_ward_id: orderData.shipToWardLocationId || 1051,
-                order_receiver_name: orderData.customerName || 'Unknown',
-                order_receiver_phone: orderData.customerMobile || '',
-                order_shipping_fee: orderData.customerShipFee || 0,
-                order_status: mapOrderStatus(orderData.status || '', config),
+                order_address_detail: fullOrderData.customerAddress || '',
+                order_buyer_note: fullOrderData.description || fullOrderData.reason || '',
+                order_city_id: fullOrderData.shipToCityLocationId || 254,
+                order_district_id: fullOrderData.shipToDistrictLocationId || 318,
+                order_ward_id: fullOrderData.shipToWardLocationId || 1051,
+                order_receiver_name: fullOrderData.customerName || 'Unknown',
+                order_receiver_phone: fullOrderData.customerMobile || '',
+                order_shipping_fee: fullOrderData.customerShipFee || 0,
+                order_status: mapOrderStatus(fullOrderData.statusCode || fullOrderData.status || '', config),
                 order_tracking_code: '',
                 order_tracking_url: orderData.trackingUrl || '',
                 order_products: [],
             };
-
-            for (const [dealField, value] of Object.entries(config.mapping)) {
-                if (!dealField.startsWith('order_products.') && !dealField.startsWith('order_status.')) {
-                    if (config.inputTypes[dealField] === 'custom') {
-                        deal[dealField] = replacePlaceholders(value, { ...orderData, orderId });
-                    } else {
-                        deal[dealField] = orderData[value] !== undefined ? orderData[value] : deal[dealField];
-                    }
-                }
-            }
-
-            deal.username = fullOrderData.customerName || deal.username;
-            deal.subject = `Đơn hàng của ${fullOrderData.customerName || deal.username}`;
-            deal.phone = fullOrderData.customerMobile || deal.phone;
-            deal.email = fullOrderData.customerEmail || deal.email;
-            deal.value = fullOrderData.calcTotalMoney || deal.value;
-            deal.order_address_detail = fullOrderData.customerAddress || deal.order_address_detail;
-            deal.order_buyer_note = fullOrderData.description || deal.order_buyer_note;
-            deal.order_city_id = fullOrderData.shipToCityLocationId || deal.order_city_id;
-            deal.order_district_id = fullOrderData.shipToDistrictLocationId || deal.order_district_id;
-            deal.order_ward_id = fullOrderData.shipToWardLocationId || deal.order_ward_id;
-            deal.order_receiver_name = fullOrderData.customerName || deal.order_receiver_name;
-            deal.order_receiver_phone = fullOrderData.customerMobile || deal.order_receiver_phone;
-            deal.order_shipping_fee = fullOrderData.customerShipFee || deal.order_shipping_fee;
-            deal.order_status = mapOrderStatus(fullOrderData.statusCode || '', config) || deal.order_status;
-
-            for (const [dealField, value] of Object.entries(config.mapping)) {
-                if (!dealField.startsWith('order_products.') && !dealField.startsWith('order_status.')) {
-                    if (config.inputTypes[dealField] === 'custom') {
-                        deal[dealField] = replacePlaceholders(value, { ...fullOrderData, orderId });
-                    } else {
-                        deal[dealField] = fullOrderData[value] !== undefined ? fullOrderData[value] : deal[dealField];
-                    }
-                }
-            }
 
             if (fullOrderData.products && Array.isArray(fullOrderData.products)) {
                 deal.order_products = fullOrderData.products.map((product) => {
@@ -213,10 +201,16 @@ export async function POST(request) {
                         if (dealField.startsWith('order_products.')) {
                             const subField = dealField.replace('order_products.', '');
                             if (config.inputTypes[dealField] === 'custom') {
-                                productMapped[subField] = replacePlaceholders(value, { ...fullOrderData, ...product });
+                                productMapped[subField] = replacePlaceholders(value, {
+                                    ...fullOrderData,
+                                    ...product,
+                                });
                             } else if (value.startsWith('products.')) {
                                 const productSubField = value.replace('products.', '');
-                                productMapped[subField] = product[productSubField] !== undefined ? product[productSubField] : productMapped[subField];
+                                productMapped[subField] =
+                                    product[productSubField] !== undefined
+                                        ? product[productSubField]
+                                        : productMapped[subField];
                             }
                         }
                     }
@@ -224,14 +218,38 @@ export async function POST(request) {
                 });
             }
 
+            for (const [dealField, value] of Object.entries(config.mapping)) {
+                if (!dealField.startsWith('order_products.') && !dealField.startsWith('order_status.')) {
+                    if (config.inputTypes[dealField] === 'custom') {
+                        deal[dealField] = replacePlaceholders(value, { ...fullOrderData, orderId });
+                    } else {
+                        deal[dealField] =
+                            fullOrderData[value] !== undefined
+                                ? fullOrderData[value]
+                                : deal[dealField];
+                    }
+                }
+            }
+
             const customFieldsMapping = [];
-            const customFieldKeys = Object.keys(config.mapping).filter(key => key.startsWith('custom_fields.id_'));
-            customFieldKeys.forEach(idKey => {
+            const customFieldKeys = Object.keys(config.mapping).filter((key) =>
+                key.startsWith('custom_fields.id_')
+            );
+            customFieldKeys.forEach((idKey) => {
                 const valueKey = idKey.replace('id_', 'value_');
-                const idValue = config.inputTypes[idKey] === 'custom' ? replacePlaceholders(config.mapping[idKey], fullOrderData) : (fullOrderData[config.mapping[idKey]] || '');
-                const valueValue = config.mapping[valueKey] !== undefined
-                    ? (config.inputTypes[valueKey] === 'custom' ? replacePlaceholders(config.mapping[valueKey], { ...fullOrderData, orderId }) : (fullOrderData[config.mapping[valueKey]] || null))
-                    : null;
+                const idValue =
+                    config.inputTypes[idKey] === 'custom'
+                        ? replacePlaceholders(config.mapping[idKey], fullOrderData)
+                        : fullOrderData[config.mapping[idKey]] || '';
+                const valueValue =
+                    config.mapping[valueKey] !== undefined
+                        ? config.inputTypes[valueKey] === 'custom'
+                            ? replacePlaceholders(config.mapping[valueKey], {
+                                  ...fullOrderData,
+                                  orderId,
+                              })
+                            : fullOrderData[config.mapping[valueKey]] || null
+                        : null;
                 if (idValue || valueValue) {
                     customFieldsMapping.push({ id: idValue, value: valueValue });
                 }
@@ -263,17 +281,32 @@ export async function POST(request) {
             console.log('OrderUpdate - Web 2 create response:', JSON.stringify(web2Response.data));
 
             const newDealId = web2Response.data.deal?.id;
-            const businessId = body.businessId || fullOrderData.businessId;
+            const businessId = body.businessId || fullOrderData.businessId || '205142';
             const appid = body.webhooksVerifyToken;
 
             if (orderId && newDealId && businessId && appid) {
-                await saveOrderDealMapping(orderId.toString(), newDealId.toString(), businessId.toString(), appid);
-                console.log(`OrderUpdate - Saved mapping: order_id=${orderId}, deal_id=${newDealId}, business_id=${businessId}, appid=${appid}`);
+                await saveOrderDealMapping(
+                    orderId.toString(),
+                    newDealId.toString(),
+                    businessId.toString(),
+                    appid
+                );
+                console.log(
+                    `OrderUpdate - Saved mapping: order_id=${orderId}, deal_id=${newDealId}, business_id=${businessId}, appid=${appid}`
+                );
             } else {
-                console.error('OrderUpdate - Missing fields for mapping:', { orderId, newDealId, businessId, appid });
+                console.error('OrderUpdate - Missing fields for mapping:', {
+                    orderId,
+                    newDealId,
+                    businessId,
+                    appid,
+                });
             }
 
-            return NextResponse.json({ message: 'OrderUpdate webhook received, deal created' }, { status: 200 });
+            return NextResponse.json(
+                { message: 'OrderUpdate webhook received, deal created', dealId: newDealId },
+                { status: 200 }
+            );
         }
 
         const dealUpdate = {};
@@ -283,7 +316,11 @@ export async function POST(request) {
         }
 
         for (const [dealField, value] of Object.entries(config.mapping)) {
-            if (!dealField.startsWith('order_products.') && !dealField.startsWith('order_status.') && !dealField.startsWith('custom_fields.')) {
+            if (
+                !dealField.startsWith('order_products.') &&
+                !dealField.startsWith('order_status.') &&
+                !dealField.startsWith('custom_fields.')
+            ) {
                 if (config.inputTypes[dealField] === 'custom') {
                     const mappedValue = replacePlaceholders(value, orderData);
                     if (mappedValue !== value) dealUpdate[dealField] = mappedValue;
@@ -325,7 +362,10 @@ export async function POST(request) {
         console.log('OrderUpdate - Web 2 update response:', JSON.stringify(web2Response.data));
 
         if (web2Response.data.code === 'ok') {
-            return NextResponse.json({ message: 'OrderUpdate webhook received and deal updated' }, { status: 200 });
+            return NextResponse.json(
+                { message: 'OrderUpdate webhook received and deal updated' },
+                { status: 200 }
+            );
         } else {
             console.error('OrderUpdate - Web 2 update failed:', web2Response.data.message);
             return NextResponse.json(
@@ -335,7 +375,7 @@ export async function POST(request) {
         }
     } catch (error) {
         console.error('OrderUpdate - Error:', error.message);
-        console.error('OrderUpdate - Error details:', error.response?.data);
+        console.error('OrderUpdate - Error details:', error.response?.data || error);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
 }
