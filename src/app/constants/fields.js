@@ -40,6 +40,7 @@ export const dealFields = [
     },
 ];
 
+// Webhook fields 
 export const webhookFields = [
     'orderId',
     'shopOrderId',

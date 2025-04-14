@@ -29,52 +29,89 @@ export async function POST(request) {
         if (!dealId) {
             console.log(`OrderUpdate - No deal found for order_id=${orderId}, fetching from Nhanh.vn`);
 
-            // Bước 1: Ánh xạ dữ liệu từ webhook trước
-            const deal = {
-                username: orderData.customerName || 'Unknown',
-                subject: `Đơn hàng của ${orderData.customerName || 'Unknown'}`,
-                phone: orderData.customerMobile || '',
-                email: orderData.customerEmail || '',
-                service_id: '',
-                group_id: '',
-                assignee_id: '164796592',
-                pipeline_id: '24',
-                pipeline_stage_id: '174',
-                estimated_closed_date: orderData.deliveryDate || new Date().toISOString().split('T')[0],
-                deal_label: [],
-                custom_fields: [],
-                probability: 0,
-                value: orderData.calcTotalMoney || 0,
-                comment: '',
-                'comment.body': '',
-                'comment.is_public': 1,
-                'comment.author_id': '',
-                order_address_detail: orderData.customerAddress || '',
-                order_buyer_note: orderData.description || '',
-                order_city_id: orderData.shipToCityLocationId || 254,
-                order_district_id: orderData.shipToDistrictLocationId || 318,
-                order_ward_id: orderData.shipToWardLocationId || 1051,
-                order_receiver_name: orderData.customerName || 'Unknown',
-                order_receiver_phone: orderData.customerMobile || '',
-                order_shipping_fee: orderData.customerShipFee || 0,
-                order_status: mapOrderStatus(orderData.statusCode || orderData.status || '', config),
-                order_tracking_code: '',
-                order_tracking_url: orderData.trackingUrl || '', // Lấy từ webhook
-                order_products: [],
-            };
+            // Bước xử lý customerMobile
+            let contactId = null;
+            const customerMobile = orderData.customerMobile;
+            if (customerMobile) {
+                console.log(`OrderUpdate - Processing customerMobile: ${customerMobile}`);
+                try {
+                    const checkCustomerResponse = await axios.get(
+                        `https://api.caresoft.vn/thammydemo/api/v1/contactsByPhone?phoneNo=${customerMobile}`,
+                        {
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${process.env.WEB2_API_TOKEN}`,
+                            },
+                        }
+                    );
+                    const customerData = checkCustomerResponse.data;
+                    console.log('OrderUpdate - Check customer response:', customerData);
 
-            // Ánh xạ từ config với dữ liệu webhook
-            for (const [dealField, value] of Object.entries(config.mapping)) {
-                if (!dealField.startsWith('order_products.') && !dealField.startsWith('order_status.')) {
-                    if (config.inputTypes[dealField] === 'custom') {
-                        deal[dealField] = replacePlaceholders(value, { ...orderData, orderId });
+                    if (customerData.code === 'ok') {
+                        console.log(`OrderUpdate - Customer with phone ${customerMobile} exists, updating...`);
+                        contactId = customerData.contact.id;
+                        const updateCustomerResponse = await axios.put(
+                            `https://api.caresoft.vn/thammydemo/api/v1/contacts/${contactId}`,
+                            {
+                                contact: {
+                                    phone_no: customerMobile,
+                                    username: orderData.customerName || customerData.contact.username,
+                                    email: orderData.customerEmail || customerData.contact.email,
+                                },
+                            },
+                            {
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${process.env.WEB2_API_TOKEN}`,
+                                },
+                            }
+                        );
+                        console.log('OrderUpdate - Update customer response:', updateCustomerResponse.data);
+                        console.log(`OrderUpdate - Updated customer with phone ${customerMobile}`);
+                    } else if (customerData.code === 'errors' && customerData.message === 'Not found user') {
+                        console.log(`OrderUpdate - Customer with phone ${customerMobile} not found, creating new...`);
+                        const createCustomerResponse = await axios.post(
+                            `https://api.caresoft.vn/thammydemo/api/v1/contacts`,
+                            {
+                                contact: {
+                                    phone_no: customerMobile,
+                                    username: orderData.customerName || 'Unknown',
+                                    email: orderData.customerEmail || '',
+                                },
+                            },
+                            {
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${process.env.WEB2_API_TOKEN}`,
+                                },
+                            }
+                        );
+                        const createData = createCustomerResponse.data;
+                        console.log('OrderUpdate - Create customer response:', createData);
+
+                        if (createData.code === 'ok') {
+                            contactId = createData.contact.id;
+                            console.log(`OrderUpdate - Created new customer with phone ${customerMobile}`);
+                        } else if (createData.code === 'errors' && createData.message === 'phone_no already exist') {
+                            contactId = createData.extra_data.duplicate_id;
+                            console.log(`OrderUpdate - Phone ${customerMobile} already exists with ID: ${contactId}`);
+                        } else {
+                            console.log('OrderUpdate - Unexpected response from create customer API:', createData);
+                        }
                     } else {
-                        deal[dealField] = orderData[value] !== undefined ? orderData[value] : deal[dealField];
+                        console.log('OrderUpdate - Unexpected response from check customer API:', customerData);
                     }
+                } catch (customerError) {
+                    console.error('OrderUpdate - Customer processing error:', {
+                        message: customerError.message,
+                        status: customerError.response?.status,
+                        data: customerError.response?.data,
+                    });
                 }
+            } else {
+                console.log('OrderUpdate - No customerMobile found in orderData, skipping customer processing');
             }
 
-            // Gọi API Nhanh.vn
             const formData = new FormData();
             formData.append('version', '2.0');
             formData.append('appId', '75230');
@@ -93,7 +130,50 @@ export async function POST(request) {
                 return NextResponse.json({ error: 'Order not found' }, { status: 404 });
             }
 
-            // Bước 2: Ghi đè dữ liệu từ API Nhanh.vn
+            const deal = {
+                contact_id: contactId || '',
+                username: orderData.customerName || 'Unknown',
+                subject: `Đơn hàng của ${orderData.customerName || 'Unknown'}`,
+                phone: orderData.customerMobile || '',
+                email: orderData.customerEmail || '',
+                service_id: '',
+                group_id: '',
+                assignee_id: '164796592',
+                pipeline_id: '24',
+                pipeline_stage_id: '174',
+                estimated_closed_date: orderData.createdDateTime ? new Date(orderData.createdDateTime).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+                deal_label: [],
+                custom_fields: [],
+                probability: 0,
+                value: orderData.calcTotalMoney || 0,
+                comment: '',
+                'comment.body': '',
+                'comment.is_public': 1,
+                'comment.author_id': '',
+                order_address_detail: orderData.customerAddress || '',
+                order_buyer_note: orderData.description || '',
+                order_city_id: orderData.shipToCityLocationId || 254,
+                order_district_id: orderData.shipToDistrictLocationId || 318,
+                order_ward_id: orderData.shipToWardLocationId || 1051,
+                order_receiver_name: orderData.customerName || 'Unknown',
+                order_receiver_phone: orderData.customerMobile || '',
+                order_shipping_fee: orderData.customerShipFee || 0,
+                order_status: mapOrderStatus(orderData.status || '', config),
+                order_tracking_code: '',
+                order_tracking_url: orderData.trackingUrl || '',
+                order_products: [],
+            };
+
+            for (const [dealField, value] of Object.entries(config.mapping)) {
+                if (!dealField.startsWith('order_products.') && !dealField.startsWith('order_status.')) {
+                    if (config.inputTypes[dealField] === 'custom') {
+                        deal[dealField] = replacePlaceholders(value, { ...orderData, orderId });
+                    } else {
+                        deal[dealField] = orderData[value] !== undefined ? orderData[value] : deal[dealField];
+                    }
+                }
+            }
+
             deal.username = fullOrderData.customerName || deal.username;
             deal.subject = `Đơn hàng của ${fullOrderData.customerName || deal.username}`;
             deal.phone = fullOrderData.customerMobile || deal.phone;
@@ -108,9 +188,7 @@ export async function POST(request) {
             deal.order_receiver_phone = fullOrderData.customerMobile || deal.order_receiver_phone;
             deal.order_shipping_fee = fullOrderData.customerShipFee || deal.order_shipping_fee;
             deal.order_status = mapOrderStatus(fullOrderData.statusCode || '', config) || deal.order_status;
-            // Không ghi đè trackingUrl vì API Nhanh.vn không có trường này
 
-            // Ánh xạ từ config với dữ liệu API Nhanh.vn
             for (const [dealField, value] of Object.entries(config.mapping)) {
                 if (!dealField.startsWith('order_products.') && !dealField.startsWith('order_status.')) {
                     if (config.inputTypes[dealField] === 'custom') {
@@ -160,7 +238,6 @@ export async function POST(request) {
             });
             deal.custom_fields = customFieldsMapping;
 
-            // Xóa các trường dư thừa
             delete deal['custom_fields.id_0'];
             delete deal['custom_fields.value_0'];
             delete deal['custom_fields.id_1'];
@@ -199,7 +276,6 @@ export async function POST(request) {
             return NextResponse.json({ message: 'OrderUpdate webhook received, deal created' }, { status: 200 });
         }
 
-        // Logic cập nhật deal nếu dealId đã tồn tại
         const dealUpdate = {};
         const nhanhStatus = orderData.status || '';
         if (nhanhStatus) {

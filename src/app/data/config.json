@@ -37,7 +37,7 @@
     "order_status.SHIPPING": "Shipping",
     "order_status.RETURNED": "Returning",
     "order_status.CANCELED": "Canceled",
-    "order_status.RECEIVED": "Success",
+    "order_status.RECEIVED": "Pickup",
     "order_status.COMPLETED": "Success"
   },
   "inputTypes": {
