@@ -1,0 +1,19 @@
+export const nhanhStatus = [
+    'New',
+    'Confirming',
+    'CustomerConfirming',
+    'Confirmed',
+    'Packing',
+    'Packed',
+    'ChangeDepot',
+    'Pickup',
+    'Shipping',
+    'Success',
+    'Failed',
+    'Canceled',
+    'Aborted',
+    'CarrierCanceled',
+    'SoldOut',
+    'Returning',
+    'Returned'
+]

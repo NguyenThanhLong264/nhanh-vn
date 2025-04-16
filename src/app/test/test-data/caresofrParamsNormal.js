@@ -6,8 +6,6 @@ export const dealFields = [
     { name: 'service_id', type: 'int' },
     { name: 'group_id', type: 'int' },
     { name: 'assignee_id', type: 'int' },
-    { name: 'pipeline_id', type: 'int' },
-    { name: 'pipeline_stage_id', type: 'int' },
     { name: 'estimated_closed_date', type: 'DateTime' },
     { name: 'probability', type: 'int' },
     { name: 'value', type: 'int' },
@@ -23,19 +21,6 @@ export const dealFields = [
     { name: 'order_receiver_name', type: 'string' },
     { name: 'order_receiver_phone', type: 'string' },
     { name: 'order_shipping_fee', type: 'float' },
-    { name: 'order_status', type: 'string' },
     { name: 'order_tracking_code', type: 'string' },
     { name: 'order_tracking_url', type: 'link' },
-    {
-        name: 'order_products',
-        type: 'array',
-        subFields: [
-            { name: 'sku', type: 'string' },
-            { name: 'is_free', type: 'int' },
-            { name: 'unit_price', type: 'float' },
-            { name: 'quantity', type: 'int' },
-            { name: 'discount_markup', type: 'float' },
-            { name: 'discount_value', type: 'float' },
-        ],
-    },
 ];
