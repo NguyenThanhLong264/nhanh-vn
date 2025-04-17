@@ -1,11 +1,23 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { Box, Typography, Switch, FormGroup, FormControlLabel, Container, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper } from '@mui/material'
 import DropdownInputFields from '../new-comp/dropdownInputFields'
-import { nhanhParams } from "../test-data/nhanhParams"
 import InputField from '../new-comp/inputField'
+import { nhanhParams } from "../test-data/nhanhParams"
 
-const NormarTable = ({ data }) => {
+const NormarTable = ({ data, setData }) => {
+    const handleChange = (index, field, value) => {
+        const updated = [...data];
+        updated[index] = { ...updated[index], [field]: String(value) };
+        setData(updated);
+    }
+    const handleValueChange = useCallback((index) => (value) => {
+        handleChange(index, 'inputValue', value);
+    }, [data]);
+
+    const handleInputTypeChange = useCallback((index) => (value) => {
+        handleChange(index, 'inputType', value);
+    }, [data]);
     return (
         <>
             <Typography variant="h3" color="initial">Bảng Tính Năng Thường</Typography>
@@ -23,8 +35,12 @@ const NormarTable = ({ data }) => {
                     </TableHead>
                     <TableBody>
                         {data.map((row, index) => (
-                            <MappingRow key={index} row={row}
+                            <MappingRow
+                                key={index}
+                                row={row}
                                 nhanhParams={nhanhParams}
+                                onValueChange={handleValueChange(index)}
+                                onInputTypeChange={handleInputTypeChange(index)}
                             />
                         ))}
                     </TableBody>
@@ -36,14 +52,16 @@ const NormarTable = ({ data }) => {
 
 export default NormarTable
 
-const MappingRow = ({ row, nhanhParams }) => {
+const MappingRow = React.memo(({ row, nhanhParams, onValueChange, onInputTypeChange }) => {
     const [checked, setChecked] = useState(false);
-    const [label, setLabel] = useState("Nhanh.vn");
+    const [label, setLabel] = useState(!checked ? "Nhanh.vn" : "Tùy chỉnh");
 
     const handleChange = (event) => {
-        const newChecked = event.target.checked;
-        setChecked(newChecked);
-        setLabel(newChecked ? "Tùy chỉnh" : "Nhanh.vn");
+        const isCustom = event.target.checked;
+        setChecked(isCustom);
+        const newType = isCustom ? "tuy chinh" : "nhanh";
+        setLabel(isCustom ? "Tùy chỉnh" : "Nhanh.vn");
+        onInputTypeChange(newType);
     };
 
     return (
@@ -59,8 +77,9 @@ const MappingRow = ({ row, nhanhParams }) => {
                 </FormGroup>
             </TableCell>
             <TableCell sx={{ display: "flex", justifyContent: "center" }}>
-                {checked ? <InputField /> : <DropdownInputFields options={nhanhParams} />}
+                {checked ? <InputField value={row.inputValue || ""} onChange={(val) => onValueChange(val)} />
+                    : <DropdownInputFields options={nhanhParams} value={row.inputValue || ""} onChange={(val) => onValueChange(val)} />}
             </TableCell>
         </TableRow>
     );
-};
+});

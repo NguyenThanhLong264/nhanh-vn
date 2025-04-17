@@ -2,14 +2,16 @@
 import React from 'react'
 import { Autocomplete, TextField } from '@mui/material'
 
-const DropdownInputFields = React.memo(({ options }) => {
+const DropdownInputFields = React.memo(({ options, value, onChange }) => {
     return (
         <>
             <Autocomplete
                 disablePortal
                 options={options}
+                value={value}
+                onChange={(event, newValue) => onChange(newValue)}
                 sx={{
-                    width: 343,
+                    width: "100%",
                     "& .MuiOutlinedInput-root": {
                         borderRadius: "12px", // ✅ Rounded border
                         p: "12px 8px 12px 16px",
@@ -44,6 +46,12 @@ const DropdownInputFields = React.memo(({ options }) => {
                         top: "50%",
                         transform: "translateY(-50%)",
                         left: "16px",
+                    },
+                    "& .MuiInputBase-input": {
+                        p: 0,
+                    },
+                    "& .MuiAutocomplete-input": {
+                        p: "0 !important", // ✅ also remove from Autocomplete-specific
                     },
                 }}
                 renderInput={(params) => <TextField {...params}

@@ -1,17 +1,18 @@
 import React from 'react'
 import TextField from '@mui/material/TextField'
 
-const InputField = React.memo(({ inputValue }) => {
+const InputField = React.memo(({ value, onChange }) => {
     return (
         <>
             <TextField
                 id="outlined-basic"
                 hiddenLabel
-                value={inputValue}
                 variant="outlined"
                 placeholder='Giá trị tùy chỉnh'
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
                 sx={{
-                    width: 343,
+                    width: "100%",
                     "& .MuiOutlinedInput-root": {
                         borderRadius: "12px", // ✅ Rounded border
                         p: "12px 8px 12px 16px",
@@ -33,7 +34,10 @@ const InputField = React.memo(({ inputValue }) => {
                             borderColor: "#3D55CC", // darker teal (focus color)
                             borderWidth: "2px",
                         },
-                    }
+                    },
+                    "& .MuiInputBase-input": {
+                        p: 0
+                    },
                 }}
             />
         </>
