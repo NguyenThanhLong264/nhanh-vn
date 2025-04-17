@@ -1,4 +1,5 @@
 import MappingRow from './MappingRow';
+import { Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 
 export default function ConfigTable({ dealFields, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange, onDeleteCustomField, onAddPipelineStageMapping, onDeletePipelineStageMapping }) {
     const regularFields = dealFields.filter(field =>
@@ -53,16 +54,16 @@ export default function ConfigTable({ dealFields, webhookFields, mapping, inputT
     return (
         <>
             <h2>Regular Fields</h2>
-            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
-                <thead>
-                    <tr>
-                        <th>Tên params</th>
-                        <th>Loại thông tin</th>
-                        <th>Loại input</th>
-                        <th>Webhook Data / Custom Value</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <Table sx={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>Tên params</TableCell>
+                        <TableCell>Loại thông tin</TableCell>
+                        <TableCell>Loại input</TableCell>
+                        <TableCell>Webhook Data / Custom Value</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
                     {regularFields.map((field) => (
                         <MappingRow
                             key={field.name}
@@ -74,20 +75,20 @@ export default function ConfigTable({ dealFields, webhookFields, mapping, inputT
                             onMappingChange={onMappingChange}
                         />
                     ))}
-                </tbody>
-            </table>
+                </TableBody>
+            </Table>
 
             <h2>Order Products</h2>
-            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
-                <thead>
-                    <tr>
-                        <th>Tên params</th>
-                        <th>Loại thông tin</th>
-                        <th>Loại input</th>
-                        <th>Webhook Data / Custom Value</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <Table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>Tên params</TableCell>
+                        <TableCell>Loại thông tin</TableCell>
+                        <TableCell>Loại input</TableCell>
+                        <TableCell>Webhook Data / Custom Value</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
                     <MappingRow
                         key={orderProductsField.name}
                         field={orderProductsField}
@@ -97,21 +98,20 @@ export default function ConfigTable({ dealFields, webhookFields, mapping, inputT
                         onInputTypeChange={onInputTypeChange}
                         onMappingChange={onMappingChange}
                     />
-                </tbody>
-            </table>
+                </TableBody>
+            </Table>
 
             <h2>Special Fields</h2>
-            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
-                <thead>
-                    <tr>
-                        <th>Tên params</th>
-                        <th>Loại thông tin</th>
-                        <th>Loại input</th>
-                        <th>Webhook Data / Custom Value</th>
-                        <th>Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <Table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>Tên params</TableCell>
+                        <TableCell>Loại thông tin</TableCell>
+                        <TableCell>Loại input</TableCell>
+                        <TableCell>Webhook Data / Custom Value</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
                     {specialFields.map((field) => (
                         <MappingRow
                             key={field.name}
@@ -125,21 +125,20 @@ export default function ConfigTable({ dealFields, webhookFields, mapping, inputT
                             onDeletePipelineStageMapping={field.name === 'pipeline_stage_id' ? onDeletePipelineStageMapping : null}
                         />
                     ))}
-                </tbody>
-            </table>
+                </TableBody>
+            </Table>
 
             <h2>Custom Fields</h2>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead>
-                    <tr>
-                        <th>Tên params</th>
-                        <th>Loại thông tin</th>
-                        <th>Loại input</th>
-                        <th>Webhook Data / Custom Value</th>
-                        <th>Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <Table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>Tên params</TableCell>
+                        <TableCell>Loại thông tin</TableCell>
+                        <TableCell>Webhook Data / Custom Value</TableCell>
+                        <TableCell>Hành động</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
                     {customFields.length > 0 ? (
                         customFields.map((field) => (
                             <MappingRow
@@ -154,12 +153,12 @@ export default function ConfigTable({ dealFields, webhookFields, mapping, inputT
                             />
                         ))
                     ) : (
-                        <tr>
+                        <TableRow>
                             <td colSpan="5">Chưa có custom fields nào được cấu hình.</td>
-                        </tr>
+                        </TableRow>
                     )}
-                </tbody>
-            </table>
+                </TableBody>
+            </Table>
         </>
     );
 }

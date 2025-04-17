@@ -74,7 +74,18 @@ export default function ConfigPage() {
 
     const handleMappingChange = (field, value) => {
         console.log(`Updating field: ${field} with value: ${value}`);
-        setMapping((prev) => ({ ...prev, [field]: value }));
+
+        // If it's a pipeline_stage_id field and the value is undefined, delete it
+        if (field.startsWith('pipeline_stage_id.') && value === undefined) {
+            setMapping((prev) => {
+                const updated = { ...prev };
+                delete updated[field]; // Remove the specific field
+                return updated;
+            });
+        } else {
+            // Default behavior for other fields
+            setMapping((prev) => ({ ...prev, [field]: value }));
+        }
     };
 
     const handleSubmit = async () => {
@@ -225,33 +236,37 @@ export default function ConfigPage() {
     };
 
     const handleAddPipelineStageMapping = () => {
-        const existingIndices = Object.keys(mapping)
-            .filter(key => key.match(/^pipeline_stage_id\.(.+)$/))
+        const existingKeys = Object.keys(mapping)
+            .filter(key => key.startsWith('pipeline_stage_id.'));
+        console.log(`Existing pipeline stage keys pipe: ${existingKeys}`);
+
+        const newKeyBase = 'pipeline_stage_id.New';
+
+        // Find the highest number after "New", e.g. New1, New2, etc.
+        const newIndices = existingKeys
             .map(key => {
-                const match = key.match(/^pipeline_stage_id\.(\d+)$/);
-                return match ? parseInt(match[1]) : 0;
-            });
-
-        const maxIndex = existingIndices.length > 0 ? Math.max(...existingIndices) : -1;
-        const nextIndex = maxIndex + 1;
-
-        setMapping((prev) => ({
+                const match = key.match(/^pipeline_stage_id\.New(\d*)$/);
+                return match ? parseInt(match[1] || '0', 10) : null;
+            })
+            .filter(index => index !== null);
+        const nextIndex = newIndices.length > 0 ? Math.max(...newIndices) + 1 : 1;
+        const newKey = `${newKeyBase}${nextIndex}`;
+        setMapping(prev => ({
             ...prev,
-            [`pipeline_stage_id.New`]: ''
+            [newKey]: ''
         }));
-        setInputTypes((prev) => ({
+        setInputTypes(prev => ({
             ...prev,
-            [`pipeline_stage_id.New`]: 'map'
+            [newKey]: 'map'
         }));
-        setPipelineStageCount(nextIndex + 1);
-        console.log(`Added new pipeline stage mapping: pipeline_stage_id.New`);
+        setPipelineStageCount(prev => prev + 1);
+        console.log(`Added new pipeline stage mapping: ${newKey}`);
     };
 
     const handleDeletePipelineStageMapping = (status) => {
         setMapping((prev) => {
             const newMapping = { ...prev };
             delete newMapping[`pipeline_stage_id.${status}`];
-
             return newMapping;
         });
 

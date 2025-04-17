@@ -47,9 +47,6 @@ const DropdownInputFields = React.memo(({ options, value, onChange }) => {
                         transform: "translateY(-50%)",
                         left: "16px",
                     },
-                    "& .MuiInputBase-input": {
-                        p: 0,
-                    },
                     "& .MuiAutocomplete-input": {
                         p: "0 !important", // ✅ also remove from Autocomplete-specific
                     },

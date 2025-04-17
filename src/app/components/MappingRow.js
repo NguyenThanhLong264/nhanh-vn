@@ -1,3 +1,5 @@
+import React from 'react';
+import { TableRow, TableCell, Table, TableBody, TableHead } from '@mui/material';
 export default function MappingRow({ field, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange, onDeleteCustomField, onAddPipelineStageMapping, onDeletePipelineStageMapping }) {
     const isCustom = inputTypes[field.name] === 'custom';
     const productFields = webhookFields && Array.isArray(webhookFields)
@@ -39,22 +41,22 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
 
     if (field.name === 'order_status') {
         return (
-            <tr>
-                <td>{field.name}</td>
-                <td>{field.type}</td>
-                <td colSpan={2}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', margin: '10px 0' }}>
-                        <thead>
-                            <tr>
-                                <th>Trạng thái Web 2</th>
-                                <th>Trạng thái Nhanh.vn</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+            <TableRow>
+                <TableCell>{field.name}</TableCell>
+                <TableCell>{field.type}</TableCell>
+                <TableCell colSpan={3}>
+                    <Table style={{ width: '100%', borderCollapse: 'collapse', margin: '10px 0' }}>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Trạng thái Web 2</TableCell>
+                                <TableCell>Trạng thái Nhanh.vn</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
                             {orderStatusOptions.map((status) => (
-                                <tr key={status}>
-                                    <td>{status}</td>
-                                    <td>
+                                <TableRow key={status}>
+                                    <TableCell>{status}</TableCell>
+                                    <TableCell>
                                         <select
                                             value={mapping[`order_status.${status}`] || ''}
                                             onChange={(e) => onMappingChange(`order_status.${status}`, e.target.value)}
@@ -67,13 +69,13 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
                                                 </option>
                                             ))}
                                         </select>
-                                    </td>
-                                </tr>
+                                    </TableCell>
+                                </TableRow>
                             ))}
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
+                        </TableBody>
+                    </Table>
+                </TableCell>
+            </TableRow>
         );
     }
 
@@ -86,30 +88,42 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
             }));
 
         return (
-            <tr>
-                <td>{field.name}</td>
-                <td>{field.type}</td>
-                <td colSpan={2}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', margin: '10px 0' }}>
-                        <thead>
-                            <tr>
-                                <th>Trạng thái Nhanh.vn</th>
-                                <th>ID</th>
-                                <th>Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+            <TableRow>
+                <TableCell>{field.name}</TableCell>
+                <TableCell>{field.type}</TableCell>
+                <TableCell colSpan={3}>
+                    <Table style={{ width: '100%', borderCollapse: 'collapse', margin: '10px 0' }}>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>ID</TableCell>
+                                <TableCell>Trạng thái Nhanh.vn</TableCell>
+                                <TableCell>Hành động</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
                             {pipelineStageMappings.map(({ status, id }) => (
-                                <tr key={status}>
-                                    <td>
+                                <TableRow key={status}>
+                                    <TableCell>
+                                        <input
+                                            type="text"
+                                            value={id || ''}
+                                            onChange={(e) => onMappingChange(`pipeline_stage_id.${status}`, e.target.value)}
+                                            placeholder="Nhập ID"
+                                            style={{ width: '100%' }}
+                                        />
+                                    </TableCell>
+                                    <TableCell>
                                         <select
                                             value={status}
                                             onChange={(e) => {
                                                 const newStatus = e.target.value;
+                                                console.log("Changing pipe from", status, "to", newStatus, "with ID", id);
+
                                                 if (newStatus) {
                                                     onMappingChange(`pipeline_stage_id.${newStatus}`, id);
                                                     onMappingChange(`pipeline_stage_id.${status}`, undefined);
                                                 }
+                                                console.log(`Selected status: ${newStatus}`);
                                             }}
                                             style={{ width: '100%' }}
                                         >
@@ -120,46 +134,35 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
                                                 </option>
                                             ))}
                                         </select>
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            value={id || ''}
-                                            onChange={(e) => onMappingChange(`pipeline_stage_id.${status}`, e.target.value)}
-                                            placeholder="Nhập ID"
-                                            style={{ width: '100%' }}
-                                        />
-                                    </td>
-                                    <td>
+                                    </TableCell>
+                                    <TableCell>
                                         <button onClick={() => onDeletePipelineStageMapping(status)}>Xóa</button>
-                                    </td>
-                                </tr>
+                                    </TableCell>
+                                </TableRow>
                             ))}
-                        </tbody>
-                    </table>
+                        </TableBody>
+                    </Table>
                     <button onClick={onAddPipelineStageMapping}>Thêm ánh xạ</button>
-                </td>
-                <td></td>
-            </tr>
+                </TableCell>
+                <TableCell></TableCell>
+            </TableRow>
         );
     }
 
     if (field.type === 'array' && field.subFields) {
         return (
-            <tr>
-                <td>{field.name}</td>
-                <td>{field.type}</td>
-                <td colSpan={onDeleteCustomField ? 2 : 3}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', margin: '10px 0' }}>
-                        <thead>
-                            <tr>
-                                <th>Tên trường</th>
-                                <th>Loại thông tin</th>
-                                <th>Loại input</th>
-                                <th>Webhook Data / Custom Value</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+            <TableRow>
+                <TableCell>{field.name}</TableCell>
+                <TableCell>{field.type}</TableCell>
+                <TableCell colSpan={onDeleteCustomField ? 2 : 3}>
+                    <Table style={{ width: '100%', borderCollapse: 'collapse', margin: '10px 0' }}>
+                        {/* <TableRow>
+                           <TableCell>Tên trường</TableCell>
+                            <TableCell>Loại thông tin</TableCell> 
+                            <TableCell>Loại input</TableCell>
+                            <TableCell>Webhook Data / Custom Value</TableCell>
+                        </TableRow> */}
+                        <TableBody>
                             {field.subFields.map((subField) => {
                                 const subFieldKey = field.name.startsWith('order_products')
                                     ? `${field.name}.${subField.name}`
@@ -167,20 +170,10 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
                                 const isSubCustom = inputTypes[subFieldKey] === 'custom';
                                 console.log(`Field: ${subFieldKey}, Value: ${mapping[subFieldKey]}`);
                                 return (
-                                    <tr key={subFieldKey}>
-                                        <td>{subField.name}</td>
-                                        <td>{subField.type}</td>
-                                        <td>
-                                            <label>
-                                                <input
-                                                    type="checkbox"
-                                                    checked={isSubCustom}
-                                                    onChange={() => onInputTypeChange(subFieldKey)}
-                                                />
-                                                {isSubCustom ? 'Custom' : 'Map with Nhanh'}
-                                            </label>
-                                        </td>
-                                        <td>
+                                    <TableRow key={subFieldKey}>
+                                        {/* <TableCell>{subField.name}</TableCell>
+                                        <TableCell>{subField.type}</TableCell> */}
+                                        <TableCell>
                                             {isSubCustom ? (
                                                 <input
                                                     type="text"
@@ -205,27 +198,27 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
                                                         ))}
                                                 </select>
                                             )}
-                                        </td>
-                                    </tr>
+                                        </TableCell>
+                                    </TableRow>
                                 );
                             })}
-                        </tbody>
-                    </table>
-                </td>
+                        </TableBody>
+                    </Table>
+                </TableCell>
                 {onDeleteCustomField && (
-                    <td>
+                    <TableCell>
                         <button onClick={onDeleteCustomField}>Xóa</button>
-                    </td>
+                    </TableCell>
                 )}
-            </tr>
+            </TableRow>
         );
     }
 
     return (
-        <tr>
-            <td>{field.name}</td>
-            <td>{field.type}</td>
-            <td>
+        <TableRow>
+            <TableCell>{field.name}</TableCell>
+            <TableCell>{field.type}</TableCell>
+            <TableCell>
                 <label>
                     <input
                         type="checkbox"
@@ -234,8 +227,8 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
                     />
                     {isCustom ? 'Custom' : 'Map with Nhanh'}
                 </label>
-            </td>
-            <td>
+            </TableCell>
+            <TableCell>
                 {isCustom ? (
                     <input
                         type="text"
@@ -260,7 +253,7 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
                             ))}
                     </select>
                 )}
-            </td>
-        </tr>
+            </TableCell>
+        </TableRow>
     );
 }

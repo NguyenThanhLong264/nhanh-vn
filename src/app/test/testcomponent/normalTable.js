@@ -28,9 +28,9 @@ const NormarTable = ({ data, setData }) => {
                     <TableHead>
                         <TableRow>
                             <TableCell>Params</TableCell>
-                            <TableCell align='center'>Loại thông tin</TableCell>
-                            <TableCell align='center'>Cách nhập</TableCell>
-                            <TableCell align='center'>Giá trị</TableCell>
+                            <TableCell align='center' sx={{ width: "200px" }}>Loại thông tin</TableCell>
+                            <TableCell align='center' sx={{ width: "180px" }}>Cách nhập</TableCell>
+                            <TableCell align='center' sx={{ width: "380px" }}>Giá trị</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
