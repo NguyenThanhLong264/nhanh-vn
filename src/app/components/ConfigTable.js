@@ -48,9 +48,6 @@ export default function ConfigTable({ dealFields, webhookFields, mapping, inputT
             });
         }
     });
-
-    console.log('Custom Fields:', customFields);
-
     return (
         <>
             <h2>Regular Fields</h2>

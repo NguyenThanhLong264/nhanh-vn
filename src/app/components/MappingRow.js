@@ -1,7 +1,18 @@
 import React from 'react';
 import { TableRow, TableCell, Table, TableBody, TableHead } from '@mui/material';
+import { useEffect, useRef } from 'react';
+
 export default function MappingRow({ field, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange, onDeleteCustomField, onAddPipelineStageMapping, onDeletePipelineStageMapping }) {
     const isCustom = inputTypes[field.name] === 'custom';
+    // const wasCustom = useRef(isCustom);
+
+    // useEffect(() => {
+    //     if (isCustom && !wasCustom.current) {
+    //         onMappingChange(field.name, '');
+    //     }
+    //     wasCustom.current = isCustom;
+    // }, [isCustom]);
+
     const productFields = webhookFields && Array.isArray(webhookFields)
         ? (webhookFields.find((f) => f.name === 'products' && f.type === 'array')?.subFields || [])
         : [];
@@ -117,13 +128,11 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
                                             value={status}
                                             onChange={(e) => {
                                                 const newStatus = e.target.value;
-                                                console.log("Changing pipe from", status, "to", newStatus, "with ID", id);
 
                                                 if (newStatus) {
                                                     onMappingChange(`pipeline_stage_id.${newStatus}`, id);
                                                     onMappingChange(`pipeline_stage_id.${status}`, undefined);
                                                 }
-                                                console.log(`Selected status: ${newStatus}`);
                                             }}
                                             style={{ width: '100%' }}
                                         >
@@ -168,7 +177,6 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
                                     ? `${field.name}.${subField.name}`
                                     : `custom_fields.${subField.name}`;
                                 const isSubCustom = inputTypes[subFieldKey] === 'custom';
-                                console.log(`Field: ${subFieldKey}, Value: ${mapping[subFieldKey]}`);
                                 return (
                                     <TableRow key={subFieldKey}>
                                         {/* <TableCell>{subField.name}</TableCell>
@@ -223,9 +231,11 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
                     <input
                         type="checkbox"
                         checked={isCustom}
-                        onChange={() => onInputTypeChange(field.name)}
+                        onChange={() => {
+                            onInputTypeChange(field.name)
+                        }}
                     />
-                    {isCustom ? 'Custom' : 'Map with Nhanh'}
+                    {isCustom ? 'Tùy chỉnh' : 'Nhanh.vn'}
                 </label>
             </TableCell>
             <TableCell>
@@ -233,14 +243,20 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
                     <input
                         type="text"
                         value={mapping[field.name] || ''}
-                        onChange={(e) => onMappingChange(field.name, e.target.value)}
+                        onChange={(e) => {
+                            onMappingChange(field.name, e.target.value)
+
+                        }}
                         placeholder="Nhập giá trị tùy chỉnh"
                         style={{ width: '100%' }}
                     />
                 ) : (
                     <select
                         value={mapping[field.name] || ''}
-                        onChange={(e) => onMappingChange(field.name, e.target.value)}
+                        onChange={(e) => {
+                            onMappingChange(field.name, e.target.value)
+
+                        }}
                         style={{ width: '100%' }}
                     >
                         <option value="">Chọn param từ webhook</option>

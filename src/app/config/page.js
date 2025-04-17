@@ -59,21 +59,37 @@ export default function ConfigPage() {
     }, []);
 
     const handleInputTypeChange = (field) => {
-        setInputTypes((prev) => ({
-            ...prev,
-            [field]: prev[field] === 'custom' ? 'map' : 'custom',
-        }));
+        console.log(`Toggling input type for field: ${field}`);
+        console.log('Current inputTypes:', inputTypes);
+
+        // Toggle the input type (custom <-> map)
+        const newInputType = inputTypes[field] === 'custom' ? 'map' : 'custom';
+        console.log(`New input type for field ${field}: ${newInputType}`);
+
+        setInputTypes((prev) => {
+            console.log('Setting new inputTypes state...');
+            const updatedInputTypes = { ...prev, [field]: newInputType };
+            console.log('Updated inputTypes:', updatedInputTypes);
+            return updatedInputTypes;
+        });
+
         setMapping((prev) => {
+            console.log('Setting new mapping state...');
             const newMapping = { ...prev };
-            if (newMapping[field] && inputTypes[field] === 'custom') {
+
+            // If it's currently custom and we are switching to map, delete the field from mapping
+            if (newMapping[field]) {
+                console.log(`Deleting field ${field} from mapping because it's switching from custom to map.`);
                 delete newMapping[field];
             }
+
+            console.log('Updated mapping:', newMapping);
             return newMapping;
         });
     };
 
+
     const handleMappingChange = (field, value) => {
-        console.log(`Updating field: ${field} with value: ${value}`);
 
         // If it's a pipeline_stage_id field and the value is undefined, delete it
         if (field.startsWith('pipeline_stage_id.') && value === undefined) {
@@ -155,7 +171,6 @@ export default function ConfigPage() {
             [newValueKey]: 'custom',
         }));
         setCustomFieldCount(nextIndex + 1);
-        console.log(`Added new custom field: ${newIdKey}, ${newValueKey}`);
     };
 
     const handleDeleteCustomField = (index) => {
@@ -232,13 +247,11 @@ export default function ConfigPage() {
             .filter(key => key.match(/^custom_fields\.id_(\d+)$/)).length;
         setCustomFieldCount(remainingCount);
 
-        console.log(`Deleted custom field: ${idKey}, ${valueKey}`);
     };
 
     const handleAddPipelineStageMapping = () => {
         const existingKeys = Object.keys(mapping)
             .filter(key => key.startsWith('pipeline_stage_id.'));
-        console.log(`Existing pipeline stage keys pipe: ${existingKeys}`);
 
         const newKeyBase = 'pipeline_stage_id.New';
 
@@ -260,7 +273,6 @@ export default function ConfigPage() {
             [newKey]: 'map'
         }));
         setPipelineStageCount(prev => prev + 1);
-        console.log(`Added new pipeline stage mapping: ${newKey}`);
     };
 
     const handleDeletePipelineStageMapping = (status) => {
@@ -281,7 +293,6 @@ export default function ConfigPage() {
             .filter(key => key.match(/^pipeline_stage_id\.(.+)$/)).length;
         setPipelineStageCount(remainingCount);
 
-        console.log(`Deleted pipeline stage mapping: pipeline_stage_id.${status}`);
     };
 
     return (
