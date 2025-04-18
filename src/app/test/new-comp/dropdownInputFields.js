@@ -2,7 +2,7 @@
 import React from 'react'
 import { Autocomplete, TextField } from '@mui/material'
 
-const DropdownInputFields = React.memo(({ options, value, onChange }) => {
+const DropdownInputFields = ({ options, value, onChange }) => {
     return (
         <>
             <Autocomplete
@@ -59,6 +59,6 @@ const DropdownInputFields = React.memo(({ options, value, onChange }) => {
             />
         </>
     )
-})
+}
 
 export default DropdownInputFields

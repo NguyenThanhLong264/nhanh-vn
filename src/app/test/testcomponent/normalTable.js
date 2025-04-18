@@ -6,18 +6,20 @@ import InputField from '../new-comp/inputField'
 import { nhanhParams } from "../test-data/nhanhParams"
 
 const NormarTable = ({ data, setData }) => {
-    const handleChange = (index, field, value) => {
+    const handleChange = useCallback((index, field, value) => {
         const updated = [...data];
         updated[index] = { ...updated[index], [field]: String(value) };
         setData(updated);
-    }
+    }, [data, setData]);
+
     const handleValueChange = useCallback((index) => (value) => {
         handleChange(index, 'inputValue', value);
-    }, [data]);
+    }, [handleChange]);
 
     const handleInputTypeChange = useCallback((index) => (value) => {
         handleChange(index, 'inputType', value);
-    }, [data]);
+    }, [handleChange]);
+
     return (
         <>
             <Typography variant="h3" color="initial">Bảng Tính Năng Thường</Typography>
@@ -52,7 +54,7 @@ const NormarTable = ({ data, setData }) => {
 
 export default NormarTable
 
-const MappingRow = React.memo(({ row, nhanhParams, onValueChange, onInputTypeChange }) => {
+const MappingRow = ({ row, nhanhParams, onValueChange, onInputTypeChange }) => {
     const [checked, setChecked] = useState(false);
     const [label, setLabel] = useState(!checked ? "Nhanh.vn" : "Tùy chỉnh");
 
@@ -82,4 +84,4 @@ const MappingRow = React.memo(({ row, nhanhParams, onValueChange, onInputTypeCha
             </TableCell>
         </TableRow>
     );
-});
+};

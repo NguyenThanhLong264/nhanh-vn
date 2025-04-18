@@ -163,4 +163,6 @@ const ConfigTable = React.memo(({ dealFields, webhookFields, mapping, inputTypes
     );
 })
 
+ConfigTable.displayName = "ConfigTable";
+
 export default ConfigTable;

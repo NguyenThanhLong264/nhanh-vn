@@ -3,7 +3,7 @@ import { TableRow, TableCell, Table, TableBody, TableHead } from '@mui/material'
 import CustomizeSwitch from './Switch';
 import CustomTextField from './customTextField';
 
-const MappingRow = React.memo(({ field, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange, onDeleteCustomField, onAddPipelineStageMapping, onDeletePipelineStageMapping }) => {
+const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange, onDeleteCustomField, onAddPipelineStageMapping, onDeletePipelineStageMapping }) => {
     const isCustom = inputTypes[field.name] === 'custom';
 
     const productFields = webhookFields && Array.isArray(webhookFields)
@@ -276,9 +276,9 @@ const MappingRow = React.memo(({ field, webhookFields, mapping, inputTypes, onIn
         </TableRow>
     );
 }
-)
 
-export default React.memo(MappingRow);
+
+export default MappingRow;
 
 const OrderStatusTable = React.memo(({ field, orderStatusOptions, mapping, nhanhStatusOptions, onMappingChange }) => {
     return (

@@ -1,7 +1,7 @@
 import React from 'react'
 import TextField from '@mui/material/TextField'
 
-const CustomTextField = React.memo(({ value, onChange, placeholder = '' }) => {
+const CustomTextField = ({ value, onChange, placeholder = '' }) => {
     return (
         <>
             <TextField
@@ -42,6 +42,6 @@ const CustomTextField = React.memo(({ value, onChange, placeholder = '' }) => {
             />
         </>
     )
-})
+}
 
 export default CustomTextField

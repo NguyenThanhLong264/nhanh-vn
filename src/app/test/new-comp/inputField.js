@@ -1,7 +1,7 @@
 import React from 'react'
 import TextField from '@mui/material/TextField'
 
-const InputField = React.memo(({ value, onChange }) => {
+const InputField = ({ value, onChange }) => {
     return (
         <>
             <TextField
@@ -42,6 +42,6 @@ const InputField = React.memo(({ value, onChange }) => {
             />
         </>
     )
-})
+}
 
 export default InputField
