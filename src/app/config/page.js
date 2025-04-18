@@ -155,7 +155,7 @@ export default function ConfigPage() {
             .filter(key => key.match(/^custom_fields\.id_(\d+)$/))
             .map(key => parseInt(key.match(/^custom_fields\.id_(\d+)$/)[1]));
 
-        const maxIndex = existingIndices.length > 0 ? Math.max(...existingIndices) : -1;
+        const maxIndex = existingIndices.length > 0 ? Math.max(...existingIndices) : 0;
         const nextIndex = maxIndex + 1;
 
         const newIdKey = `custom_fields.id_${nextIndex}`;
