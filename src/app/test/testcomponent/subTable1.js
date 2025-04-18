@@ -1,7 +1,8 @@
 import React from 'react'
 import { Box, Typography, Switch, FormGroup, FormControlLabel, Container, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, IconButton } from '@mui/material'
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
-
+import DropdownInputFields from '../new-comp/dropdownInputFields'
+import InputField from '../new-comp/inputField'
 
 const SubTable1 = ({ subFields, onAddRow, index, rowStates, handleSubRowSwitchChange, nhanhProduct }) => {
     return (

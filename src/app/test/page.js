@@ -9,7 +9,7 @@ import SpecialTable from './testcomponent/specialTable'
 import CustomFieldsTable from './testcomponent/customFieldsTable'
 import { dealFields } from './test-data/caresofrParamsNormal'
 import { specialFields } from './test-data/caresoftParamsSpecial'
-const testingPage = () => {
+const TestingPage = () => {
     const [data1, setData1] = useState(dealFields)
     const [data2, setData2] = useState(specialFields)
     const [data3, setData3] = useState([])
@@ -42,4 +42,4 @@ const testingPage = () => {
     )
 }
 
-export default testingPage
+export default TestingPage
