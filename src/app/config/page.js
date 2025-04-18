@@ -8,8 +8,8 @@ import { Container } from '@mui/material';
 export default function ConfigPage() {
     const [mapping, setMapping] = useState({});
     const [inputTypes, setInputTypes] = useState({});
-    const [customFieldCount, setCustomFieldCount] = useState(0);
-    const [pipelineStageCount, setPipelineStageCount] = useState(0);
+    const [customFieldCount, setCustomFieldCount] = useState(1);
+    const [pipelineStageCount, setPipelineStageCount] = useState(1);
 
     useEffect(() => {
         const fetchConfig = async () => {

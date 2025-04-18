@@ -4,14 +4,6 @@ import { useEffect, useRef } from 'react';
 
 export default function MappingRow({ field, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange, onDeleteCustomField, onAddPipelineStageMapping, onDeletePipelineStageMapping }) {
     const isCustom = inputTypes[field.name] === 'custom';
-    // const wasCustom = useRef(isCustom);
-
-    // useEffect(() => {
-    //     if (isCustom && !wasCustom.current) {
-    //         onMappingChange(field.name, '');
-    //     }
-    //     wasCustom.current = isCustom;
-    // }, [isCustom]);
 
     const productFields = webhookFields && Array.isArray(webhookFields)
         ? (webhookFields.find((f) => f.name === 'products' && f.type === 'array')?.subFields || [])
@@ -56,7 +48,7 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
                 <TableCell>{field.name}</TableCell>
                 <TableCell>{field.type}</TableCell>
                 <TableCell colSpan={3}>
-                    <Table style={{ width: '100%', borderCollapse: 'collapse', margin: '10px 0' }}>
+                    <Table size='small' style={{ width: '100%', borderCollapse: 'collapse', margin: '10px 0' }}>
                         <TableHead>
                             <TableRow>
                                 <TableCell>Trạng thái Web 2</TableCell>
@@ -65,7 +57,7 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
                         </TableHead>
                         <TableBody>
                             {orderStatusOptions.map((status) => (
-                                <TableRow key={status}>
+                                <TableRow key={status} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                     <TableCell>{status}</TableCell>
                                     <TableCell>
                                         <select
@@ -103,7 +95,7 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
                 <TableCell>{field.name}</TableCell>
                 <TableCell>{field.type}</TableCell>
                 <TableCell colSpan={3}>
-                    <Table style={{ width: '100%', borderCollapse: 'collapse', margin: '10px 0' }}>
+                    <Table size='small' style={{ width: '100%', borderCollapse: 'collapse', margin: '10px 0' }}>
                         <TableHead>
                             <TableRow>
                                 <TableCell>ID</TableCell>
@@ -164,7 +156,7 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
                 <TableCell>{field.name}</TableCell>
                 <TableCell>{field.type}</TableCell>
                 <TableCell colSpan={onDeleteCustomField ? 2 : 3}>
-                    <Table style={{ width: '100%', borderCollapse: 'collapse', margin: '10px 0' }}>
+                    <Table size='small' style={{ width: '100%', borderCollapse: 'collapse', margin: '10px 0' }}>
                         {/* <TableRow>
                            <TableCell>Tên trường</TableCell>
                             <TableCell>Loại thông tin</TableCell> 
@@ -179,10 +171,31 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
                                 const isSubCustom = inputTypes[subFieldKey] === 'custom';
                                 return (
                                     <TableRow key={subFieldKey}>
-                                        {/* <TableCell>{subField.name}</TableCell>
-                                        <TableCell>{subField.type}</TableCell> */}
+                                        <TableCell>{subField.name}</TableCell>
+                                        {field.name.startsWith('order_products') && (
+                                            <TableCell>
+                                                <label>
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={isSubCustom}
+                                                        onChange={() => {
+                                                            onInputTypeChange(subFieldKey)
+                                                        }}
+                                                    />
+                                                    {isSubCustom ? 'Tùy chỉnh' : 'Nhanh.vn'}
+                                                </label>
+                                            </TableCell>
+                                        )}
                                         <TableCell>
                                             {isSubCustom ? (
+                                                <input
+                                                    type="text"
+                                                    value={mapping[subFieldKey] || ''}
+                                                    onChange={(e) => onMappingChange(subFieldKey, e.target.value)}
+                                                    placeholder="Nhập giá trị tùy chỉnh"
+                                                    style={{ width: '100%' }}
+                                                />
+                                            ) : isCustom ? (
                                                 <input
                                                     type="text"
                                                     value={mapping[subFieldKey] || ''}
@@ -200,7 +213,10 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
                                                     {(field.name === 'order_products' ? productFields : (webhookFields || []))
                                                         .filter((f) => typeof f === 'string' || !f.subFields)
                                                         .map((webhookField) => (
-                                                            <option key={webhookField.name || webhookField} value={webhookField.name || webhookField}>
+                                                            <option
+                                                                key={webhookField.name || webhookField}
+                                                                value={webhookField.name || webhookField}
+                                                            >
                                                                 {webhookField.name || webhookField}
                                                             </option>
                                                         ))}
@@ -213,17 +229,19 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
                         </TableBody>
                     </Table>
                 </TableCell>
-                {onDeleteCustomField && (
-                    <TableCell>
-                        <button onClick={onDeleteCustomField}>Xóa</button>
-                    </TableCell>
-                )}
-            </TableRow>
+                {
+                    onDeleteCustomField && (
+                        <TableCell>
+                            <button onClick={onDeleteCustomField}>Xóa</button>
+                        </TableCell>
+                    )
+                }
+            </TableRow >
         );
     }
 
     return (
-        <TableRow>
+        <TableRow >
             <TableCell>{field.name}</TableCell>
             <TableCell>{field.type}</TableCell>
             <TableCell>
