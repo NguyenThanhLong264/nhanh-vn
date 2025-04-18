@@ -76,7 +76,7 @@ export default function ConfigTable({ dealFields, webhookFields, mapping, inputT
             </Table>
 
             <h2>Order Products</h2>
-            <Table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
+            <Table size='small' style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
                 <TableHead>
                     <TableRow>
                         <TableCell>Tên params</TableCell>
@@ -100,7 +100,7 @@ export default function ConfigTable({ dealFields, webhookFields, mapping, inputT
             </Table>
 
             <h2>Special Fields</h2>
-            <Table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
+            <Table size='small' style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
                 <TableHead>
                     <TableRow>
                         <TableCell>Tên params</TableCell>
@@ -127,7 +127,7 @@ export default function ConfigTable({ dealFields, webhookFields, mapping, inputT
             </Table>
 
             <h2>Custom Fields</h2>
-            <Table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <Table size='small' style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <TableHead>
                     <TableRow>
                         <TableCell>Tên params</TableCell>

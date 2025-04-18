@@ -191,8 +191,8 @@ export default function ConfigPage() {
             remainingFields.forEach((oldIndex, newIndex) => {
                 const oldIdKey = `custom_fields.id_${oldIndex}`;
                 const oldValueKey = `custom_fields.value_${oldIndex}`;
-                const newIdKey = `custom_fields.id_${newIndex}`;
-                const newValueKey = `custom_fields.value_${newIndex}`;
+                const newIdKey = `custom_fields.id_${newIndex + 1}`;
+                const newValueKey = `custom_fields.value_${newIndex + 1}`;
                 if (newMapping[oldIdKey] !== undefined) {
                     reorderedMapping[newIdKey] = newMapping[oldIdKey];
                 }
