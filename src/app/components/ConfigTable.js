@@ -1,7 +1,8 @@
+import React from 'react';
 import MappingRow from './MappingRow';
 import { Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 
-export default function ConfigTable({ dealFields, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange, onDeleteCustomField, onAddPipelineStageMapping, onDeletePipelineStageMapping }) {
+const ConfigTable = React.memo(({ dealFields, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange, onDeleteCustomField, onAddPipelineStageMapping, onDeletePipelineStageMapping }) => {
     const regularFields = dealFields.filter(field =>
         field.name !== 'order_products' &&
         field.name !== 'custom_fields' &&
@@ -160,4 +161,6 @@ export default function ConfigTable({ dealFields, webhookFields, mapping, inputT
             </Table>
         </>
     );
-}
+})
+
+export default ConfigTable;

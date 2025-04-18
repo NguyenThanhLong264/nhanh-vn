@@ -2,8 +2,9 @@ import React from 'react';
 import { TableRow, TableCell, Table, TableBody, TableHead } from '@mui/material';
 import { useEffect, useRef } from 'react';
 import CustomizeSwitch from './Switch';
+import CustomTextField from './customTextField';
 
-export default function MappingRow({ field, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange, onDeleteCustomField, onAddPipelineStageMapping, onDeletePipelineStageMapping }) {
+const MappingRow = React.memo(({ field, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange, onDeleteCustomField, onAddPipelineStageMapping, onDeletePipelineStageMapping }) => {
     const isCustom = inputTypes[field.name] === 'custom';
 
     const productFields = webhookFields && Array.isArray(webhookFields)
@@ -203,12 +204,17 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
                                                     style={{ width: '100%' }}
                                                 />
                                             ) : isCustom ? (
-                                                <input
-                                                    type="text"
+                                                // <input
+                                                //     type="text"
+                                                //     value={mapping[subFieldKey] || ''}
+                                                //     onChange={(e) => onMappingChange(subFieldKey, e.target.value)}
+                                                //     placeholder="Nhập giá trị tùy chỉnh"
+                                                //     style={{ width: '100%' }}
+                                                // />
+                                                <CustomTextField
                                                     value={mapping[subFieldKey] || ''}
                                                     onChange={(e) => onMappingChange(subFieldKey, e.target.value)}
                                                     placeholder="Nhập giá trị tùy chỉnh"
-                                                    style={{ width: '100%' }}
                                                 />
                                             ) : (
                                                 <select
@@ -261,15 +267,20 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
             </TableCell>
             <TableCell>
                 {isCustom ? (
-                    <input
-                        type="text"
-                        value={mapping[field.name] || ''}
-                        onChange={(e) => {
-                            onMappingChange(field.name, e.target.value)
+                    // <input
+                    //     type="text"
+                    //     value={mapping[field.name] || ''}
+                    //     onChange={(e) => {
+                    //         onMappingChange(field.name, e.target.value)
 
-                        }}
+                    //     }}
+                    //     placeholder="Nhập giá trị tùy chỉnh"
+                    //     style={{ width: '100%' }}
+                    // />
+                    <CustomTextField
+                        value={mapping[field.name] || ""}
+                        onChange={(e) => { onMappingChange(field.name, e.target.value) }}
                         placeholder="Nhập giá trị tùy chỉnh"
-                        style={{ width: '100%' }}
                     />
                 ) : (
                     <select
@@ -294,3 +305,5 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
         </TableRow>
     );
 }
+)
+export default MappingRow;
