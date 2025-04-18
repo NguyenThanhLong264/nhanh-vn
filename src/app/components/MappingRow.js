@@ -1,6 +1,7 @@
 import React from 'react';
 import { TableRow, TableCell, Table, TableBody, TableHead } from '@mui/material';
 import { useEffect, useRef } from 'react';
+import CustomizeSwitch from './Switch';
 
 export default function MappingRow({ field, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange, onDeleteCustomField, onAddPipelineStageMapping, onDeletePipelineStageMapping }) {
     const isCustom = inputTypes[field.name] === 'custom';
@@ -243,18 +244,14 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
     return (
         <TableRow >
             <TableCell>{field.name}</TableCell>
-            <TableCell>{field.type}</TableCell>
+            <TableCell align='center'>{field.type}</TableCell>
             <TableCell>
-                <label>
-                    <input
-                        type="checkbox"
-                        checked={isCustom}
-                        onChange={() => {
-                            onInputTypeChange(field.name)
-                        }}
-                    />
-                    {isCustom ? 'Tùy chỉnh' : 'Nhanh.vn'}
-                </label>
+                <CustomizeSwitch
+                    checked={isCustom}
+                    onChange={() => {
+                        onInputTypeChange(field.name)
+                    }}
+                />
             </TableCell>
             <TableCell>
                 {isCustom ? (
