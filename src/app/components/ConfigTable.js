@@ -133,8 +133,8 @@ const ConfigTable = React.memo(({ dealFields, webhookFields, mapping, inputTypes
                     <TableRow>
                         <TableCell>Tên params</TableCell>
                         <TableCell>Loại thông tin</TableCell>
-                        <TableCell>Custom params</TableCell>
-                        <TableCell>Webhook Data / Custom Value</TableCell>
+                        <TableCell>Id</TableCell>
+                        <TableCell>Giá trị</TableCell>
                         <TableCell>Hành động</TableCell>
                     </TableRow>
                 </TableHead>

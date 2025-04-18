@@ -3,6 +3,9 @@ import { TableRow, TableCell, Table, TableBody, TableHead } from '@mui/material'
 import CustomizeSwitch from './Switch';
 import CustomTextField from './customTextField';
 import CustomSelection from './CustomSelection';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CustomizeIconButton from './CustomizeIconButton';
 
 const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange, onDeleteCustomField, onAddPipelineStageMapping, onDeletePipelineStageMapping }) => {
     const isCustom = inputTypes[field.name] === 'custom';
@@ -204,7 +207,10 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
                                 const isSubCustom = inputTypes[subFieldKey] === 'custom';
                                 return (
                                     <TableRow key={subFieldKey}>
-                                        <TableCell sx={{ width: '200px' }}>{subField.name}</TableCell>
+                                        {field.name.startsWith('order_products') ? 
+                                        (<TableCell sx={{ width: '200px' }}>{subField.name}</TableCell>) :
+                                        (<TableCell sx={{ width: '200px' }}>Hello</TableCell>)
+                                        }
                                         {field.name.startsWith('order_products') && (
                                             <TableCell align='center' sx={{ width: '170px' }}>
                                                 {/* <label>
@@ -227,49 +233,18 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
                                         )}
                                         <TableCell>
                                             {isSubCustom ? (
-                                                // <input
-                                                //     type="text"
-                                                //     value={mapping[subFieldKey] || ''}
-                                                //     onChange={(e) => onMappingChange(subFieldKey, e.target.value)}
-                                                //     placeholder="Nhập giá trị tùy chỉnh"
-                                                //     style={{ width: '100%' }}
-                                                // />
                                                 <CustomTextField
                                                     value={mapping[subFieldKey] || ''}
                                                     onChange={(e) => onMappingChange(subFieldKey, e.target.value)}
                                                     placeholder="Nhập giá trị tùy chỉnh"
                                                 />
                                             ) : isCustom ? (
-                                                // <input
-                                                //     type="text"
-                                                //     value={mapping[subFieldKey] || ''}
-                                                //     onChange={(e) => onMappingChange(subFieldKey, e.target.value)}
-                                                //     placeholder="Nhập giá trị tùy chỉnh"
-                                                //     style={{ width: '100%' }}
-                                                // />
                                                 <CustomTextField
                                                     value={mapping[subFieldKey] || ''}
                                                     onChange={(e) => onMappingChange(subFieldKey, e.target.value)}
                                                     placeholder="Nhập giá trị tùy chỉnh"
                                                 />
                                             ) : (
-                                                // <select
-                                                //     value={mapping[subFieldKey] || ''}
-                                                //     onChange={(e) => onMappingChange(subFieldKey, e.target.value)}
-                                                //     style={{ width: '100%' }}
-                                                // >
-                                                //     <option value="">Chọn param từ webhook</option>
-                                                //     {(field.name === 'order_products' ? productFields : (webhookFields || []))
-                                                //         .filter((f) => typeof f === 'string' || !f.subFields)
-                                                //         .map((webhookField) => (
-                                                //             <option
-                                                //                 key={webhookField.name || webhookField}
-                                                //                 value={webhookField.name || webhookField}
-                                                //             >
-                                                //                 {webhookField.name || webhookField}
-                                                //             </option>
-                                                //         ))}
-                                                // </select>
                                                 <CustomSelection
                                                     value={mapping[subFieldKey] || ''}
                                                     onChange={(event, newValue) => {
@@ -290,7 +265,10 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
                 {
                     onDeleteCustomField && (
                         <TableCell>
-                            <button onClick={onDeleteCustomField}>Xóa</button>
+                            <CustomizeIconButton
+                                icon={<DeleteIcon />}
+                                onClick={onDeleteCustomField}
+                            />
                         </TableCell>
                     )
                 }
