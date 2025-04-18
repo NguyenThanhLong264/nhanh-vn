@@ -175,18 +175,18 @@ const MappingRow = React.memo(({ field, webhookFields, mapping, inputTypes, onIn
                                                     style={{ width: '100%' }}
                                                 />
                                             ) : isCustom ? (
-                                                // <input
-                                                //     type="text"
-                                                //     value={mapping[subFieldKey] || ''}
-                                                //     onChange={(e) => onMappingChange(subFieldKey, e.target.value)}
-                                                //     placeholder="Nhập giá trị tùy chỉnh"
-                                                //     style={{ width: '100%' }}
-                                                // />
-                                                <CustomTextField
+                                                <input
+                                                    type="text"
                                                     value={mapping[subFieldKey] || ''}
                                                     onChange={(e) => onMappingChange(subFieldKey, e.target.value)}
                                                     placeholder="Nhập giá trị tùy chỉnh"
+                                                    style={{ width: '100%' }}
                                                 />
+                                                // <CustomTextField
+                                                //     value={mapping[subFieldKey] || ''}
+                                                //     onChange={(e) => onMappingChange(subFieldKey, e.target.value)}
+                                                //     placeholder="Nhập giá trị tùy chỉnh"
+                                                // />
                                             ) : (
                                                 <select
                                                     value={mapping[subFieldKey] || ''}
@@ -238,21 +238,21 @@ const MappingRow = React.memo(({ field, webhookFields, mapping, inputTypes, onIn
             </TableCell>
             <TableCell>
                 {isCustom ? (
-                    // <input
-                    //     type="text"
-                    //     value={mapping[field.name] || ''}
-                    //     onChange={(e) => {
-                    //         onMappingChange(field.name, e.target.value)
+                    <input
+                        type="text"
+                        value={mapping[field.name] || ''}
+                        onChange={(e) => {
+                            onMappingChange(field.name, e.target.value)
 
-                    //     }}
-                    //     placeholder="Nhập giá trị tùy chỉnh"
-                    //     style={{ width: '100%' }}
-                    // />
-                    <CustomTextField
-                        value={mapping[field.name] || ""}
-                        onChange={(e) => { onMappingChange(field.name, e.target.value) }}
+                        }}
                         placeholder="Nhập giá trị tùy chỉnh"
+                        style={{ width: '100%' }}
                     />
+                    // <CustomTextField
+                    //     value={mapping[field.name] || ""}
+                    //     onChange={(e) => { onMappingChange(field.name, e.target.value) }}
+                    //     placeholder="Nhập giá trị tùy chỉnh"
+                    // />
                 ) : (
                     <select
                         value={mapping[field.name] || ''}
@@ -280,7 +280,7 @@ const MappingRow = React.memo(({ field, webhookFields, mapping, inputTypes, onIn
 
 export default React.memo(MappingRow);
 
-const OrderStatusTable = React.memo(({ field, orderStatusOptions, mapping, nhanhStatusOptions ,onMappingChange}) => {
+const OrderStatusTable = React.memo(({ field, orderStatusOptions, mapping, nhanhStatusOptions, onMappingChange }) => {
     return (
         <TableRow>
             <TableCell>{field.name}</TableCell>
