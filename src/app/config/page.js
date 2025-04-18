@@ -100,10 +100,11 @@ export default function ConfigPage() {
             });
         } else {
             // Default behavior for other fields
-            setMapping(prev => {
-                if (prev[field] === value) return prev; // no update needed
-                return { ...prev, [field]: value };
-            });
+            // setMapping(prev => {
+            //     if (prev[field] === value) return prev; // no update needed
+            //     return { ...prev, [field]: value };
+            // });
+            setMapping((prev) => ({ ...prev, [field]: value }));
         }
     };
 
