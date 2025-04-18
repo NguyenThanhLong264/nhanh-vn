@@ -280,7 +280,7 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
 
 export default MappingRow;
 
-const OrderStatusTable = React.memo(({ field, orderStatusOptions, mapping, nhanhStatusOptions, onMappingChange }) => {
+const OrderStatusTable = ({ field, orderStatusOptions, mapping, nhanhStatusOptions, onMappingChange }) => {
     return (
         <TableRow>
             <TableCell>{field.name}</TableCell>
@@ -318,4 +318,4 @@ const OrderStatusTable = React.memo(({ field, orderStatusOptions, mapping, nhanh
             </TableCell>
         </TableRow>
     )
-})
+}
