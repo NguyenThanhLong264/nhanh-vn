@@ -156,15 +156,15 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
             <TableRow>
                 <TableCell>{field.name}</TableCell>
                 <TableCell>{field.type}</TableCell>
-                <TableCell colSpan={onDeleteCustomField ? 2 : 3}>
-                    <Table size='small' style={{ width: '100%', borderCollapse: 'collapse', margin: '10px 0' }}>
+                <TableCell colSpan={onDeleteCustomField ? 2 : 3} sx={{ p: 0 }}>
+                    <Table size='small' style={{ width: '100%', borderCollapse: 'collapse', margin: 0 }}>
                         {/* <TableRow>
                            <TableCell>Tên trường</TableCell>
                             <TableCell>Loại thông tin</TableCell> 
                             <TableCell>Loại input</TableCell>
                             <TableCell>Webhook Data / Custom Value</TableCell>
                         </TableRow> */}
-                        <TableBody>
+                        <TableBody sx={{ p: 0 }}>
                             {field.subFields.map((subField) => {
                                 const subFieldKey = field.name.startsWith('order_products')
                                     ? `${field.name}.${subField.name}`
@@ -172,10 +172,10 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
                                 const isSubCustom = inputTypes[subFieldKey] === 'custom';
                                 return (
                                     <TableRow key={subFieldKey}>
-                                        <TableCell>{subField.name}</TableCell>
+                                        <TableCell sx={{ width: '200px' }}>{subField.name}</TableCell>
                                         {field.name.startsWith('order_products') && (
-                                            <TableCell>
-                                                <label>
+                                            <TableCell align='center' sx={{ width: '170px' }}>
+                                                {/* <label>
                                                     <input
                                                         type="checkbox"
                                                         checked={isSubCustom}
@@ -184,7 +184,13 @@ export default function MappingRow({ field, webhookFields, mapping, inputTypes, 
                                                         }}
                                                     />
                                                     {isSubCustom ? 'Tùy chỉnh' : 'Nhanh.vn'}
-                                                </label>
+                                                </label> */}
+                                                <CustomizeSwitch
+                                                    checked={isSubCustom}
+                                                    onChange={() => {
+                                                        onInputTypeChange(subFieldKey)
+                                                    }}
+                                                />
                                             </TableCell>
                                         )}
                                         <TableCell>

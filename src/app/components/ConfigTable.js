@@ -55,8 +55,8 @@ export default function ConfigTable({ dealFields, webhookFields, mapping, inputT
                 <TableHead>
                     <TableRow>
                         <TableCell>Tên params</TableCell>
-                        <TableCell align='center' sx={{width:'150px'}}>Loại thông tin</TableCell>
-                        <TableCell align='center' sx={{width:'170px'}}>Loại input</TableCell>
+                        <TableCell align='center' sx={{ width: '150px' }}>Loại thông tin</TableCell>
+                        <TableCell align='center' sx={{ width: '170px' }}>Loại input</TableCell>
                         <TableCell>Webhook Data / Custom Value</TableCell>
                     </TableRow>
                 </TableHead>
@@ -81,8 +81,8 @@ export default function ConfigTable({ dealFields, webhookFields, mapping, inputT
                     <TableRow>
                         <TableCell>Tên params</TableCell>
                         <TableCell>Loại thông tin</TableCell>
-                        <TableCell>Mảng sản phẩm</TableCell>
-                        <TableCell>Loại input</TableCell>
+                        <TableCell align='center' sx={{ width: '200px' }}>Mảng sản phẩm</TableCell>
+                        <TableCell align='center' sx={{ width: '170px' }}>Loại input</TableCell>
                         <TableCell>Webhook Data / Custom Value</TableCell>
                     </TableRow>
                 </TableHead>
