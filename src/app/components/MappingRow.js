@@ -1,6 +1,5 @@
 import React from 'react';
 import { TableRow, TableCell, Table, TableBody, TableHead } from '@mui/material';
-import { useEffect, useRef } from 'react';
 import CustomizeSwitch from './Switch';
 import CustomTextField from './customTextField';
 
@@ -46,41 +45,13 @@ const MappingRow = React.memo(({ field, webhookFields, mapping, inputTypes, onIn
 
     if (field.name === 'order_status') {
         return (
-            <TableRow>
-                <TableCell>{field.name}</TableCell>
-                <TableCell>{field.type}</TableCell>
-                <TableCell colSpan={3}>
-                    <Table size='small' style={{ width: '100%', borderCollapse: 'collapse', margin: '10px 0' }}>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Trạng thái Web 2</TableCell>
-                                <TableCell>Trạng thái Nhanh.vn</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {orderStatusOptions.map((status) => (
-                                <TableRow key={status} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                    <TableCell>{status}</TableCell>
-                                    <TableCell>
-                                        <select
-                                            value={mapping[`order_status.${status}`] || ''}
-                                            onChange={(e) => onMappingChange(`order_status.${status}`, e.target.value)}
-                                            style={{ width: '100%' }}
-                                        >
-                                            <option value="">Chọn trạng thái Nhanh.vn</option>
-                                            {nhanhStatusOptions.map((nhanhStatus) => (
-                                                <option key={nhanhStatus} value={nhanhStatus}>
-                                                    {nhanhStatus}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableCell>
-            </TableRow>
+            <OrderStatusTable
+                field={field}
+                orderStatusOptions={orderStatusOptions}
+                mapping={mapping}
+                nhanhStatusOptions={nhanhStatusOptions}
+                onMappingChange={onMappingChange}
+            />
         );
     }
 
@@ -306,4 +277,45 @@ const MappingRow = React.memo(({ field, webhookFields, mapping, inputTypes, onIn
     );
 }
 )
-export default MappingRow;
+
+export default React.memo(MappingRow);
+
+const OrderStatusTable = React.memo(({ field, orderStatusOptions, mapping, nhanhStatusOptions ,onMappingChange}) => {
+    return (
+        <TableRow>
+            <TableCell>{field.name}</TableCell>
+            <TableCell>{field.type}</TableCell>
+            <TableCell colSpan={3}>
+                <Table size='small' style={{ width: '100%', borderCollapse: 'collapse', margin: '10px 0' }}>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Trạng thái Web 2</TableCell>
+                            <TableCell>Trạng thái Nhanh.vn</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {orderStatusOptions.map((status) => (
+                            <TableRow key={status} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                <TableCell>{status}</TableCell>
+                                <TableCell>
+                                    <select
+                                        value={mapping[`order_status.${status}`] || ''}
+                                        onChange={(e) => onMappingChange(`order_status.${status}`, e.target.value)}
+                                        style={{ width: '100%' }}
+                                    >
+                                        <option value="">Chọn trạng thái Nhanh.vn</option>
+                                        {nhanhStatusOptions.map((nhanhStatus) => (
+                                            <option key={nhanhStatus} value={nhanhStatus}>
+                                                {nhanhStatus}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableCell>
+        </TableRow>
+    )
+})
