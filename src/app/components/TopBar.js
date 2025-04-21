@@ -2,7 +2,7 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 
-const Topbar = ({ onSaveConfig, onAddCustomField }) => {
+const Topbar = ({ onSaveConfig }) => {
     return (
         <AppBar position="sticky" sx={{ top: 0, zIndex: 1100 }}>
             <Toolbar>
@@ -12,15 +12,7 @@ const Topbar = ({ onSaveConfig, onAddCustomField }) => {
                 <Box>
                     <Button
                         variant="contained"
-                        color="secondary"
-                        onClick={onAddCustomField}
-                        sx={{ mr: 2 }}
-                    >
-                        Thêm trường động
-                    </Button>
-                    <Button
-                        variant="contained"
-                        color="primary"
+                        color='success'
                         onClick={onSaveConfig}
                     >
                         Lưu cấu hình

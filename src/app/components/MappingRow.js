@@ -1,5 +1,5 @@
 import React from 'react';
-import { TableRow, TableCell, Table, TableBody, TableHead, Box } from '@mui/material';
+import { TableRow, TableCell, Table, TableBody, TableHead, Box, Tab, Typography, Button } from '@mui/material';
 import CustomizeSwitch from './Switch';
 import CustomTextField from './customTextField';
 import CustomSelection from './CustomSelection';
@@ -56,7 +56,7 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
                     <Table size='small' style={{ width: '100%', borderCollapse: 'collapse', margin: '10px 0' }}>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Trạng thái Web 2</TableCell>
+                                <TableCell>Trạng thái CareSoft</TableCell>
                                 <TableCell>Trạng thái Nhanh.vn</TableCell>
                             </TableRow>
                         </TableHead>
@@ -106,26 +106,19 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
             <TableRow>
                 <TableCell>{field.name}</TableCell>
                 <TableCell>{field.type}</TableCell>
-                <TableCell colSpan={3}>
+                <TableCell colSpan={3} align='center' sx={{ p: 0 }}>
                     <Table size='small' style={{ width: '100%', borderCollapse: 'collapse', margin: '10px 0' }}>
                         <TableHead>
                             <TableRow>
                                 <TableCell>ID</TableCell>
                                 <TableCell>Trạng thái Nhanh.vn</TableCell>
-                                <TableCell>Hành động</TableCell>
+                                <TableCell align='center'>Hành động</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {pipelineStageMappings.map(({ status, id }) => (
                                 <TableRow key={status}>
-                                    <TableCell>
-                                        {/* <input
-                                            type="text"
-                                            value={id || ''}
-                                            onChange={(e) => onMappingChange(`pipeline_stage_id.${status}`, e.target.value)}
-                                            placeholder="Nhập ID"
-                                            style={{ width: '100%' }}
-                                        /> */}
+                                    <TableCell >
                                         <CustomTextField
                                             value={id || ''}
                                             onChange={(e) => onMappingChange(`pipeline_stage_id.${status}`, e.target.value)}
@@ -133,33 +126,6 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
                                         />
                                     </TableCell>
                                     <TableCell>
-                                        {/* <select
-                                            value={status}
-                                            onChange={(e) => {
-                                                const newStatus = e.target.value;
-
-                                                if (newStatus) {
-                                                    onMappingChange(`pipeline_stage_id.${newStatus}`, id);
-                                                    onMappingChange(`pipeline_stage_id.${status}`, undefined);
-                                                }
-                                            }}
-                                            style={{ width: '100%' }}
-                                        >
-                                            <option value="">Chọn trạng thái Nhanh.vn</option>
-                                            {nhanhStatusOptions
-                                                .filter((option) => {
-                                                    const key = `pipeline_stage_id.${option}`;
-                                                    return (
-                                                        // Keep if not already selected or is the current status
-                                                        !Object.keys(mapping).includes(key) || option === status
-                                                    );
-                                                })
-                                                .map((nhanhStatus) => (
-                                                    <option key={nhanhStatus} value={nhanhStatus}>
-                                                        {nhanhStatus}
-                                                    </option>
-                                                ))}
-                                        </select> */}
                                         <CustomSelection
                                             value={status}
                                             onChange={(event, newValue) => {
@@ -178,16 +144,18 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
                                             })}
                                         />
                                     </TableCell>
-                                    <TableCell>
-                                        <button onClick={() => onDeletePipelineStageMapping(status)}>Xóa</button>
+                                    <TableCell align='center'>
+                                        <CustomizeIconButton
+                                            icon={<DeleteIcon />}
+                                            onClick={() => onDeletePipelineStageMapping(status)}
+                                        />
                                     </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
-                    <button onClick={onAddPipelineStageMapping}>Thêm ánh xạ</button>
+                    <Button variant='contained' onClick={onAddPipelineStageMapping}>Thêm Stage</Button>
                 </TableCell>
-                <TableCell></TableCell>
             </TableRow>
         );
     }
@@ -196,34 +164,28 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
         return (
             <TableRow>
                 <TableCell>{field.name}</TableCell>
-                <TableCell>{field.type}</TableCell>
+                <TableCell align='center'>{field.type}</TableCell>
                 <TableCell colSpan={onDeleteCustomField ? 2 : 3} sx={{ p: 0 }}>
                     <Table size='small' style={{ width: '100%', borderCollapse: 'collapse', margin: 0 }}>
                         <TableBody sx={{ p: 0 }}>
-                            {!field.name.startsWith('custom_fields') ? (
-                                field.subFields.map((subField) => {
-                                    const subFieldKey = field.name.startsWith('order_products')
-                                        ? `${field.name}.${subField.name}`
-                                        : `custom_fields.${subField.name}`;
+                            {field.name.startsWith('order_products') ? (
+                                field.subFields.map((subField, index) => {
+                                    const subFieldKey = `${field.name}.${subField.name}`;
                                     const isSubCustom = inputTypes[subFieldKey] === 'custom';
 
                                     return (
                                         <TableRow key={subFieldKey}>
-                                            {field.name.startsWith('order_products') && (
-                                                <TableCell sx={{ width: '200px' }}>{subField.name}</TableCell>
-                                            )}
-                                            {field.name.startsWith('order_products') && (
-                                                <TableCell align="center" sx={{ width: '170px' }}>
-                                                    <CustomizeSwitch
-                                                        checked={isSubCustom}
-                                                        onChange={() => {
-                                                            onInputTypeChange(subFieldKey);
-                                                        }}
-                                                    />
-                                                </TableCell>
-                                            )}
-                                            <TableCell>
-                                                {isSubCustom || isCustom ? (
+                                            <TableCell sx={{ width: '200px' }}>{subField.name}</TableCell>
+                                            <TableCell align='center' sx={{ width: '170px' }}>
+                                                <CustomizeSwitch
+                                                    checked={isSubCustom}
+                                                    onChange={() => {
+                                                        onInputTypeChange(subFieldKey);
+                                                    }}
+                                                />
+                                            </TableCell>
+                                            <TableCell sx={{ width: '370px' }}>
+                                                {isSubCustom ? (
                                                     <CustomTextField
                                                         value={mapping[subFieldKey] || ''}
                                                         onChange={(e) => onMappingChange(subFieldKey, e.target.value)}
@@ -235,11 +197,9 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
                                                         onChange={(event, newValue) => {
                                                             onMappingChange(subFieldKey, newValue || '');
                                                         }}
-                                                        option={(field.name === 'order_products' ? productFields : webhookFields || [])
+                                                        option={(productFields || [])
                                                             .filter((f) => typeof f === 'string' || !f.subFields)
-                                                            .map((webhookField) =>
-                                                                typeof webhookField === 'string' ? webhookField : webhookField.name
-                                                            )}
+                                                            .map((f) => typeof f === 'string' ? f : f.name)}
                                                     />
                                                 )}
                                             </TableCell>
@@ -247,36 +207,34 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
                                     );
                                 })
                             ) : (
-                                <TableRow>
-                                    {field.subFields.map((subField) => {
-                                        const subFieldKey = field.name.startsWith('order_products')
-                                            ? `${field.name}.${subField.name}`
-                                            : `custom_fields.${subField.name}`;
-                                        const isSubCustom = inputTypes[subFieldKey] === 'custom';
-
-                                        return (
-                                            <>
-                                                <TableCell>{field.subField}</TableCell>
-                                                <TableCell>Value</TableCell>
-                                            </>
-                                        );
-                                    })}
+                                <TableRow key={field.name}>
+                                    <TableCell align="center" sx={{ width: '150px' }}>
+                                        <CustomTextField
+                                            value={mapping[`custom_fields.id_${field.index}`] || ""}
+                                            onChange={(e) => onMappingChange(`custom_fields.id_${field.index}`, e.target.value)}
+                                            placeholder="Nhập ID"
+                                        />
+                                    </TableCell>
+                                    <TableCell sx={{ width: '300px' }}>
+                                        <CustomTextField
+                                            value={mapping[`custom_fields.value_${field.index}`] || ""}
+                                            onChange={(e) => onMappingChange(`custom_fields.value_${field.index}`, e.target.value)}
+                                            placeholder="Nhập giá trị"
+                                        />
+                                    </TableCell>
                                 </TableRow>
                             )}
-
                         </TableBody>
                     </Table>
                 </TableCell>
-                {
-                    onDeleteCustomField && (
-                        <TableCell>
-                            <CustomizeIconButton
-                                icon={<DeleteIcon />}
-                                onClick={onDeleteCustomField}
-                            />
-                        </TableCell>
-                    )
-                }
+                {onDeleteCustomField && (
+                    <TableCell align='center' >
+                        <CustomizeIconButton
+                            icon={<DeleteIcon />}
+                            onClick={onDeleteCustomField}
+                        />
+                    </TableCell>
+                )}
             </TableRow >
         );
     }
@@ -295,36 +253,12 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
             </TableCell>
             <TableCell>
                 {isCustom ? (
-                    // <input
-                    //     type="text"
-                    //     value={mapping[field.name] || ''}
-                    //     onChange={(e) => { onMappingChange(field.name, e.target.value) }}
-                    //     placeholder="Nhập giá trị tùy chỉnh"
-                    //     style={{ width: '100%' }}
-                    // />
                     <CustomTextField
                         value={mapping[field.name] || ""}
                         onChange={(e) => { onMappingChange(field.name, e.target.value) }}
                         placeholder="Nhập giá trị tùy chỉnh"
                     />
                 ) : (
-                    // <select
-                    //     value={mapping[field.name] || ''}
-                    //     onChange={(e) => {
-                    //         onMappingChange(field.name, e.target.value)
-
-                    //     }}
-                    //     style={{ width: '100%' }}
-                    // >
-                    //     <option value="">Chọn param từ webhook</option>
-                    //     {(webhookFields || [])
-                    //         .filter((f) => typeof f === 'string' || !f.subFields)
-                    //         .map((webhookField) => (
-                    //             <option key={webhookField.name || webhookField} value={webhookField.name || webhookField}>
-                    //                 {webhookField.name || webhookField}
-                    //             </option>
-                    //         ))}
-                    // </select>
                     <CustomSelection
                         value={mapping[field.name] || ''}
                         onChange={(event, newValue) => {

@@ -1,8 +1,8 @@
 import React from 'react';
 import MappingRow from './MappingRow';
-import { Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import { Button, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 
-const ConfigTable = React.memo(({ dealFields, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange, onDeleteCustomField, onAddPipelineStageMapping, onDeletePipelineStageMapping }) => {
+const ConfigTable = ({ dealFields, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange, onDeleteCustomField, onAddPipelineStageMapping, onDeletePipelineStageMapping, onAddCustomField }) => {
     const regularFields = dealFields.filter(field =>
         field.name !== 'order_products' &&
         field.name !== 'custom_fields' &&
@@ -49,14 +49,25 @@ const ConfigTable = React.memo(({ dealFields, webhookFields, mapping, inputTypes
             });
         }
     });
+
+    console.log('Custom fields', customFields);
+
     return (
         <>
-            <h2>Regular Fields</h2>
-            <Table size='small' sx={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
-                <TableHead>
-                    <TableRow>
+            <h2>Bảng Các Trường CareSoft</h2>
+            <Table size='small' sx={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px', backgroundColor: "#F5F6FA", borderRadius: '12px', boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.05)' }}>
+                <TableHead sx={{
+                    '& .MuiTableCell-root': {
+                        fontFamily: 'Inter, sans-serif',
+                        fontSize: '20px',
+                        fontWeight: 600,
+                        lineHeight: '30px',
+                        color: '#333',
+                    }
+                }}>
+                    <TableRow >
                         <TableCell>Tên params</TableCell>
-                        <TableCell align='center' sx={{ width: '150px' }}>Loại thông tin</TableCell>
+                        <TableCell align='center' sx={{ width: '170px' }}>Loại thông tin</TableCell>
                         <TableCell align='center' sx={{ width: '170px' }}>Loại input</TableCell>
                         <TableCell>Webhook Data / Custom Value</TableCell>
                     </TableRow>
@@ -76,33 +87,17 @@ const ConfigTable = React.memo(({ dealFields, webhookFields, mapping, inputTypes
                 </TableBody>
             </Table>
 
-            <h2>Order Products</h2>
-            <Table size='small' style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Tên params</TableCell>
-                        <TableCell>Loại thông tin</TableCell>
-                        <TableCell align='center' sx={{ width: '200px' }}>Mảng sản phẩm</TableCell>
-                        <TableCell align='center' sx={{ width: '170px' }}>Loại input</TableCell>
-                        <TableCell sx={{ width: '370px' }}>Webhook Data / Custom Value</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    <MappingRow
-                        key={orderProductsField.name}
-                        field={orderProductsField}
-                        webhookFields={webhookFields}
-                        mapping={mapping}
-                        inputTypes={inputTypes}
-                        onInputTypeChange={onInputTypeChange}
-                        onMappingChange={onMappingChange}
-                    />
-                </TableBody>
-            </Table>
-
-            <h2>Special Fields</h2>
-            <Table size='small' style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
-                <TableHead>
+            <h2>Bảng Các Trường Đặc Thù</h2>
+            <Table size='small' style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px', backgroundColor: "#F5F6FA", borderRadius: '12px', boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.05)' }}>
+                <TableHead sx={{
+                    '& .MuiTableCell-root': {
+                        fontFamily: 'Inter, sans-serif',
+                        fontSize: '20px',
+                        fontWeight: 600,
+                        lineHeight: '30px',
+                        color: '#333',
+                    }
+                }}>
                     <TableRow>
                         <TableCell>Tên params</TableCell>
                         <TableCell>Loại thông tin</TableCell>
@@ -127,15 +122,55 @@ const ConfigTable = React.memo(({ dealFields, webhookFields, mapping, inputTypes
                 </TableBody>
             </Table>
 
-            <h2>Custom Fields</h2>
-            <Table size='small' style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <TableHead>
+            <h2>Bảng Sản Phẩm</h2>
+            <Table size='small' style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px', backgroundColor: "#F5F6FA", borderRadius: '12px', boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.05)' }}>
+                <TableHead sx={{
+                    '& .MuiTableCell-root': {
+                        fontFamily: 'Inter, sans-serif',
+                        fontSize: '20px',
+                        fontWeight: 600,
+                        lineHeight: '30px',
+                        color: '#333',
+                    }
+                }}>
                     <TableRow>
                         <TableCell>Tên params</TableCell>
                         <TableCell>Loại thông tin</TableCell>
-                        <TableCell>Id</TableCell>
-                        <TableCell>Giá trị</TableCell>
-                        <TableCell>Hành động</TableCell>
+                        <TableCell align='center' sx={{ width: '200px' }}>Mảng sản phẩm</TableCell>
+                        <TableCell align='center' sx={{ width: '170px' }}>Loại input</TableCell>
+                        <TableCell sx={{ width: '370px' }}>Webhook Data / Custom Value</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    <MappingRow
+                        key={orderProductsField.name}
+                        field={orderProductsField}
+                        webhookFields={webhookFields}
+                        mapping={mapping}
+                        inputTypes={inputTypes}
+                        onInputTypeChange={onInputTypeChange}
+                        onMappingChange={onMappingChange}
+                    />
+                </TableBody>
+            </Table>
+
+            <h2>Bảng Trường Động</h2>
+            <Table size='small' style={{ width: '100%', borderCollapse: 'collapse', backgroundColor: "#F5F6FA", borderRadius: '12px', boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.05)' }}>
+                <TableHead sx={{
+                    '& .MuiTableCell-root': {
+                        fontFamily: 'Inter, sans-serif',
+                        fontSize: '20px',
+                        fontWeight: 600,
+                        lineHeight: '30px',
+                        color: '#333',
+                    }
+                }}>
+                    <TableRow>
+                        <TableCell>Tên params</TableCell>
+                        <TableCell align='center' sx={{ width: '200px' }}>Loại thông tin</TableCell>
+                        <TableCell align='center' sx={{ width: '150px' }} >Id</TableCell>
+                        <TableCell align='center' sx={{ width: '300px' }}>Giá trị</TableCell>
+                        <TableCell align='center' sx={{ width: '150px' }}>Hành động</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -159,10 +194,13 @@ const ConfigTable = React.memo(({ dealFields, webhookFields, mapping, inputTypes
                     )}
                 </TableBody>
             </Table>
+            <Button
+                variant='contained'
+                sx={{ my: 2 }}
+                onClick={onAddCustomField}
+            >Thêm Trường Động</Button>
         </>
     );
-})
-
-ConfigTable.displayName = "ConfigTable";
+}
 
 export default ConfigTable;

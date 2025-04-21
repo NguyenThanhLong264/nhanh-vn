@@ -301,10 +301,10 @@ export default function ConfigPage() {
 
     return (
         <>
-            <Topbar onSaveConfig={handleSubmit} onAddCustomField={handleAddCustomField} />
+            <Topbar onSaveConfig={handleSubmit} />
             <Container sx={{ mt: 4 }}>
                 <div style={{ padding: '20px' }}>
-                    <h1>Cấu hình ánh xạ Deal cho Web 2</h1>
+                    <h1>Cấu Trúc Kết Nối Giữa NhanhVN và CareSoft</h1>
                     <ConfigTable
                         dealFields={dealFields}
                         webhookFields={webhookFields}
@@ -315,6 +315,7 @@ export default function ConfigPage() {
                         onDeleteCustomField={handleDeleteCustomField}
                         onAddPipelineStageMapping={handleAddPipelineStageMapping}
                         onDeletePipelineStageMapping={handleDeletePipelineStageMapping}
+                        onAddCustomField={handleAddCustomField}
                     />
                 </div>
             </Container>
