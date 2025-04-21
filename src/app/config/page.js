@@ -215,32 +215,31 @@ export default function ConfigPage() {
         });
 
         setInputTypes((prev) => {
-            const newInputTypes = { ...prev };
-            delete newInputTypes[idKey];
-            delete newInputTypes[valueKey];
-
-            const remainingFields = Object.keys(newInputTypes)
+            const remainingFields = Object.keys(prev)
                 .filter(key => key.match(/^custom_fields\.id_(\d+)$/))
                 .map(key => parseInt(key.match(/^custom_fields\.id_(\d+)$/)[1]))
                 .sort((a, b) => a - b);
 
             const reorderedInputTypes = {};
+
+            // Reorder the custom fields' input types
             remainingFields.forEach((oldIndex, newIndex) => {
                 const oldIdKey = `custom_fields.id_${oldIndex}`;
                 const oldValueKey = `custom_fields.value_${oldIndex}`;
-                const newIdKey = `custom_fields.id_${newIndex}`;
-                const newValueKey = `custom_fields.value_${newIndex}`;
-                if (newInputTypes[oldIdKey] !== undefined) {
-                    reorderedInputTypes[newIdKey] = newInputTypes[oldIdKey];
+                const newIdKey = `custom_fields.id_${newIndex + 1}`;
+                const newValueKey = `custom_fields.value_${newIndex + 1}`;
+                if (prev[oldIdKey] !== undefined) {
+                    reorderedInputTypes[newIdKey] = prev[oldIdKey];
                 }
-                if (newInputTypes[oldValueKey] !== undefined) {
-                    reorderedInputTypes[newValueKey] = newInputTypes[oldValueKey];
+                if (prev[oldValueKey] !== undefined) {
+                    reorderedInputTypes[newValueKey] = prev[oldValueKey];
                 }
             });
 
-            Object.keys(newInputTypes).forEach(key => {
+            // Merge the rest of the input types (non-custom fields) back into the reordered custom fields
+            Object.keys(prev).forEach(key => {
                 if (!key.startsWith('custom_fields.')) {
-                    reorderedInputTypes[key] = newInputTypes[key];
+                    reorderedInputTypes[key] = prev[key];  // Keep non-custom field types intact
                 }
             });
 
@@ -250,7 +249,6 @@ export default function ConfigPage() {
         const remainingCount = Object.keys(mapping)
             .filter(key => key.match(/^custom_fields\.id_(\d+)$/)).length;
         setCustomFieldCount(remainingCount);
-
     };
 
     const handleAddPipelineStageMapping = () => {

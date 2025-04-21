@@ -16,11 +16,14 @@ export async function loadConfig() {
 export function replacePlaceholders(template, data) {
     if (typeof template !== 'string') return template;
     return template.replace(/\{\{(\w+)\}\}/g, (match, param) => {
-        const value = data[param] !== undefined ? data[param] : match;
-        console.log(`Replacing ${match} with ${value} in template ${template}`);
-        return value;
+        const value = data[param];
+        const safeValue = value !== undefined && value !== null ? value : match;
+        console.log(`Replacing ${match} with ${safeValue} in template ${template}`);
+        console.log(`replacePlaceholders called with:`, template, data);
+        return safeValue;
     });
 }
+
 
 export function mapOrderStatus(nhanhStatus, config) {
     let statusMapped = false;

@@ -179,26 +179,29 @@ export async function POST(request) {
 
         const customFieldsMapping = [];
         const customFieldKeys = Object.keys(config.mapping).filter(key => key.startsWith('custom_fields.id_'));
+
+        console.log("Custom edit 1", customFieldKeys);
+        console.log("Custom edit 2", config.mapping);
+        console.log('🆔 Order ID:', orderId);
+
         customFieldKeys.forEach(idKey => {
             const valueKey = idKey.replace('id_', 'value_');
             const idValue = config.inputTypes[idKey] === 'custom' ? replacePlaceholders(config.mapping[idKey], orderData) : (orderData[config.mapping[idKey]] || '');
             const valueValue = config.mapping[valueKey] !== undefined
                 ? (config.inputTypes[valueKey] === 'custom' ? replacePlaceholders(config.mapping[valueKey], { ...orderData, orderId }) : (orderData[config.mapping[valueKey]] || null))
                 : null;
-            if (idValue || valueValue) {
+            console.log('🔍 Check Field:', { idKey, idValue, valueKey, valueValue });
+
+            if (
+                idValue !== null && idValue !== undefined && idValue !== '' &&
+                valueValue !== null && valueValue !== undefined && valueValue !== ''
+            ) {
                 customFieldsMapping.push({ id: idValue, value: valueValue });
             }
+            console.log("Custom edit 3", customFieldsMapping);
+
         });
         deal.custom_fields = customFieldsMapping;
-
-        delete deal['custom_fields.id_0'];
-        delete deal['custom_fields.value_0'];
-        delete deal['custom_fields.id_1'];
-        delete deal['custom_fields.value_1'];
-        delete deal['custom_fields.id_2'];
-        delete deal['custom_fields.value_2'];
-        delete deal['custom_fields.id_3'];
-        delete deal['custom_fields.value_3'];
 
         console.log('OrderAdd - Deal object:', deal);
 
