@@ -1,6 +1,5 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
-import data from '../data/conditionFormData.json';
 import { Box, Button, Typography } from '@mui/material'
 import conditions from '../data/condition.json'
 
@@ -11,7 +10,7 @@ const ConditionForm = () => {
 
     useEffect(() => {
         // load data from JSON on mount
-        setValues(data);
+        setValues(conditions);
     }, []);
 
     const handleEdit = () => {
@@ -38,10 +37,10 @@ const ConditionForm = () => {
         });
     };
 
-    const leftFields = Object.entries(values).filter(([key]) => key.startsWith('left'));
-    const rightFields = Object.entries(values).filter(([key]) => key.startsWith('right'));
+    const leftFields = Object.entries(values).filter(([key]) => key.startsWith('NhanhVN'));
+    const rightFields = Object.entries(values).filter(([key]) => key.startsWith('CareSoft'));
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', width: '300px', backgroundColor: '#F5F6FA', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', width: '500px', backgroundColor: '#F5F6FA', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
             <Box sx={{
                 height: '50px', bgcolor: '#3D55CC', borderRadius: '8px 8px 0 0', p: '8px', alignItems: 'center', display: 'flex',        // ✨ added
                 alignItems: 'center', color: '#D9E1FC', px: '12px'

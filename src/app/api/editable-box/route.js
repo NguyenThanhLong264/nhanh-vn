@@ -5,7 +5,7 @@ export async function POST(request) {
     try {
         const body = await request.json();
 
-        const filePath = path.join(process.cwd(), 'src/app/data/conditionFormData.json');
+        const filePath = path.join(process.cwd(), 'src/app/data/condition.json');
         const dir = path.dirname(filePath);
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir, { recursive: true });
