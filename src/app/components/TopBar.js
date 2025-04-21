@@ -1,11 +1,19 @@
 'use client';
 import React from 'react';
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
+import CustomizeIconButton from './CustomizeIconButton';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { useRouter } from 'next/navigation';
 
 const Topbar = ({ onSaveConfig }) => {
+    const router = useRouter();
     return (
         <AppBar position="sticky" sx={{ top: 0, zIndex: 1100 }}>
             <Toolbar>
+                <CustomizeIconButton
+                    icon={<ArrowBackIosIcon />}
+                    onClick={() => router.push('/')}
+                />
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                     Cấu hình Webhook
                 </Typography>

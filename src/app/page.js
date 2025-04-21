@@ -9,12 +9,12 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        <button
+        {/* <button
           className={styles.button}
           onClick={() => router.push('/config')}
         >
-          Go to Configuration
-        </button>
+          Go to Mapping
+        </button> */}
         <ConditionForm />
       </main>
     </div>

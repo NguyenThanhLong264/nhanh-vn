@@ -2,8 +2,10 @@ import React from 'react'
 import { useState, useEffect } from 'react';
 import { Box, Button, Typography } from '@mui/material'
 import conditions from '../data/condition.json'
+import { useRouter } from 'next/navigation'
 
 const ConditionForm = () => {
+    const router = useRouter()
     const [editMode, setEditMode] = useState(false);
     const [values, setValues] = useState({});
     const [tempValues, setTempValues] = useState({});
@@ -46,7 +48,7 @@ const ConditionForm = () => {
                 alignItems: 'center', color: '#D9E1FC', px: '12px'
             }}>Các Token cần thiết
             </Box>
-            <Box sx={{ display: 'flex', p: '8px', gap: '12px' }}>
+            <Box sx={{ display: 'flex', p: '12px', gap: '12px' }}>
                 {/* Left Column */}
                 <Box sx={{ flex: 1 }}>
                     {leftFields.map(([key]) => (
@@ -81,7 +83,10 @@ const ConditionForm = () => {
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'center', p: '8px', gap: '8px' }}>
                 {!editMode ? (
-                    <Button variant="contained" onClick={handleEdit}>Edit</Button>
+                    <>
+                        <Button variant="contained" onClick={() => router.push('/config')}>Go Mapping</Button>
+                        <Button variant="contained" onClick={handleEdit}>Edit</Button>
+                    </>
                 ) : (
                     <>
                         <Button
