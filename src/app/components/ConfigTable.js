@@ -84,7 +84,7 @@ const ConfigTable = React.memo(({ dealFields, webhookFields, mapping, inputTypes
                         <TableCell>Loại thông tin</TableCell>
                         <TableCell align='center' sx={{ width: '200px' }}>Mảng sản phẩm</TableCell>
                         <TableCell align='center' sx={{ width: '170px' }}>Loại input</TableCell>
-                        <TableCell>Webhook Data / Custom Value</TableCell>
+                        <TableCell sx={{ width: '370px' }}>Webhook Data / Custom Value</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>

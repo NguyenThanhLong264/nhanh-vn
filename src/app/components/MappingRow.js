@@ -1,5 +1,5 @@
 import React from 'react';
-import { TableRow, TableCell, Table, TableBody, TableHead } from '@mui/material';
+import { TableRow, TableCell, Table, TableBody, TableHead, Box } from '@mui/material';
 import CustomizeSwitch from './Switch';
 import CustomTextField from './customTextField';
 import CustomSelection from './CustomSelection';
@@ -200,65 +200,70 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
                 <TableCell colSpan={onDeleteCustomField ? 2 : 3} sx={{ p: 0 }}>
                     <Table size='small' style={{ width: '100%', borderCollapse: 'collapse', margin: 0 }}>
                         <TableBody sx={{ p: 0 }}>
-                            {field.subFields.map((subField) => {
-                                const subFieldKey = field.name.startsWith('order_products')
-                                    ? `${field.name}.${subField.name}`
-                                    : `custom_fields.${subField.name}`;
-                                const isSubCustom = inputTypes[subFieldKey] === 'custom';
-                                return (
-                                    <TableRow key={subFieldKey}>
-                                        {field.name.startsWith('order_products') ? 
-                                        (<TableCell sx={{ width: '200px' }}>{subField.name}</TableCell>) :
-                                        (<TableCell sx={{ width: '200px' }}>Hello</TableCell>)
-                                        }
-                                        {field.name.startsWith('order_products') && (
-                                            <TableCell align='center' sx={{ width: '170px' }}>
-                                                {/* <label>
-                                                    <input
-                                                        type="checkbox"
+                            {!field.name.startsWith('custom_fields') ? (
+                                field.subFields.map((subField) => {
+                                    const subFieldKey = field.name.startsWith('order_products')
+                                        ? `${field.name}.${subField.name}`
+                                        : `custom_fields.${subField.name}`;
+                                    const isSubCustom = inputTypes[subFieldKey] === 'custom';
+
+                                    return (
+                                        <TableRow key={subFieldKey}>
+                                            {field.name.startsWith('order_products') && (
+                                                <TableCell sx={{ width: '200px' }}>{subField.name}</TableCell>
+                                            )}
+                                            {field.name.startsWith('order_products') && (
+                                                <TableCell align="center" sx={{ width: '170px' }}>
+                                                    <CustomizeSwitch
                                                         checked={isSubCustom}
                                                         onChange={() => {
-                                                            onInputTypeChange(subFieldKey)
+                                                            onInputTypeChange(subFieldKey);
                                                         }}
                                                     />
-                                                    {isSubCustom ? 'Tùy chỉnh' : 'Nhanh.vn'}
-                                                </label> */}
-                                                <CustomizeSwitch
-                                                    checked={isSubCustom}
-                                                    onChange={() => {
-                                                        onInputTypeChange(subFieldKey)
-                                                    }}
-                                                />
-                                            </TableCell>
-                                        )}
-                                        <TableCell>
-                                            {isSubCustom ? (
-                                                <CustomTextField
-                                                    value={mapping[subFieldKey] || ''}
-                                                    onChange={(e) => onMappingChange(subFieldKey, e.target.value)}
-                                                    placeholder="Nhập giá trị tùy chỉnh"
-                                                />
-                                            ) : isCustom ? (
-                                                <CustomTextField
-                                                    value={mapping[subFieldKey] || ''}
-                                                    onChange={(e) => onMappingChange(subFieldKey, e.target.value)}
-                                                    placeholder="Nhập giá trị tùy chỉnh"
-                                                />
-                                            ) : (
-                                                <CustomSelection
-                                                    value={mapping[subFieldKey] || ''}
-                                                    onChange={(event, newValue) => {
-                                                        onMappingChange(subFieldKey, newValue || '');
-                                                    }}
-                                                    option={(field.name === 'order_products' ? productFields : (webhookFields || []))
-                                                        .filter((f) => typeof f === 'string' || !f.subFields)
-                                                        .map((webhookField) => typeof webhookField === 'string' ? webhookField : webhookField.name)}
-                                                />
+                                                </TableCell>
                                             )}
-                                        </TableCell>
-                                    </TableRow>
-                                );
-                            })}
+                                            <TableCell>
+                                                {isSubCustom || isCustom ? (
+                                                    <CustomTextField
+                                                        value={mapping[subFieldKey] || ''}
+                                                        onChange={(e) => onMappingChange(subFieldKey, e.target.value)}
+                                                        placeholder="Nhập giá trị tùy chỉnh"
+                                                    />
+                                                ) : (
+                                                    <CustomSelection
+                                                        value={mapping[subFieldKey] || ''}
+                                                        onChange={(event, newValue) => {
+                                                            onMappingChange(subFieldKey, newValue || '');
+                                                        }}
+                                                        option={(field.name === 'order_products' ? productFields : webhookFields || [])
+                                                            .filter((f) => typeof f === 'string' || !f.subFields)
+                                                            .map((webhookField) =>
+                                                                typeof webhookField === 'string' ? webhookField : webhookField.name
+                                                            )}
+                                                    />
+                                                )}
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })
+                            ) : (
+                                <TableRow>
+                                    {field.subFields.map((subField) => {
+                                        const subFieldKey = field.name.startsWith('order_products')
+                                            ? `${field.name}.${subField.name}`
+                                            : `custom_fields.${subField.name}`;
+                                        const isSubCustom = inputTypes[subFieldKey] === 'custom';
+
+                                        return (
+                                            <>
+                                                <TableCell>{field.subField}</TableCell>
+                                                <TableCell>Value</TableCell>
+                                            </>
+                                        );
+                                    })}
+                                </TableRow>
+                            )}
+
                         </TableBody>
                     </Table>
                 </TableCell>

@@ -3,6 +3,7 @@ import axios from 'axios';
 import FormData from 'form-data';
 import { getDealIdByOrderId, saveOrderDealMapping } from '../../lib/db';
 import { loadConfig, replacePlaceholders, mapOrderStatus, mapPipelineStageId } from '../../lib/webhookUtils';
+import condition from '@/app/data/condition.json';
 
 export async function POST(request) {
     try {
@@ -31,17 +32,21 @@ export async function POST(request) {
 
             let fullOrderData = orderData;
             try {
+                const version = condition.nhanhVersion;
+                const appId = condition.nhanhAppId;
+                const businessId = condition.nhanhBusinessId;
+                const accessToken = condition.nhanhAccessToken;
                 const formData = new FormData();
-                formData.append('version', '2.0');
-                formData.append('appId', '75230');
-                formData.append('businessId', body.businessId.toString() || '205142');
-                formData.append('accessToken', process.env.NHANH_API_TOKEN);
+                formData.append('version', version);
+                formData.append('appId', appId);
+                formData.append('businessId', businessId);
+                formData.append('accessToken', accessToken);
                 formData.append('data', JSON.stringify({ page: 1, id: orderId.toString() }));
 
                 console.log('OrderUpdate - Sending Nhanh.vn API request:', {
-                    version: '2.0',
-                    appId: '75230',
-                    businessId: body.businessId.toString() || '205142',
+                    version: version,
+                    appId: appId,
+                    businessId: body.businessId.toString() || businessId,
                     orderId: orderId.toString(),
                 });
 
@@ -77,11 +82,11 @@ export async function POST(request) {
                 console.log(`OrderUpdate - Processing customerMobile: ${customerMobile}`);
                 try {
                     const checkCustomerResponse = await axios.get(
-                        `https://api.caresoft.vn/thammydemo/api/v1/contactsByPhone?phoneNo=${customerMobile}`,
+                        `https://api.caresoft.vn/${condition.caresoftDomain}/api/v1/contactsByPhone?phoneNo=${customerMobile}`,
                         {
                             headers: {
                                 'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${process.env.WEB2_API_TOKEN}`,
+                                'Authorization': `Bearer ${condition.caresoftApiToken}`,
                             },
                         }
                     );
@@ -92,7 +97,7 @@ export async function POST(request) {
                         console.log(`OrderUpdate - Customer with phone ${customerMobile} exists, updating...`);
                         contactId = customerData.contact.id;
                         const updateCustomerResponse = await axios.put(
-                            `https://api.caresoft.vn/thammydemo/api/v1/contacts/${contactId}`,
+                            `https://api.caresoft.vn/${condition.caresoftDomain}/api/v1/contacts/${contactId}`,
                             {
                                 contact: {
                                     phone_no: customerMobile,
@@ -103,7 +108,7 @@ export async function POST(request) {
                             {
                                 headers: {
                                     'Content-Type': 'application/json',
-                                    'Authorization': `Bearer ${process.env.WEB2_API_TOKEN}`,
+                                    'Authorization': `Bearer ${condition.caresoftApiToken}`,
                                 },
                             }
                         );
@@ -112,7 +117,7 @@ export async function POST(request) {
                     } else {
                         console.log(`OrderUpdate - Customer with phone ${customerMobile} not found, creating new...`);
                         const createCustomerResponse = await axios.post(
-                            `https://api.caresoft.vn/thammydemo/api/v1/contacts`,
+                            `https://api.caresoft.vn/${condition.caresoftDomain}/api/v1/contacts`,
                             {
                                 contact: {
                                     phone_no: customerMobile,
@@ -123,7 +128,7 @@ export async function POST(request) {
                             {
                                 headers: {
                                     'Content-Type': 'application/json',
-                                    'Authorization': `Bearer ${process.env.WEB2_API_TOKEN}`,
+                                    'Authorization': `Bearer ${condition.caresoftApiToken}`,
                                 },
                             }
                         );
@@ -245,9 +250,9 @@ export async function POST(request) {
                     config.mapping[valueKey] !== undefined
                         ? config.inputTypes[valueKey] === 'custom'
                             ? replacePlaceholders(config.mapping[valueKey], {
-                                  ...fullOrderData,
-                                  orderId,
-                              })
+                                ...fullOrderData,
+                                orderId,
+                            })
                             : fullOrderData[config.mapping[valueKey]] || null
                         : null;
                 if (idValue || valueValue) {
@@ -270,10 +275,10 @@ export async function POST(request) {
             const createDealConfig = {
                 method: 'post',
                 maxBodyLength: Infinity,
-                url: 'https://api.caresoft.vn/thammydemo/api/v1/deal',
+                url: `https://api.caresoft.vn/${condition.caresoftDomain}/api/v1/deal`,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${process.env.WEB2_API_TOKEN}`,
+                    'Authorization': `Bearer ${condition.caresoftApiToken}`,
                 },
                 data: JSON.stringify({ deal }),
             };
@@ -352,10 +357,10 @@ export async function POST(request) {
         const axiosConfig = {
             method: 'put',
             maxBodyLength: Infinity,
-            url: `https://api.caresoft.vn/thammydemo/api/v1/deal/${dealId}`,
+            url: `https://api.caresoft.vn/${condition.caresoftDomain}/api/v1/deal/${dealId}`,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${process.env.WEB2_API_TOKEN}`,
+                'Authorization': `Bearer ${condition.caresoftApiToken}`,
             },
             data: JSON.stringify({ deal: dealUpdate }),
         };
