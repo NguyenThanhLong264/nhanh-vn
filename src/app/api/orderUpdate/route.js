@@ -3,9 +3,11 @@ import axios from 'axios';
 import FormData from 'form-data';
 import { getDealIdByOrderId, saveOrderDealMapping } from '../../lib/db';
 import { loadConfig, replacePlaceholders, mapOrderStatus, mapPipelineStageId } from '../../lib/webhookUtils';
-import condition from '@/app/data/condition.json';
+import condition2 from '@/app/data/condition.json';
 
 export async function POST(request) {
+    const condition = condition2.token;
+
     try {
         const body = await request.json();
         console.log('OrderUpdate - Parsed body:', body);

@@ -12,7 +12,7 @@ const ConditionForm = () => {
 
     useEffect(() => {
         // load data from JSON on mount
-        setValues(conditions);
+        setValues(conditions.token);
     }, []);
 
     const handleEdit = () => {
@@ -35,7 +35,7 @@ const ConditionForm = () => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(tempValues)
+            body: JSON.stringify({ token: tempValues })
         });
     };
 
