@@ -32,11 +32,11 @@ export async function POST(request) {
             console.log(`OrderAdd - Processing customerMobile: ${customerMobile}`);
             try {
                 const checkCustomerResponse = await axios.get(
-                    `https://api.caresoft.vn/${condition.caresoftDomain}/api/v1/contactsByPhone?phoneNo=${customerMobile}`,
+                    `https://api.caresoft.vn/${condition.CareSoft_Domain}/api/v1/contactsByPhone?phoneNo=${customerMobile}`,
                     {
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${condition.caresoftApiToken}`,
+                            'Authorization': `Bearer ${condition.CareSoft_ApiToken}`,
                         },
                     }
                 );
@@ -47,7 +47,7 @@ export async function POST(request) {
                     console.log(`OrderAdd - Customer with phone ${customerMobile} exists, updating...`);
                     contactId = customerData.contact.id;
                     const updateCustomerResponse = await axios.put(
-                        `https://api.caresoft.vn/${condition.caresoftDomain}/api/v1/contacts/${contactId}`,
+                        `https://api.caresoft.vn/${condition.CareSoft_Domain}/api/v1/contacts/${contactId}`,
                         {
                             contact: {
                                 phone_no: customerMobile,
@@ -58,7 +58,7 @@ export async function POST(request) {
                         {
                             headers: {
                                 'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${condition.caresoftApiToken}`,
+                                'Authorization': `Bearer ${condition.CareSoft_ApiToken}`,
                             },
                         }
                     );
@@ -67,7 +67,7 @@ export async function POST(request) {
                 } else if (customerData.code === 'errors' && customerData.message === 'Not found user') {
                     console.log(`OrderAdd - Customer with phone ${customerMobile} not found, creating new...`);
                     const createCustomerResponse = await axios.post(
-                        `https://api.caresoft.vn/${condition.caresoftDomain}/api/v1/contacts`,
+                        `https://api.caresoft.vn/${condition.CareSoft_Domain}/api/v1/contacts`,
                         {
                             contact: {
                                 phone_no: customerMobile,
@@ -78,7 +78,7 @@ export async function POST(request) {
                         {
                             headers: {
                                 'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${condition.caresoftApiToken}`,
+                                'Authorization': `Bearer ${condition.CareSoft_ApiToken}`,
                             },
                         }
                     );
@@ -205,10 +205,10 @@ export async function POST(request) {
         const axiosConfig = {
             method: 'post',
             maxBodyLength: Infinity,
-            url: `https://api.caresoft.vn/${condition.caresoftDomain}/api/v1/deal`,
+            url: `https://api.caresoft.vn/${condition.CareSoft_Domain}/api/v1/deal`,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${condition.caresoftApiToken}`,
+                'Authorization': `Bearer ${condition.CareSoft_ApiToken}`,
             },
             data: JSON.stringify({ deal }),
         };
@@ -218,7 +218,7 @@ export async function POST(request) {
 
         const dealId = web2Response.data.deal?.id;
         const businessId = body.businessId;
-        const appid = condition.nhanhAppId;
+        const appid = condition.NhanhVN_AppId;
 
         if (orderId && dealId && businessId && appid) {
             await saveOrderDealMapping(orderId.toString(), dealId.toString(), businessId.toString(), appid);

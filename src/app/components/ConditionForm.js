@@ -1,0 +1,103 @@
+import React from 'react'
+import { useState, useEffect } from 'react';
+import data from '../data/conditionFormData.json';
+import { Box, Button, Typography } from '@mui/material'
+import conditions from '../data/condition.json'
+
+const ConditionForm = () => {
+    const [editMode, setEditMode] = useState(false);
+    const [values, setValues] = useState({});
+    const [tempValues, setTempValues] = useState({});
+
+    useEffect(() => {
+        // load data from JSON on mount
+        setValues(data);
+    }, []);
+
+    const handleEdit = () => {
+        setTempValues({ ...values });
+        setEditMode(true);
+    };
+
+    const handleCancel = () => {
+        setEditMode(false);
+        setTempValues({ left: '', right: '' });
+    };
+
+    const handleSave = async () => {
+        setValues(tempValues);
+        setEditMode(false);
+
+        // Save updated data to backend API or local server endpoint
+        await fetch('/api/editable-box', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(tempValues)
+        });
+    };
+
+    const leftFields = Object.entries(values).filter(([key]) => key.startsWith('left'));
+    const rightFields = Object.entries(values).filter(([key]) => key.startsWith('right'));
+    return (
+        <Box sx={{ display: 'flex', flexDirection: 'column', width: '300px', backgroundColor: '#F5F6FA', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+            <Box sx={{
+                height: '50px', bgcolor: '#3D55CC', borderRadius: '8px 8px 0 0', p: '8px', alignItems: 'center', display: 'flex',        // ✨ added
+                alignItems: 'center', color: '#D9E1FC', px: '12px'
+            }}>Các Token cần thiết
+            </Box>
+            <Box sx={{ display: 'flex', p: '8px', gap: '12px' }}>
+                {/* Left Column */}
+                <Box sx={{ flex: 1 }}>
+                    {leftFields.map(([key]) => (
+                        <Box key={key} sx={{ mb: 2 }}>
+                            <Typography variant="body2" sx={{ mb: 0.5 }}>{key}</Typography>
+                            <input
+                                type="text"
+                                value={editMode ? tempValues[key] || '' : values[key] || ''}
+                                onChange={e => setTempValues({ ...tempValues, [key]: e.target.value })}
+                                disabled={!editMode}
+                                style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+                            />
+                        </Box>
+                    ))}
+                </Box>
+
+                {/* Right Column */}
+                <Box sx={{ flex: 1 }}>
+                    {rightFields.map(([key]) => (
+                        <Box key={key} sx={{ mb: 2 }}>
+                            <Typography variant="body2" sx={{ mb: 0.5 }}>{key}</Typography>
+                            <input
+                                type="text"
+                                value={editMode ? tempValues[key] || '' : values[key] || ''}
+                                onChange={e => setTempValues({ ...tempValues, [key]: e.target.value })}
+                                disabled={!editMode}
+                                style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+                            />
+                        </Box>
+                    ))}
+                </Box>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'center', p: '8px', gap: '8px' }}>
+                {!editMode ? (
+                    <Button variant="contained" onClick={handleEdit}>Edit</Button>
+                ) : (
+                    <>
+                        <Button
+                            variant="contained"
+                            color='success'
+                            onClick={handleSave}>Save</Button>
+                        <Button
+                            variant="contained"
+                            color='error'
+                            onClick={handleCancel}>Cancel</Button>
+                    </>
+                )}
+            </Box>
+        </Box>
+    )
+}
+
+export default ConditionForm

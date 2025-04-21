@@ -32,10 +32,10 @@ export async function POST(request) {
 
             let fullOrderData = orderData;
             try {
-                const version = condition.nhanhVersion;
-                const appId = condition.nhanhAppId;
-                const businessId = condition.nhanhBusinessId;
-                const accessToken = condition.nhanhAccessToken;
+                const version = condition.NhanhVN_Version;
+                const appId = condition.NhanhVN_AppId;
+                const businessId = condition.NhanhVN_BusinessId;
+                const accessToken = condition.NhanhVN_AccessToken;
                 const formData = new FormData();
                 formData.append('version', version);
                 formData.append('appId', appId);
@@ -82,11 +82,11 @@ export async function POST(request) {
                 console.log(`OrderUpdate - Processing customerMobile: ${customerMobile}`);
                 try {
                     const checkCustomerResponse = await axios.get(
-                        `https://api.caresoft.vn/${condition.caresoftDomain}/api/v1/contactsByPhone?phoneNo=${customerMobile}`,
+                        `https://api.caresoft.vn/${condition.CareSoft_Domain}/api/v1/contactsByPhone?phoneNo=${customerMobile}`,
                         {
                             headers: {
                                 'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${condition.caresoftApiToken}`,
+                                'Authorization': `Bearer ${condition.CareSoft_ApiToken}`,
                             },
                         }
                     );
@@ -97,7 +97,7 @@ export async function POST(request) {
                         console.log(`OrderUpdate - Customer with phone ${customerMobile} exists, updating...`);
                         contactId = customerData.contact.id;
                         const updateCustomerResponse = await axios.put(
-                            `https://api.caresoft.vn/${condition.caresoftDomain}/api/v1/contacts/${contactId}`,
+                            `https://api.caresoft.vn/${condition.CareSoft_Domain}/api/v1/contacts/${contactId}`,
                             {
                                 contact: {
                                     phone_no: customerMobile,
@@ -108,7 +108,7 @@ export async function POST(request) {
                             {
                                 headers: {
                                     'Content-Type': 'application/json',
-                                    'Authorization': `Bearer ${condition.caresoftApiToken}`,
+                                    'Authorization': `Bearer ${condition.CareSoft_ApiToken}`,
                                 },
                             }
                         );
@@ -117,7 +117,7 @@ export async function POST(request) {
                     } else {
                         console.log(`OrderUpdate - Customer with phone ${customerMobile} not found, creating new...`);
                         const createCustomerResponse = await axios.post(
-                            `https://api.caresoft.vn/${condition.caresoftDomain}/api/v1/contacts`,
+                            `https://api.caresoft.vn/${condition.CareSoft_Domain}/api/v1/contacts`,
                             {
                                 contact: {
                                     phone_no: customerMobile,
@@ -128,7 +128,7 @@ export async function POST(request) {
                             {
                                 headers: {
                                     'Content-Type': 'application/json',
-                                    'Authorization': `Bearer ${condition.caresoftApiToken}`,
+                                    'Authorization': `Bearer ${condition.CareSoft_ApiToken}`,
                                 },
                             }
                         );
@@ -275,10 +275,10 @@ export async function POST(request) {
             const createDealConfig = {
                 method: 'post',
                 maxBodyLength: Infinity,
-                url: `https://api.caresoft.vn/${condition.caresoftDomain}/api/v1/deal`,
+                url: `https://api.caresoft.vn/${condition.CareSoft_Domain}/api/v1/deal`,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${condition.caresoftApiToken}`,
+                    'Authorization': `Bearer ${condition.CareSoft_ApiToken}`,
                 },
                 data: JSON.stringify({ deal }),
             };
@@ -357,10 +357,10 @@ export async function POST(request) {
         const axiosConfig = {
             method: 'put',
             maxBodyLength: Infinity,
-            url: `https://api.caresoft.vn/${condition.caresoftDomain}/api/v1/deal/${dealId}`,
+            url: `https://api.caresoft.vn/${condition.CareSoft_Domain}/api/v1/deal/${dealId}`,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${condition.caresoftApiToken}`,
+                'Authorization': `Bearer ${condition.CareSoft_ApiToken}`,
             },
             data: JSON.stringify({ deal: dealUpdate }),
         };
