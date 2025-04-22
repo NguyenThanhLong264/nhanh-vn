@@ -138,36 +138,40 @@ export async function POST(request) {
         // Map order products if available
         if (orderData.products && Array.isArray(orderData.products)) {
             // console.log('OrderAdd - Deal before product', deal);
-            deal.order_products = orderData.products.map((product) => {
-                const productMapped = {};
+            if (config.inputTypes['order_products'] === 'custom') {
+                deal.order_products = orderData.products.map((product) => {
+                    const productMapped = {};
 
-                for (const [dealField, value] of Object.entries(config.mapping)) {
-                    if (dealField.startsWith('order_products.')) {
-                        const subField = dealField.replace('order_products.', '');
-                        const inputType = config.inputTypes[dealField];
-                        if (inputType === 'custom') {
-                            const replacedValue = replacePlaceholders(value, { ...orderData, ...product });
-                            productMapped[subField] = replacedValue;
-                        } else if (inputType === 'map') {
-                            const fieldValue = product[value];
-                            if (fieldValue !== undefined) {
-                                productMapped[subField] = fieldValue;
-                            } else {
-                                console.warn(`⚠️ Field "${value}","${dealField}" not found in product`);
-                            }
-                        } else if (value.startsWith('products.')) {
-                            const productSubField = value.replace('products.', '');
-                            const fieldValue = product[productSubField];
-                            if (fieldValue !== undefined) {
-                                productMapped[subField] = fieldValue;
-                            } else {
-                                console.warn(`⚠️ Field "${productSubField}" not found in product`);
+                    for (const [dealField, value] of Object.entries(config.mapping)) {
+                        if (dealField.startsWith('order_products.')) {
+                            const subField = dealField.replace('order_products.', '');
+                            const inputType = config.inputTypes[dealField];
+                            if (inputType === 'custom') {
+                                const replacedValue = replacePlaceholders(value, { ...orderData, ...product });
+                                productMapped[subField] = replacedValue;
+                            } else if (inputType === 'map') {
+                                const fieldValue = product[value];
+                                if (fieldValue !== undefined) {
+                                    productMapped[subField] = fieldValue;
+                                } else {
+                                    console.warn(`⚠️ Field "${value}","${dealField}" not found in product`);
+                                }
+                            } else if (value.startsWith('products.')) {
+                                const productSubField = value.replace('products.', '');
+                                const fieldValue = product[productSubField];
+                                if (fieldValue !== undefined) {
+                                    productMapped[subField] = fieldValue;
+                                } else {
+                                    console.warn(`⚠️ Field "${productSubField}" not found in product`);
+                                }
                             }
                         }
                     }
-                }
-                return productMapped;
-            });
+                    return productMapped;
+                });
+            } else {
+                console.log('⏭ Skipping product mapping: inputTypes.order_product is not custom');
+            }
         }
 
 

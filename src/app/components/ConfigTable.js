@@ -1,11 +1,11 @@
 import React from 'react';
 import MappingRow from './MappingRow';
 import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
-import { useMemo ,useState} from 'react';
+import { useMemo, useState } from 'react';
 import CustomizeSwitch from './Switch';
 
 const ConfigTable = ({ dealFields, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange, onDeleteCustomField, onAddPipelineStageMapping, onDeletePipelineStageMapping, onAddCustomField }) => {
-    const [productsType, setProductsType] = useState(true);
+    const productsType = inputTypes['order_products'] === 'map';
     const regularFields = useMemo(() => {
         return dealFields.filter(field =>
             field.name !== 'order_products' &&
@@ -137,7 +137,7 @@ const ConfigTable = ({ dealFields, webhookFields, mapping, inputTypes, onInputTy
                 <h2>Bảng Sản Phẩm</h2>
                 <CustomizeSwitch
                     checked={productsType}
-                    onChange={() => setProductsType(!productsType)}
+                    onChange={() => onInputTypeChange('order_products')}
                     label={productsType ? "Sản phẩm đã nhập trên CareSoft" : "Sản phẩm chưa nhập trên CareSoft"} />
             </Box>
             <Table size='small' style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px', backgroundColor: "#F5F6FA", borderRadius: '12px', boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.05)' }}>
