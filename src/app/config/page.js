@@ -59,31 +59,21 @@ export default function ConfigPage() {
     }, []);
 
     const handleInputTypeChange = (field) => {
-        console.log(`Toggling input type for field: ${field}`);
-        console.log('Current inputTypes:', inputTypes);
 
         // Toggle the input type (custom <-> map)
         const newInputType = inputTypes[field] === 'custom' ? 'map' : 'custom';
-        console.log(`New input type for field ${field}: ${newInputType}`);
 
         setInputTypes((prev) => {
-            console.log('Setting new inputTypes state...');
             const updatedInputTypes = { ...prev, [field]: newInputType };
-            console.log('Updated inputTypes:', updatedInputTypes);
             return updatedInputTypes;
         });
 
         setMapping((prev) => {
-            console.log('Setting new mapping state...');
             const newMapping = { ...prev };
-
             // If it's currently custom and we are switching to map, delete the field from mapping
             if (newMapping[field]) {
-                console.log(`Deleting field ${field} from mapping because it's switching from custom to map.`);
                 delete newMapping[field];
             }
-
-            console.log('Updated mapping:', newMapping);
             return newMapping;
         });
     };
@@ -136,7 +126,7 @@ export default function ConfigPage() {
             }
 
             const config = { mapping: cleanedMapping, inputTypes: cleanedInputTypes };
-            console.log('Saved config:', config);
+            // console.log('Saved config:', config);
             const response = await fetch('/api/save-config', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

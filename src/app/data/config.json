@@ -43,7 +43,10 @@
     "pipeline_stage_id.Shipping": "408",
     "pipeline_stage_id.Success": "178",
     "username": "customerName",
-    "order_tracking_code": "type"
+    "estimated_closed_date": "createdDateTime",
+    "custom_fields.value_5": "",
+    "group_id": "",
+    "order_tracking_code": "code tracking"
   },
   "inputTypes": {
     "custom_fields.id_1": "custom",
@@ -89,6 +92,9 @@
     "pipeline_stage_id.Shipping": "map",
     "pipeline_stage_id.Success": "map",
     "username": "map",
-    "order_tracking_code": "map"
+    "estimated_closed_date": "map",
+    "custom_fields.value_5": "custom",
+    "group_id": "map",
+    "order_tracking_code": "custom"
   }
 }

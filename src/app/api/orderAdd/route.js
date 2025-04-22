@@ -181,26 +181,18 @@ export async function POST(request) {
         const customFieldsMapping = [];
         const customFieldKeys = Object.keys(config.mapping).filter(key => key.startsWith('custom_fields.id_'));
 
-        console.log("Custom edit 1", customFieldKeys);
-        console.log("Custom edit 2", config.mapping);
-        console.log('🆔 Order ID:', orderId);
-
         customFieldKeys.forEach(idKey => {
             const valueKey = idKey.replace('id_', 'value_');
             const idValue = config.inputTypes[idKey] === 'custom' ? replacePlaceholders(config.mapping[idKey], orderData) : (orderData[config.mapping[idKey]] || '');
             const valueValue = config.mapping[valueKey] !== undefined
                 ? (config.inputTypes[valueKey] === 'custom' ? replacePlaceholders(config.mapping[valueKey], { ...orderData, orderId }) : (orderData[config.mapping[valueKey]] || null))
                 : null;
-            console.log('🔍 Check Field:', { idKey, idValue, valueKey, valueValue });
-
             if (
                 idValue !== null && idValue !== undefined && idValue !== '' &&
                 valueValue !== null && valueValue !== undefined && valueValue !== ''
             ) {
                 customFieldsMapping.push({ id: idValue, value: valueValue });
             }
-            console.log("Custom edit 3", customFieldsMapping);
-
         });
         deal.custom_fields = customFieldsMapping;
 

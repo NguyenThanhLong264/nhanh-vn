@@ -1,16 +1,20 @@
 import React from 'react';
 import MappingRow from './MappingRow';
 import { Button, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import { useMemo } from 'react';
 
 const ConfigTable = ({ dealFields, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange, onDeleteCustomField, onAddPipelineStageMapping, onDeletePipelineStageMapping, onAddCustomField }) => {
-    const regularFields = dealFields.filter(field =>
-        field.name !== 'order_products' &&
-        field.name !== 'custom_fields' &&
-        field.name !== 'pipeline_id' &&
-        field.name !== 'pipeline_stage_id' &&
-        field.name !== 'order_status'
-    );
-    const orderProductsField = {
+    const regularFields = useMemo(() => {
+        return dealFields.filter(field =>
+            field.name !== 'order_products' &&
+            field.name !== 'custom_fields' &&
+            field.name !== 'pipeline_id' &&
+            field.name !== 'pipeline_stage_id' &&
+            field.name !== 'order_status'
+        );
+    }, [dealFields]);
+
+    const orderProductsField = useMemo(() => ({
         name: 'order_products',
         type: 'array',
         subFields: [
@@ -20,38 +24,42 @@ const ConfigTable = ({ dealFields, webhookFields, mapping, inputTypes, onInputTy
             { name: 'discount_markup', type: 'number' },
             { name: 'discount_value', type: 'number' },
         ]
-    };
-    const specialFields = dealFields.filter(field =>
-        field.name === 'pipeline_id' ||
-        field.name === 'pipeline_stage_id' ||
-        field.name === 'order_status'
-    );
+    }), []);
 
-    const customFields = [];
-    const customFieldIndices = new Set(
-        Object.keys(mapping)
-            .filter(key => key.match(/^custom_fields\.id_(\d+)$/))
-            .map(key => key.match(/^custom_fields\.id_(\d+)$/)[1])
-    );
+    const specialFields = useMemo(() => {
+        return dealFields.filter(field =>
+            field.name === 'pipeline_id' ||
+            field.name === 'pipeline_stage_id' ||
+            field.name === 'order_status'
+        );
+    }, [dealFields]);
 
-    customFieldIndices.forEach(index => {
-        const idKey = `custom_fields.id_${index}`;
-        const valueKey = `custom_fields.value_${index}`;
-        if (mapping[idKey] !== undefined || mapping[valueKey] !== undefined) {
-            customFields.push({
-                name: `custom_fields_${index}`,
-                type: 'array',
-                subFields: [
-                    { name: `id_${index}`, type: 'int' },
-                    { name: `value_${index}`, type: 'string' },
-                ],
-                index: parseInt(index),
-            });
-        }
-    });
+    const customFields = useMemo(() => {
+        const customFieldIndices = new Set(
+            Object.keys(mapping)
+                .filter(key => key.match(/^custom_fields\.id_(\d+)$/))
+                .map(key => key.match(/^custom_fields\.id_(\d+)$/)[1])
+        );
 
-    console.log('Custom fields', customFields);
+        const fields = [];
 
+        customFieldIndices.forEach(index => {
+            const idKey = `custom_fields.id_${index}`;
+            const valueKey = `custom_fields.value_${index}`;
+            if (mapping[idKey] !== undefined || mapping[valueKey] !== undefined) {
+                fields.push({
+                    name: `custom_fields_${index}`,
+                    type: 'array',
+                    subFields: [
+                        { name: `id_${index}`, type: 'int' },
+                        { name: `value_${index}`, type: 'string' },
+                    ],
+                    index: parseInt(index),
+                });
+            }
+        });
+        return fields;
+    }, [mapping]);
     return (
         <>
             <h2>Bảng Các Trường CareSoft</h2>
@@ -203,4 +211,4 @@ const ConfigTable = ({ dealFields, webhookFields, mapping, inputTypes, onInputTy
     );
 }
 
-export default ConfigTable;
+export default React.memo(ConfigTable);

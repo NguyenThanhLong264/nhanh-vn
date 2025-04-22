@@ -18,8 +18,6 @@ export function replacePlaceholders(template, data) {
     return template.replace(/\{\{(\w+)\}\}/g, (match, param) => {
         const value = data[param];
         const safeValue = value !== undefined && value !== null ? value : match;
-        console.log(`Replacing ${match} with ${safeValue} in template ${template}`);
-        console.log(`replacePlaceholders called with:`, template, data);
         return safeValue;
     });
 }

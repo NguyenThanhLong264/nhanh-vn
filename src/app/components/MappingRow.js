@@ -1,9 +1,8 @@
 import React from 'react';
-import { TableRow, TableCell, Table, TableBody, TableHead, Box, Tab, Typography, Button } from '@mui/material';
+import { TableRow, TableCell, Table, TableBody, TableHead, Button } from '@mui/material';
 import CustomizeSwitch from './Switch';
 import CustomTextField from './customTextField';
 import CustomSelection from './CustomSelection';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CustomizeIconButton from './CustomizeIconButton';
 
