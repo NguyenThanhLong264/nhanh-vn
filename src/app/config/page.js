@@ -103,35 +103,35 @@ export default function ConfigPage() {
             const cleanedMapping = {};
             const cleanedInputTypes = {};
 
-            for (const [key, value] of Object.entries(mapping)) {
-                if (key === 'order_status' || key === 'pipeline_stage_id') {
-                    continue;
+            // Combine all possible field names
+            const allFields = [...dealFields];
+
+            allFields.forEach((field) => {
+                const key = field.name;
+                const value = mapping[key] ?? '';
+                const inputType = inputTypes[key] ?? 'map'; // default to 'map'
+
+                cleanedMapping[key] = value;
+                cleanedInputTypes[key] = inputType;
+            });
+
+            // Include custom_fields and pipeline_stage_id variants already in mapping
+            Object.keys(mapping).forEach((key) => {
+                if (!cleanedMapping.hasOwnProperty(key)) {
+                    cleanedMapping[key] = mapping[key];
+                    cleanedInputTypes[key] = inputTypes[key] ?? 'map';
                 }
-                if (key.startsWith('custom_fields.id_')) {
-                    const valueKey = key.replace('id_', 'value_');
-                    const idValue = value;
-                    const valueValue = mapping[valueKey] || '';
-                    if (idValue !== undefined || valueValue !== undefined) {
-                        cleanedMapping[key] = idValue;
-                        cleanedInputTypes[key] = inputTypes[key] || 'custom';
-                        if (valueValue !== undefined) {
-                            cleanedMapping[valueKey] = valueValue;
-                            cleanedInputTypes[valueKey] = inputTypes[valueKey] || 'custom';
-                        }
-                    }
-                } else {
-                    cleanedMapping[key] = value;
-                    cleanedInputTypes[key] = inputTypes[key] || 'map';
-                }
-            }
+            });
 
             const config = { mapping: cleanedMapping, inputTypes: cleanedInputTypes };
-            // console.log('Saved config:', config);
+            console.log('Saved config:', config);
+
             const response = await fetch('/api/save-config', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(config),
             });
+
             if (response.ok) {
                 alert('Cấu hình đã được lưu!');
             } else {
@@ -143,6 +143,7 @@ export default function ConfigPage() {
             alert('Đã có lỗi xảy ra!');
         }
     };
+
 
     const handleAddCustomField = () => {
         const existingIndices = Object.keys(mapping)

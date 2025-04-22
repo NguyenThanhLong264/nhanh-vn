@@ -109,68 +109,60 @@ export async function POST(request) {
             console.log('OrderAdd - No customerMobile found in orderData, skipping customer processing');
         }
 
-        const deal = {
-            contact_id: contactId || '',
-            username: orderData.customerName || 'Unknown',
-            subject: `Đơn hàng của ${orderData.customerName || 'Unknown'}`,
-            phone: orderData.customerMobile || '',
-            email: orderData.customerEmail || '',
-            service_id: '',
-            group_id: '',
-            assignee_id: '164796592',
-            pipeline_id: '24',
-            pipeline_stage_id: '174',
-            estimated_closed_date: orderData.createdDateTime ? new Date(orderData.createdDateTime).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-            deal_label: [],
-            custom_fields: [],
-            probability: 0,
-            value: orderData.calcTotalMoney || 0,
-            comment: '',
-            'comment.body': '',
-            'comment.is_public': 1,
-            'comment.author_id': '',
-            order_address_detail: orderData.customerAddress || '',
-            order_buyer_note: orderData.description || '',
-            order_city_id: orderData.shipToCityLocationId || 254,
-            order_district_id: orderData.shipToDistrictLocationId || 318,
-            order_ward_id: orderData.shipToWardLocationId || 1051,
-            order_receiver_name: orderData.customerName || 'Unknown',
-            order_receiver_phone: orderData.customerMobile || '',
-            order_shipping_fee: orderData.customerShipFee || 0,
-            order_status: mapOrderStatus(orderData.status || '', config),
-            order_tracking_code: '',
-            order_tracking_url: orderData.trackingUrl || '',
-            order_products: [],
-        };
+        // Initialize empty deal object
+        const deal = {};
 
+        // Dynamically populate deal based on config.mapping
         for (const [dealField, value] of Object.entries(config.mapping)) {
-            if (!dealField.startsWith('order_products.') && !dealField.startsWith('order_status.')) {
+            // console.log(`OrderAdd - Mapping field: ${dealField} to value: ${value}`);
+            if (
+                !dealField.startsWith('order_products.') &&
+                !dealField.startsWith('custom_fields.') &&
+                !dealField.startsWith('order_status.')
+            ) {
                 if (config.inputTypes[dealField] === 'custom') {
                     deal[dealField] = replacePlaceholders(value, { ...orderData, orderId });
                 } else {
-                    deal[dealField] = orderData[value] !== undefined ? orderData[value] : deal[dealField];
+                    deal[dealField] = orderData[value] !== undefined ? orderData[value] : null;
                 }
             }
         }
 
+        // Special handling for order_status if defined
+        if (config.mapping['order_status'] && config.inputTypes['order_status'] === 'custom') {
+            deal['order_status'] = replacePlaceholders(config.mapping['order_status'], { ...orderData, orderId });
+        } else if (orderData.status) {
+            deal['order_status'] = mapOrderStatus(orderData.status || '', config);
+        }
+
+        // Map order products if available
         if (orderData.products && Array.isArray(orderData.products)) {
+            // console.log('OrderAdd - Deal before product', deal);
             deal.order_products = orderData.products.map((product) => {
-                const productMapped = {
-                    sku: product.id || '',
-                    is_free: 0,
-                    unit_price: product.price ? parseFloat(product.price) : 0,
-                    quantity: product.quantity ? parseFloat(product.quantity) : 0,
-                    discount_markup: 0,
-                    discount_value: product.discount ? parseFloat(product.discount) : 0,
-                };
+                const productMapped = {};
+
                 for (const [dealField, value] of Object.entries(config.mapping)) {
                     if (dealField.startsWith('order_products.')) {
                         const subField = dealField.replace('order_products.', '');
-                        if (config.inputTypes[dealField] === 'custom') {
-                            productMapped[subField] = replacePlaceholders(value, { ...orderData, ...product });
+                        const inputType = config.inputTypes[dealField];
+                        if (inputType === 'custom') {
+                            const replacedValue = replacePlaceholders(value, { ...orderData, ...product });
+                            productMapped[subField] = replacedValue;
+                        } else if (inputType === 'map') {
+                            const fieldValue = product[value];
+                            if (fieldValue !== undefined) {
+                                productMapped[subField] = fieldValue;
+                            } else {
+                                console.warn(`⚠️ Field "${value}","${dealField}" not found in product`);
+                            }
                         } else if (value.startsWith('products.')) {
                             const productSubField = value.replace('products.', '');
-                            productMapped[subField] = product[productSubField] !== undefined ? product[productSubField] : productMapped[subField];
+                            const fieldValue = product[productSubField];
+                            if (fieldValue !== undefined) {
+                                productMapped[subField] = fieldValue;
+                            } else {
+                                console.warn(`⚠️ Field "${productSubField}" not found in product`);
+                            }
                         }
                     }
                 }
@@ -178,15 +170,44 @@ export async function POST(request) {
             });
         }
 
+
+        if ('pipeline_stage_id' in config.mapping) {
+            if (config.inputTypes['pipeline_stage_id'] === 'custom') {
+                deal['pipeline_stage_id'] = replacePlaceholders(config.mapping['pipeline_stage_id'], { ...orderData, orderId });
+            } else if (orderData.status) {
+                const statusKey = orderData.status.trim();
+                const key = `pipeline_stage_id.${statusKey}`;
+                if (config.mapping[key]) {
+                    deal['pipeline_stage_id'] = config.mapping[key];
+                } else {
+                    console.warn(`OrderAdd - No pipeline_stage_id mapping found for status: ${statusKey}`);
+                }
+            }
+            for (const key in deal) {
+                if (key.startsWith('pipeline_stage_id.') || key === '') {
+                    delete deal[key];
+                }
+            }
+        }
+        if (!config.mapping['probability']) {
+            delete deal.probability;
+        }
+        // Custom fields
         const customFieldsMapping = [];
         const customFieldKeys = Object.keys(config.mapping).filter(key => key.startsWith('custom_fields.id_'));
 
         customFieldKeys.forEach(idKey => {
             const valueKey = idKey.replace('id_', 'value_');
-            const idValue = config.inputTypes[idKey] === 'custom' ? replacePlaceholders(config.mapping[idKey], orderData) : (orderData[config.mapping[idKey]] || '');
+            const idValue = config.inputTypes[idKey] === 'custom'
+                ? replacePlaceholders(config.mapping[idKey], orderData)
+                : (orderData[config.mapping[idKey]] || '');
+
             const valueValue = config.mapping[valueKey] !== undefined
-                ? (config.inputTypes[valueKey] === 'custom' ? replacePlaceholders(config.mapping[valueKey], { ...orderData, orderId }) : (orderData[config.mapping[valueKey]] || null))
+                ? (config.inputTypes[valueKey] === 'custom'
+                    ? replacePlaceholders(config.mapping[valueKey], { ...orderData, orderId })
+                    : (orderData[config.mapping[valueKey]] || null))
                 : null;
+
             if (
                 idValue !== null && idValue !== undefined && idValue !== '' &&
                 valueValue !== null && valueValue !== undefined && valueValue !== ''
@@ -196,7 +217,9 @@ export async function POST(request) {
         });
         deal.custom_fields = customFieldsMapping;
 
-        console.log('OrderAdd - Deal object:', deal);
+
+        // Final log
+        console.log('OrderAdd - Final Deal object:', deal);
 
         const axiosConfig = {
             method: 'post',

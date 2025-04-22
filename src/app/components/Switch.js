@@ -1,7 +1,8 @@
 import React from 'react'
 import { Switch, FormControlLabel, styled, Box } from '@mui/material'
 
-const CustomizeSwitch = ({ checked, onChange }) => {
+const CustomizeSwitch = ({ checked, onChange, label }) => {
+    const defaultLabel = checked ? 'Tùy chỉnh' : 'Nhanh.vn';
     return (
         <Box sx={{
             display: 'flex', alignItems: 'center', justifyContent: 'center', height: 36, width: 'auto', gap: 12, borderRadius: '12px', padding: '8px', transition: 'background-color 0.3s, box-shadow 0.3s', // Smooth transition for hover effect
@@ -18,7 +19,7 @@ const CustomizeSwitch = ({ checked, onChange }) => {
                         />
                     </Box>
                 }
-                label={checked ? 'Tùy chỉnh' : 'Nhanh.vn'}
+                label={label ?? defaultLabel}
                 sx={{ m: 0, '& .MuiTypography-root': { ml: '8px' } }}
             />
         </Box>

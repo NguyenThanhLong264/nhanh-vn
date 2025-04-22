@@ -1,9 +1,11 @@
 import React from 'react';
 import MappingRow from './MappingRow';
-import { Button, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
-import { useMemo } from 'react';
+import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import { useMemo ,useState} from 'react';
+import CustomizeSwitch from './Switch';
 
 const ConfigTable = ({ dealFields, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange, onDeleteCustomField, onAddPipelineStageMapping, onDeletePipelineStageMapping, onAddCustomField }) => {
+    const [productsType, setProductsType] = useState(true);
     const regularFields = useMemo(() => {
         return dealFields.filter(field =>
             field.name !== 'order_products' &&
@@ -19,6 +21,7 @@ const ConfigTable = ({ dealFields, webhookFields, mapping, inputTypes, onInputTy
         type: 'array',
         subFields: [
             { name: 'sku', type: 'string' },
+            { name: 'is_free', type: 'number' },
             { name: 'unit_price', type: 'number' },
             { name: 'quantity', type: 'number' },
             { name: 'discount_markup', type: 'number' },
@@ -130,7 +133,13 @@ const ConfigTable = ({ dealFields, webhookFields, mapping, inputTypes, onInputTy
                 </TableBody>
             </Table>
 
-            <h2>Bảng Sản Phẩm</h2>
+            <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '12px' }}>
+                <h2>Bảng Sản Phẩm</h2>
+                <CustomizeSwitch
+                    checked={productsType}
+                    onChange={() => setProductsType(!productsType)}
+                    label={productsType ? "Sản phẩm đã nhập trên CareSoft" : "Sản phẩm chưa nhập trên CareSoft"} />
+            </Box>
             <Table size='small' style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px', backgroundColor: "#F5F6FA", borderRadius: '12px', boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.05)' }}>
                 <TableHead sx={{
                     '& .MuiTableCell-root': {

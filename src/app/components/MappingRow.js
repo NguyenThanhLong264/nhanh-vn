@@ -64,18 +64,6 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
                                 <TableRow key={status} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                     <TableCell>{status}</TableCell>
                                     <TableCell>
-                                        {/* <select
-                                            value={mapping[`order_status.${status}`] || ''}
-                                            onChange={(e) => onMappingChange(`order_status.${status}`, e.target.value)}
-                                            style={{ width: '100%' }}
-                                        >
-                                            <option value="">Chọn trạng thái Nhanh.vn</option>
-                                            {nhanhStatusOptions.map((nhanhStatus) => (
-                                                <option key={nhanhStatus} value={nhanhStatus}>
-                                                    {nhanhStatus}
-                                                </option>
-                                            ))}
-                                        </select> */}
                                         <CustomSelection
                                             value={mapping[`order_status.${status}`] || ''}
                                             onChange={(event, newValue) => {
