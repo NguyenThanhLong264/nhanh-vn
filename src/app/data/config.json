@@ -12,7 +12,7 @@
     "estimated_closed_date": "createdDateTime",
     "probability": "",
     "value": "calcTotalMoney",
-    "comment": "Thông tin hoá đơn:\n Mã hóa đơn: HD032765 Ngày mua hàng: 22/04/2025 11: 10 Trạng thái: Completed Chi nhánh: CÔNG TY TNHH TM SX CÀ PHÊ MOKAFI Mô tả: vtp Danh sách mặt hàng: 1. SP000064 - Cà phê hạt Mokafi cao cấp - Diamond (KG) - Số lượng: 10 Đơn giá: 235,         000 Giảm giá: 0 2. SP000064 - Cà phê hạt Mokafi cao cấp - Diamond (KG) - Số lượng: 1 Đơn giá: 0 Giảm giá: 0 Tổng tiền hàng: 2,         350,         000 Chiết khấu: 0 Cần thanh toán: 0",
+    "comment": "Thông tin hoá đơn:\nMã hóa đơn: HD032765 \nNgày mua hàng: 22/04/2025 11: 10 \nTrạng thái: Completed \nChi nhánh: CÔNG TY TNHH TM SX CÀ PHÊ MOKAFI \nMô tả: vtp \nDanh sách mặt hàng:\n1. SP000064 - Cà phê hạt Mokafi cao cấp - Diamond (KG)\n- Số lượng: 10 Đơn giá: 235,000 Giảm giá: 0 \n2. SP000064 - Cà phê hạt Mokafi cao cấp - Diamond (KG) \n- Số lượng: 1 Đơn giá: 0 Giảm giá: 0 \nTổng tiền hàng: 2,350,000 \nChiết khấu: 0 \nCần thanh toán: 0",
     "comment.body": "",
     "comment.is_public": "",
     "comment.author_id": "",
@@ -53,8 +53,7 @@
     "pipeline_stage_id.Shipping": "408",
     "pipeline_stage_id.Success": "178",
     "order_products.sku": "id",
-    "order_products.discount_markup": "discount",
-    "order_products.is_free": "1"
+    "order_products.discount_markup": "discount"
   },
   "inputTypes": {
     "username": "map",
@@ -110,7 +109,6 @@
     "pipeline_stage_id.Shipping": "map",
     "pipeline_stage_id.Success": "map",
     "order_products.sku": "map",
-    "order_products.discount_markup": "map",
-    "order_products.is_free": "custom"
+    "order_products.discount_markup": "map"
   }
 }

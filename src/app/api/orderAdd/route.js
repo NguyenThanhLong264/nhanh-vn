@@ -138,7 +138,7 @@ export async function POST(request) {
         // Map order products if available
         if (orderData.products && Array.isArray(orderData.products)) {
             // console.log('OrderAdd - Deal before product', deal);
-            if (config.inputTypes['order_products'] === 'custom') {
+            if (config.inputTypes['order_products'] === 'map') {
                 deal.order_products = orderData.products.map((product) => {
                     const productMapped = {};
 

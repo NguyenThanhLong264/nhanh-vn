@@ -230,7 +230,7 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
         <TableRow >
             <TableCell>{field.name}</TableCell>
             <TableCell align='center'>{field.type}</TableCell>
-            <TableCell>
+            <TableCell align='center' >
                 <CustomizeSwitch
                     checked={isCustom}
                     onChange={() => {
@@ -240,11 +240,27 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
             </TableCell>
             <TableCell>
                 {isCustom ? (
-                    <CustomTextField
-                        value={mapping[field.name] || ""}
-                        onChange={(e) => { onMappingChange(field.name, e.target.value) }}
-                        placeholder="Nhập giá trị tùy chỉnh"
-                    />
+                    field.name === 'comment' ? (
+                        <textarea
+                            value={mapping[field.name] || ""}
+                            onChange={(e) => onMappingChange(field.name, e.target.value)}
+                            placeholder="Nhập giá trị tùy chỉnh"
+                            style={{
+                                width: '100%',
+                                height: 'auto',
+                                padding: '8px',
+                                borderRadius: '8px',
+                                border: '1px solid #ccc',
+                                fontFamily: 'inherit',
+                                fontSize: '14px',
+                                resize: 'vertical',
+                            }} />
+                    )
+                        : (<CustomTextField
+                            value={mapping[field.name] || ""}
+                            onChange={(e) => { onMappingChange(field.name, e.target.value) }}
+                            placeholder="Nhập giá trị tùy chỉnh"
+                        />)
                 ) : (
                     <CustomSelection
                         value={mapping[field.name] || ''}

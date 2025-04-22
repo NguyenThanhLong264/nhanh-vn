@@ -12,7 +12,8 @@ const ConfigTable = ({ dealFields, webhookFields, mapping, inputTypes, onInputTy
             field.name !== 'custom_fields' &&
             field.name !== 'pipeline_id' &&
             field.name !== 'pipeline_stage_id' &&
-            field.name !== 'order_status'
+            field.name !== 'order_status' &&
+            field.name !== 'comment'
         );
     }, [dealFields]);
 
@@ -31,6 +32,7 @@ const ConfigTable = ({ dealFields, webhookFields, mapping, inputTypes, onInputTy
 
     const specialFields = useMemo(() => {
         return dealFields.filter(field =>
+            field.name === 'comment' ||
             field.name === 'pipeline_id' ||
             field.name === 'pipeline_stage_id' ||
             field.name === 'order_status'
