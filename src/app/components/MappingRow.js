@@ -1,5 +1,5 @@
 import React from 'react';
-import { TableRow, TableCell, Table, TableBody, TableHead, Button } from '@mui/material';
+import { TableRow, TableCell, Table, TableBody, TableHead, Button, TextField } from '@mui/material';
 import CustomizeSwitch from './Switch';
 import CustomTextField from './customTextField';
 import CustomSelection from './CustomSelection';
@@ -241,20 +241,27 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
             <TableCell>
                 {isCustom ? (
                     field.name === 'comment' ? (
-                        <textarea
+                        // <textarea
+                        //     value={mapping[field.name] || ""}
+                        //     onChange={(e) => onMappingChange(field.name, e.target.value)}
+                        //     placeholder="Nhập giá trị tùy chỉnh"
+                        //     style={{
+                        //         width: '100%',
+                        //         height: 'auto',
+                        //         padding: '8px',
+                        //         borderRadius: '8px',
+                        //         border: '1px solid #ccc',
+                        //         fontFamily: 'inherit',
+                        //         fontSize: '14px',
+                        //         resize: 'vertical',
+                        //     }} />
+                        <CustomTextField
+                            multiline
+                            minRows={4}
                             value={mapping[field.name] || ""}
-                            onChange={(e) => onMappingChange(field.name, e.target.value)}
+                            onChange={(e) => { onMappingChange(field.name, e.target.value) }}
                             placeholder="Nhập giá trị tùy chỉnh"
-                            style={{
-                                width: '100%',
-                                height: 'auto',
-                                padding: '8px',
-                                borderRadius: '8px',
-                                border: '1px solid #ccc',
-                                fontFamily: 'inherit',
-                                fontSize: '14px',
-                                resize: 'vertical',
-                            }} />
+                        />
                     )
                         : (<CustomTextField
                             value={mapping[field.name] || ""}

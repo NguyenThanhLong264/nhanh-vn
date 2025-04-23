@@ -1,11 +1,13 @@
 import React from 'react'
 import TextField from '@mui/material/TextField'
 
-const CustomTextField = ({ value, onChange, placeholder = '' }) => {
+const CustomTextField = ({ value, onChange, placeholder = '', multiline = false, minRows = 3 }) => {
     return (
         <>
             <TextField
                 fullWidth
+                multiline={multiline}
+                minRows={multiline ? minRows : undefined}
                 hiddenLabel
                 variant="outlined"
                 value={value}
@@ -17,7 +19,7 @@ const CustomTextField = ({ value, onChange, placeholder = '' }) => {
                         borderRadius: "12px", // ✅ Rounded border
                         p: "12px 8px 12px 16px",
                         display: "flex",
-                        height: "40px",
+                        height: multiline ? "auto" : "40px",
                         alignItems: "center",
                         // default border
                         "& fieldset": {
