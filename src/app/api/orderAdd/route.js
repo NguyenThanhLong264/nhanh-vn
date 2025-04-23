@@ -114,7 +114,7 @@ export async function POST(request) {
 
         // Dynamically populate deal based on config.mapping
         for (const [dealField, value] of Object.entries(config.mapping)) {
-            console.log(`🛠 Mapping field: ${dealField} => ${value}`);
+            // console.log(`🛠 Mapping field: ${dealField} => ${value}`);
 
             if (
                 !dealField.startsWith('order_products.') &&
@@ -141,9 +141,9 @@ export async function POST(request) {
                             : 'Không có sản phẩm';
                         placeholderData.products = productLines;
                     }
-                    console.log(`🔍 [Custom] Replacing placeholders in: "${value}" with data:`, placeholderData);
+                    // console.log(`🔍 [Custom] Replacing placeholders in: "${value}" with data:`, placeholderData);
                     const replaced = replacePlaceholders(value, placeholderData);
-                    console.log(`✅ [Custom] Result: "${replaced}"`);
+                    // console.log(`✅ [Custom] Result: "${replaced}"`);
                     deal[dealField] = replaced;
                 } else {
                     const directValue = orderData[value];

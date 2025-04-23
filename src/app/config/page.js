@@ -113,7 +113,7 @@ export default function ConfigPage() {
                 const inputType = inputTypes[key] ?? 'map'; // default to 'map'
 
                 // Custom handling for deal_label
-                if (key === 'deal_label') {
+                if (key === 'deal_label' && typeof value === 'string') {
                     value = value
                         .split(',')
                         .map((v) => parseInt(v.trim()))
@@ -130,7 +130,7 @@ export default function ConfigPage() {
                     const inputType = inputTypes[key] ?? 'map';
 
                     // Custom handling for deal_label here too, just in case
-                    if (key === 'deal_label') {
+                    if (key === 'deal_label' && typeof value === 'string') {
                         value = value
                             .split(',')
                             .map((v) => parseInt(v.trim()))

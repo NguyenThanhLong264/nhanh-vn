@@ -58,7 +58,8 @@
     "pipeline_stage_id.Shipping": "408",
     "pipeline_stage_id.Success": "178",
     "order_products.sku": "id",
-    "order_products.discount_markup": "discount"
+    "order_products.discount_markup": "discount",
+    "pipeline_stage_id.Confirmed": "175"
   },
   "inputTypes": {
     "username": "map",
@@ -116,6 +117,7 @@
     "pipeline_stage_id.Shipping": "map",
     "pipeline_stage_id.Success": "map",
     "order_products.sku": "map",
-    "order_products.discount_markup": "map"
+    "order_products.discount_markup": "map",
+    "pipeline_stage_id.Confirmed": "map"
   }
 }
