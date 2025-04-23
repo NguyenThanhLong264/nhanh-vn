@@ -135,9 +135,8 @@ export async function POST(request) {
                             ? orderData.products.map(
                                 (p, i) =>
                                     `#${i + 1} ID sản phẩm NhanhVN: ${p.id} 
-                                    - SL: ${p.quantity}
-                                    - Giá: ${p.price.toLocaleString()}₫ 
-                                    - Giảm: ${p.discount?.toLocaleString?.() ?? 0}₫`
+                                        - SL: ${p.quantity}, Khối lượng: ${p.weight} (gram)
+                                        - Giá: ${p.price} VND, Giảm: ${p.discount} VND`
                             ).join('\n')
                             : 'Không có sản phẩm';
                         placeholderData.products = productLines;

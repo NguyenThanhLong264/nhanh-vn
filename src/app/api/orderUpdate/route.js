@@ -355,7 +355,6 @@ export async function POST(request) {
             console.log('OrderUpdate - No fields to update');
             return NextResponse.json({ message: 'No updates required' }, { status: 200 });
         }
-
         const axiosConfig = {
             method: 'put',
             maxBodyLength: Infinity,

@@ -80,6 +80,7 @@ export default function ConfigPage() {
 
 
     const handleMappingChange = (field, value) => {
+        console.log('handleMappingChange', field, value);
 
         // If it's a pipeline_stage_id field and the value is undefined, delete it
         if (field.startsWith('pipeline_stage_id.') && value === undefined) {
@@ -108,18 +109,36 @@ export default function ConfigPage() {
 
             allFields.forEach((field) => {
                 const key = field.name;
-                const value = mapping[key] ?? '';
+                let value = mapping[key] ?? '';
                 const inputType = inputTypes[key] ?? 'map'; // default to 'map'
+
+                // Custom handling for deal_label
+                if (key === 'deal_label') {
+                    value = value
+                        .split(',')
+                        .map((v) => parseInt(v.trim()))
+                        .filter((v) => !isNaN(v)); // ensure valid numbers
+                }
 
                 cleanedMapping[key] = value;
                 cleanedInputTypes[key] = inputType;
             });
-
             // Include custom_fields and pipeline_stage_id variants already in mapping
             Object.keys(mapping).forEach((key) => {
                 if (!cleanedMapping.hasOwnProperty(key)) {
-                    cleanedMapping[key] = mapping[key];
-                    cleanedInputTypes[key] = inputTypes[key] ?? 'map';
+                    let value = mapping[key];
+                    const inputType = inputTypes[key] ?? 'map';
+
+                    // Custom handling for deal_label here too, just in case
+                    if (key === 'deal_label') {
+                        value = value
+                            .split(',')
+                            .map((v) => parseInt(v.trim()))
+                            .filter((v) => !isNaN(v));
+                    }
+
+                    cleanedMapping[key] = value;
+                    cleanedInputTypes[key] = inputType;
                 }
             });
 
