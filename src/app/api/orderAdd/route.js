@@ -18,7 +18,7 @@ export async function POST(request) {
         const orderData = body.data;
         console.log('OrderAdd - Order data:', orderData);
 
-        const orderId = orderData.orderId || orderData.id;
+        const orderId = orderData.orderId;
         if (!orderId) {
             console.error('OrderAdd - Missing orderId');
             return NextResponse.json({ error: 'Missing orderId' }, { status: 400 });
@@ -114,19 +114,46 @@ export async function POST(request) {
 
         // Dynamically populate deal based on config.mapping
         for (const [dealField, value] of Object.entries(config.mapping)) {
-            // console.log(`OrderAdd - Mapping field: ${dealField} to value: ${value}`);
+            console.log(`🛠 Mapping field: ${dealField} => ${value}`);
+
             if (
                 !dealField.startsWith('order_products.') &&
                 !dealField.startsWith('custom_fields.') &&
                 !dealField.startsWith('order_status.')
             ) {
                 if (config.inputTypes[dealField] === 'custom') {
-                    deal[dealField] = replacePlaceholders(value, { ...orderData, orderId });
+                    // If value contains {{products}}, inject custom product formatting
+                    const placeholderData = { ...orderData };
+                    Object.keys(placeholderData).forEach(key => {
+                        if (placeholderData[key] === null) {
+                            placeholderData[key] = 'Không có dữ liệu';
+                        }
+                    });
+                    if (value.includes('{{products}}')) {
+                        // Format products array into a string
+                        const productLines = Array.isArray(orderData.products)
+                            ? orderData.products.map(
+                                (p, i) =>
+                                    `#${i + 1} ID sản phẩm NhanhVN: ${p.id} 
+                                    - SL: ${p.quantity}
+                                    - Giá: ${p.price.toLocaleString()}₫ 
+                                    - Giảm: ${p.discount?.toLocaleString?.() ?? 0}₫`
+                            ).join('\n')
+                            : 'Không có sản phẩm';
+                        placeholderData.products = productLines;
+                    }
+                    console.log(`🔍 [Custom] Replacing placeholders in: "${value}" with data:`, placeholderData);
+                    const replaced = replacePlaceholders(value, placeholderData);
+                    console.log(`✅ [Custom] Result: "${replaced}"`);
+                    deal[dealField] = replaced;
                 } else {
-                    deal[dealField] = orderData[value] !== undefined ? orderData[value] : null;
+                    const directValue = orderData[value];
+                    console.log(`📦 [Direct] Using orderData[${value}] =`, directValue);
+                    deal[dealField] = directValue !== undefined ? directValue : null;
                 }
             }
         }
+
 
         // Special handling for order_status if defined
         if (config.mapping['order_status'] && config.inputTypes['order_status'] === 'custom') {
