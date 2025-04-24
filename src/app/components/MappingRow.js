@@ -160,7 +160,7 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
                             ))}
                         </TableBody>
                     </Table>
-                    <Button variant='contained' onClick={onAddPipelineStageMapping} sx={{ mb: '5px' }}>Thêm Stage</Button>
+                    <Button variant='contained' onClick={onAddPipelineStageMapping} sx={{ mb: '5px', bgcolor: '#3D55CC' }}>Thêm Stage</Button>
                 </TableCell>
             </TableRow>
         );

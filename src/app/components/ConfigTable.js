@@ -210,7 +210,7 @@ const ConfigTable = ({ dealFields, webhookFields, mapping, inputTypes, onInputTy
             </Table>
             <Button
                 variant='contained'
-                sx={{ my: 2 }}
+                sx={{ my: 2, bgcolor: '#3D55CC' }}
                 onClick={onAddCustomField}
             >Thêm Trường Động</Button>
         </>
