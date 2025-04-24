@@ -106,6 +106,12 @@ export async function POST(request) {
 
         const dealUpdate = {};
         const nhanhStatus = orderData.status || '';
+        const matchedField = [];
+        const comment = {
+            body: undefined,
+            is_public: undefined,
+            author_id: undefined
+        };
 
         // 1. Map status and pipeline stage
         if (nhanhStatus) {
@@ -117,16 +123,35 @@ export async function POST(request) {
         for (const [dealField, value] of Object.entries(config.mapping)) {
             console.log(`OrderUpdate - Processing field: ${dealField}, value: ${value}`);
             if (!value) continue; // Skip empty values
-            
+
             // Skip special cases handled separately
             if (
                 dealField.startsWith('order_products.') ||
                 dealField.startsWith('order_status.') ||
                 dealField.startsWith('custom_fields.') ||
-                dealField.startsWith('pipeline_stage_id.')
+                dealField.startsWith('pipeline_stage_id.') ||
+                dealField === 'comment'
             ) continue;
-
             const inputType = config.inputTypes[dealField];
+
+            if (dealField.startsWith('comment.')) {
+                const key = dealField.split('.')[1]; // e.g., 'body', 'is_public', 'author_id'
+                if (key in comment) {
+                    if (inputType === 'custom') {
+                        // Use replacePlaceholders if it's a custom input
+                        comment[key] = replacePlaceholders(value, orderData);
+                    } else {
+                        // Normal handling: check if value refers to orderData key
+                        if (orderData.hasOwnProperty(value)) {
+                            comment[key] = orderData[value];
+                        } else {
+                            comment[key] = value; // fallback static value
+                        }
+                    }
+                }
+            }
+            dealUpdate.comment = comment
+
 
             // Handle custom fields with placeholders
             if (inputType === 'custom') {
@@ -138,24 +163,13 @@ export async function POST(request) {
                 // Handle direct mappings where mapping value matches a field in orderData
                 if (orderData.hasOwnProperty(value)) {
                     dealUpdate[dealField] = orderData[value];
+                    matchedField.push(dealField)
                 }
             }
         }
 
-        // 3. Optional fields from orderData
-        if (orderData.statusDescription || orderData.reason) {
-            dealUpdate.comment = {
-                body: orderData.reason || orderData.statusDescription || '',
-                is_public: 1,
-            };
-        }
-        if (orderData.trackingUrl) {
-            dealUpdate.order_tracking_url = orderData.trackingUrl;
-        }
-        if (orderData.deliveryDate) {
-            dealUpdate.estimated_closed_date = orderData.deliveryDate;
-        }
-
+        console.log("Matched dealFields with orderData keys:", matchedField);
+        console.log("Comment object:", comment);
         console.log('OrderUpdate - Deal update object:', dealUpdate);
         console.log('OrderUpdate - Deal ID:', dealId);
 

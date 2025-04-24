@@ -112,6 +112,7 @@ export const webhookFields = [
     'trackingUrl',
     'createdDateTime',
     'reason',
+    'deliveryDate',
     {
         name: 'products',
         type: 'array',
