@@ -18,6 +18,13 @@ const ConfigTable = ({ dealFields, webhookFields, mapping, inputTypes, onInputTy
     const orderProductsField = useMemo(() => ({
         name: 'order_products',
         type: 'array',
+        note: `Mảng sản phẩm:
+        "sku": Mã sản phẩm
+        "is_free": Hàng tặng "1", Mặc định 0
+        "unit_price": Giá tiền
+        "quantity": Số lượng
+        "discount_markup": Tỉ lệ giảm giá
+        "discount_value": Giảm giá bằng tiền`,
         subFields: [
             { name: 'sku', type: 'string' },
             { name: 'is_free', type: 'number' },

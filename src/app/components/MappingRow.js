@@ -5,10 +5,15 @@ import CustomTextField from './customTextField';
 import CustomSelection from './CustomSelection';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CustomizeIconButton from './CustomizeIconButton';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import IconTooltip from './IconTooltip';
 
 const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange, onDeleteCustomField, onAddPipelineStageMapping, onDeletePipelineStageMapping }) => {
     const isCustom = inputTypes[field.name] === 'custom';
-
+    const importantFieldsLv1 = ['subject', 'phone', 'email'];
+    const importantFieldsLv2 = ['service_id', 'group_id', 'assignee_id'];
+    const isImportantField1 = importantFieldsLv1.includes(field.name);
+    const isImportantField2 = importantFieldsLv2.includes(field.name);
     const productFields = webhookFields && Array.isArray(webhookFields)
         ? (webhookFields.find((f) => f.name === 'products' && f.type === 'array')?.subFields || [])
         : [];
@@ -49,7 +54,13 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
     if (field.name === 'order_status') {
         return (
             <TableRow>
-                <TableCell>{field.name}</TableCell>
+                <TableCell>
+                    {field.name}
+                    <IconTooltip
+                        icon={<HelpOutlineIcon fontSize='small' />}
+                        text={`${field.note}`}
+                    />
+                </TableCell>
                 <TableCell>{field.type}</TableCell>
                 <TableCell colSpan={3}>
                     <Table size='small' style={{ width: '100%', borderCollapse: 'collapse', margin: '10px 0' }}>
@@ -91,7 +102,10 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
 
         return (
             <TableRow>
-                <TableCell>{field.name}</TableCell>
+                <TableCell>{field.name}<IconTooltip
+                    icon={<HelpOutlineIcon fontSize='small' />}
+                    text={`${field.note}`}
+                /></TableCell>
                 <TableCell>{field.type}</TableCell>
                 <TableCell colSpan={3} align='center' sx={{ p: 0 }}>
                     <Table size='small' style={{ width: '100%', borderCollapse: 'collapse', margin: '10px 0' }}>
@@ -150,7 +164,12 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
     if (field.type === 'array' && field.subFields) {
         return (
             <TableRow>
-                <TableCell>{field.name}</TableCell>
+                <TableCell>{field.name}
+                    {!field.name.startsWith('custom') && <IconTooltip
+                        icon={<HelpOutlineIcon fontSize='small' />}
+                        text={`${field.note}`}
+                    />}
+                </TableCell>
                 <TableCell align='center'>{field.type}</TableCell>
                 <TableCell colSpan={onDeleteCustomField ? 2 : 3} sx={{ p: 0 }}>
                     <Table size='small' style={{ width: '100%', borderCollapse: 'collapse', margin: 0 }}>
@@ -228,7 +247,15 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
 
     return (
         <TableRow >
-            <TableCell>{field.name}</TableCell>
+            <TableCell>
+                {field.name}
+                {isImportantField1 && (" (*)")}
+                {isImportantField2 && (" (**)")}
+                <IconTooltip
+                    icon={<HelpOutlineIcon fontSize='small' />}
+                    text={`${field.note}`}
+                />
+            </TableCell>
             <TableCell align='center'>{field.type}</TableCell>
             <TableCell align='center' >
                 <CustomizeSwitch
