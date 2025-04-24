@@ -8,19 +8,30 @@ export const dealFields = [
     { name: 'assignee_id', type: 'int', note: 'ID chuyên viên tiếp nhận' },
     { name: 'pipeline_id', type: 'int', note: 'ID tiến trình (Mặc định theo cấu hình)' },
     { name: 'estimated_closed_date', type: 'DateTime', note: 'Dự kiến hoàn thành (Định dạng YYYY-MM-DD HH:mm:ss)' },
-    { name: 'deal_label', type: 'array', note: 'Mảng ID label của deal dạng [1,2,3]' },
-    { name: 'pipeline_stage_id', type: 'int', note: 'ID giai đoạn của tiến trình (mặc định là đầu giai đoạn)' },
+    { name: 'deal_label', type: 'array', note: 'Mảng ID label của deal dạng [1,2,3]', guide: `Ví dụ: 11,12` },
+    { name: 'pipeline_stage_id', type: 'int', note: 'ID giai đoạn của tiến trình (mặc định là đầu giai đoạn)', guide: `Gắn các trạng thái trên nhanh với pipeline stage của CareSoft. Một stage có thể gắn nhiều trạng thái nhanh` },
     { name: 'custom_fields', type: 'array', note: 'Mảng custom_fields tương tự tạo ticket' },
     { name: 'probability', type: 'int', note: 'Tỉ lệ thành công (từ 0-100)' },
     { name: 'value', type: 'int', note: 'Giá trị đơn hàng (Số)' },
-    { name: 'comment', type: 'text', note: 'Nội dung ghi chú' },
-    { name: 'comment.body', type: 'text', note: 'Nội dung comment' },
+    {
+        name: 'comment', type: 'text', note: 'Nội dung ghi chú', guide: `Ví dụ:
+        Thông tin hoá đơn:
+        Người mua: {{customerName}} - {{customerMobile}}
+        Ngày mua hàng: {{createdDateTime}}
+        Trạng thái: {{statusDescription}}
+        Mô tả: {{description}}
+        Danh sách mặt hàng:
+        {{products}}
+        Tổng tiền hàng: {{calcTotalMoney}}`
+    },
+    { name: 'comment.body', type: 'text', note: 'Nội dung comment', guide: 'Mục này là dùng cho cập nhật Deal' },
     {
         name: 'comment.is_public', type: 'int', note: `Trạng thái comment
         0: Ghi chú
-        1: Public (VD: Gửi email cho người yêu cầu …)`
+        1: Public (VD: Gửi email cho người yêu cầu …)`,
+        guide: 'Mục này là dùng cho cập nhật Deal'
     },
-    { name: 'comment.author_id', type: 'int', note: 'ID của người bình luận' },
+    { name: 'comment.author_id', type: 'int', note: 'ID của người bình luận', guide: 'Mục này là dùng cho cập nhật Deal' },
     { name: 'order_address_detail', type: 'string', note: 'Địa chỉ chi tiết ' },
     { name: 'order_buyer_note', type: 'string', note: 'Ghi chú của người mua' },
     { name: 'order_city_id', type: 'string', note: 'ID của tỉnh (Theo danh sách Tỉnh thành)' },
@@ -37,7 +48,8 @@ export const dealFields = [
         "SHIPPING": Đang vận chuyển
         "RETURNED": Hoàn
         "CANCELED": Hủy
-        "RECEIVED"": Đã nhận`
+        "RECEIVED"": Đã nhận`,
+        guide: `Gắn trạng thái nhanh theo trạng thái trên CareSoft. Nếu trạng thái nhanh chưa được gắn thì mặc đinh là "ORDER_STARTED"`,
     },
     { name: 'order_tracking_code', type: 'string', note: 'Mã vận chuyển' },
     { name: 'order_tracking_url', type: 'link', note: 'Đường dẫn kiểm tra trạng thái vận chuyển' },
@@ -49,8 +61,9 @@ export const dealFields = [
         "is_free": Hàng tặng "1", Mặc định 0
         "unit_price": Giá tiền
         "quantity": Số lượng
-        "discount_markup": Tỉ lệ giảm giá, "discount_value": Giảm giá bằng tiền
+        "discount_markup": Tỉ lệ giảm giá,
         "discount_value": Giảm giá bằng tiền`,
+        guide: `Lưu ý: Nếu không nhập, hoặc chưa cập nhật đầy đủ sản phẩn trên CareSoft thì vui lòng giữ trạng thái "chưa nhập" phía trên. Nếu đã cập nhật đầy đủ sản phẩm trên CareSoft thì có thể đổi qua trạng thái "đã nhập" phía trên`,
         subFields: [
             { name: 'sku', type: 'string' },
             { name: 'is_free', type: 'int' },

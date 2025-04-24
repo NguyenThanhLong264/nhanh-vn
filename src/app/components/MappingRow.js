@@ -58,8 +58,10 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
                     {field.name}
                     <IconTooltip
                         icon={<HelpOutlineIcon fontSize='small' />}
-                        text={`${field.note}`}
-                    />
+                        text={field.guide
+                            ? `${field.note}\n${field.guide}`
+                            : field.note
+                        } />
                 </TableCell>
                 <TableCell>{field.type}</TableCell>
                 <TableCell colSpan={3}>
@@ -102,18 +104,21 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
 
         return (
             <TableRow>
-                <TableCell>{field.name}<IconTooltip
-                    icon={<HelpOutlineIcon fontSize='small' />}
-                    text={`${field.note}`}
-                /></TableCell>
+                <TableCell>{field.name}
+                    <IconTooltip
+                        icon={<HelpOutlineIcon fontSize='small' />}
+                        text={field.guide
+                            ? `${field.note}\n${field.guide}`
+                            : field.note
+                        } /></TableCell>
                 <TableCell>{field.type}</TableCell>
                 <TableCell colSpan={3} align='center' sx={{ p: 0 }}>
-                    <Table size='small' style={{ width: '100%', borderCollapse: 'collapse', margin: '10px 0' }}>
+                    <Table size='small' style={{ width: '100%', borderCollapse: 'collapse' }}>
                         <TableHead>
                             <TableRow>
-                                <TableCell>ID</TableCell>
-                                <TableCell>Trạng thái Nhanh.vn</TableCell>
-                                <TableCell align='center'>Hành động</TableCell>
+                                <TableCell align='center' sx={{ width: '150px' }}>ID</TableCell>
+                                <TableCell align='center'>Trạng thái Nhanh.vn</TableCell>
+                                <TableCell align='center' sx={{ width: '150px' }}>Hành động</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -155,7 +160,7 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
                             ))}
                         </TableBody>
                     </Table>
-                    <Button variant='contained' onClick={onAddPipelineStageMapping}>Thêm Stage</Button>
+                    <Button variant='contained' onClick={onAddPipelineStageMapping} sx={{ mb: '5px' }}>Thêm Stage</Button>
                 </TableCell>
             </TableRow>
         );
@@ -167,7 +172,10 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
                 <TableCell>{field.name}
                     {!field.name.startsWith('custom') && <IconTooltip
                         icon={<HelpOutlineIcon fontSize='small' />}
-                        text={`${field.note}`}
+                        text={field.guide
+                            ? `${field.note}\n${field.guide}`
+                            : field.note
+                        }
                     />}
                 </TableCell>
                 <TableCell align='center'>{field.type}</TableCell>
@@ -181,7 +189,7 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
 
                                     return (
                                         <TableRow key={subFieldKey}>
-                                            <TableCell sx={{ width: '200px' }}>{subField.name}</TableCell>
+                                            <TableCell sx={{ width: '190px' }}>{subField.name}</TableCell>
                                             <TableCell align='center' sx={{ width: '170px' }}>
                                                 <CustomizeSwitch
                                                     checked={isSubCustom}
@@ -190,7 +198,7 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
                                                     }}
                                                 />
                                             </TableCell>
-                                            <TableCell sx={{ width: '370px' }}>
+                                            <TableCell>
                                                 {isSubCustom ? (
                                                     <CustomTextField
                                                         value={mapping[subFieldKey] || ''}
@@ -253,7 +261,10 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
                 {isImportantField2 && (" (**)")}
                 <IconTooltip
                     icon={<HelpOutlineIcon fontSize='small' />}
-                    text={`${field.note}`}
+                    text={field.guide
+                        ? `${field.note}\n${field.guide}`
+                        : field.note
+                    }
                 />
             </TableCell>
             <TableCell align='center'>{field.type}</TableCell>
@@ -268,20 +279,6 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
             <TableCell>
                 {isCustom ? (
                     field.name === 'comment' ? (
-                        // <textarea
-                        //     value={mapping[field.name] || ""}
-                        //     onChange={(e) => onMappingChange(field.name, e.target.value)}
-                        //     placeholder="Nhập giá trị tùy chỉnh"
-                        //     style={{
-                        //         width: '100%',
-                        //         height: 'auto',
-                        //         padding: '8px',
-                        //         borderRadius: '8px',
-                        //         border: '1px solid #ccc',
-                        //         fontFamily: 'inherit',
-                        //         fontSize: '14px',
-                        //         resize: 'vertical',
-                        //     }} />
                         <CustomTextField
                             multiline
                             minRows={4}

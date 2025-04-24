@@ -3,6 +3,9 @@ import MappingRow from './MappingRow';
 import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import { useMemo, useState } from 'react';
 import CustomizeSwitch from './Switch';
+import IconTooltip from './IconTooltip';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+
 
 const ConfigTable = ({ dealFields, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange, onDeleteCustomField, onAddPipelineStageMapping, onDeletePipelineStageMapping, onAddCustomField }) => {
     const productsType = inputTypes['order_products'] === 'map';
@@ -15,25 +18,9 @@ const ConfigTable = ({ dealFields, webhookFields, mapping, inputTypes, onInputTy
             field.name !== 'order_status');
     }, [dealFields]);
 
-    const orderProductsField = useMemo(() => ({
-        name: 'order_products',
-        type: 'array',
-        note: `Mảng sản phẩm:
-        "sku": Mã sản phẩm
-        "is_free": Hàng tặng "1", Mặc định 0
-        "unit_price": Giá tiền
-        "quantity": Số lượng
-        "discount_markup": Tỉ lệ giảm giá
-        "discount_value": Giảm giá bằng tiền`,
-        subFields: [
-            { name: 'sku', type: 'string' },
-            { name: 'is_free', type: 'number' },
-            { name: 'unit_price', type: 'number' },
-            { name: 'quantity', type: 'number' },
-            { name: 'discount_markup', type: 'number' },
-            { name: 'discount_value', type: 'number' },
-        ]
-    }), []);
+    const orderProductsField = useMemo(() => {
+        return dealFields.find(field => field.name === 'order_products')
+    }, [dealFields]);
 
     const specialFields = useMemo(() => {
         return dealFields.filter(field =>
@@ -71,7 +58,10 @@ const ConfigTable = ({ dealFields, webhookFields, mapping, inputTypes, onInputTy
     }, [mapping]);
     return (
         <>
-            <h2>Bảng Các Trường CareSoft</h2>
+            <h2>Bảng Các Trường CareSoft <IconTooltip
+                icon={<HelpOutlineIcon />}
+                text={`Lưu ý: Nếu chọn kiểu nhập tùy chỉnh thì có thể sử dụng {{tên biến nhanhvn}}.
+                 VD: {{orderID}}`} /></h2>
             <Table size='small' sx={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px', backgroundColor: "#F5F6FA", borderRadius: '12px', boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.05)' }}>
                 <TableHead sx={{
                     '& .MuiTableCell-root': {
@@ -117,8 +107,8 @@ const ConfigTable = ({ dealFields, webhookFields, mapping, inputTypes, onInputTy
                 }}>
                     <TableRow>
                         <TableCell>Tên params</TableCell>
-                        <TableCell>Loại thông tin</TableCell>
-                        <TableCell>Loại input</TableCell>
+                        <TableCell align='center' sx={{ width: '170px' }}>Loại thông tin</TableCell>
+                        <TableCell align='center' sx={{ width: '170px' }}>Loại input</TableCell>
                         <TableCell>Webhook Data / Custom Value</TableCell>
                     </TableRow>
                 </TableHead>
@@ -158,10 +148,9 @@ const ConfigTable = ({ dealFields, webhookFields, mapping, inputTypes, onInputTy
                 }}>
                     <TableRow>
                         <TableCell>Tên params</TableCell>
-                        <TableCell>Loại thông tin</TableCell>
-                        <TableCell align='center' sx={{ width: '200px' }}>Mảng sản phẩm</TableCell>
+                        <TableCell align='center' sx={{ width: '170px' }}>Loại thông tin</TableCell>                        <TableCell align='center' sx={{ width: '190px' }}>Mảng sản phẩm</TableCell>
                         <TableCell align='center' sx={{ width: '170px' }}>Loại input</TableCell>
-                        <TableCell sx={{ width: '370px' }}>Webhook Data / Custom Value</TableCell>
+                        <TableCell>Webhook Data / Custom Value</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -177,7 +166,9 @@ const ConfigTable = ({ dealFields, webhookFields, mapping, inputTypes, onInputTy
                 </TableBody>
             </Table>
 
-            <h2>Bảng Trường Động</h2>
+            <h2>Bảng Trường Động <IconTooltip
+                icon={<HelpOutlineIcon />}
+                text={`Điền Id và giá trị cho từng trường động theo CareSoft.\n VD:Đây là trường động dạng số Id: 1234, Giá trị: {{orderId}}\n Lưu ý: Điền đúng theo loại của trường động`} /></h2>
             <Table size='small' style={{ width: '100%', borderCollapse: 'collapse', backgroundColor: "#F5F6FA", borderRadius: '12px', boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.05)' }}>
                 <TableHead sx={{
                     '& .MuiTableCell-root': {
