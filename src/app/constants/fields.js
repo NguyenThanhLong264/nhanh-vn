@@ -111,6 +111,7 @@ export const webhookFields = [
     'depotId',
     'trackingUrl',
     'createdDateTime',
+    'reason',
     {
         name: 'products',
         type: 'array',
