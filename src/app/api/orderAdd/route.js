@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import axios from 'axios';
 import { saveOrderDealMapping, getDealIdByOrderId } from '../../lib/db';
-import { loadConfig, replacePlaceholders, mapOrderStatus } from '../../lib/webhookUtils';
+import { loadConfig, replacePlaceholders, mapOrderStatus } from '../../lib/services/webhookUtils';
 import condition2 from '../../data/condition.json';
 
 export async function POST(request) {

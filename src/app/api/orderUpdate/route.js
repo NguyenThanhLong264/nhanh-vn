@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import axios from 'axios';
 import FormData from 'form-data';
 import { getDealIdByOrderId, saveOrderDealMapping } from '../../lib/db';
-import { loadConfig, replacePlaceholders, mapOrderStatus, mapPipelineStageId } from '../../lib/webhookUtils';
+import { loadConfig, replacePlaceholders, mapOrderStatus, mapPipelineStageId } from '../../lib/services/webhookUtils';
 import condition2 from '@/app/data/condition.json';
 
 export async function POST(request) {
