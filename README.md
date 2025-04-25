@@ -1,6 +1,3 @@
-You're right! Here's the corrected and **continuous** `README.md` content without any broken markdown blocks or extra breaks in code/sections:
-
-````markdown
 # Nhanh.vn to CareSoft Integration
 
 ## Overview
@@ -30,7 +27,6 @@ A middleware application that seamlessly integrates Nhanh.vn orders with CareSof
    ```bash
    git clone https://github.com/yourusername/nhanh-vn.git
    ```
-````
 
 2. Navigate to the project directory:
 
