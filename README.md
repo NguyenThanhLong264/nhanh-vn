@@ -14,8 +14,8 @@ A middleware application that seamlessly integrates Nhanh.vn orders with CareSof
 
 ## Prerequisites
 
-- Node.js (v16.20.2 LTS)
-- npm (v8.19.4)
+- Node.js (v18.20.8)
+- npm (v10.8.2)
 - Nhanh.vn API credentials (AppID, Version, BusinessID, AccessToken)
 - CareSoft API credentials (Domain, API Token)
 
