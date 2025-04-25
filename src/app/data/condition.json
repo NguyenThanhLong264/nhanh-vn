@@ -1,11 +1,11 @@
 {
   "token": {
-    "NhanhVN_AppId": "75230",
-    "NhanhVN_Version": "2.0",
-    "NhanhVN_BusinessId": "206075",
-    "NhanhVN_AccessToken": "z60AJUOmZHFqQdsZ4WiWeoVKzPxACgoPYJljEAnef74QmD8VjWYt2tnNX7B6h7Qs41mWsBxFDJJD33lvrRRZ08QvT1sGJFwPBnm57isB4SnWWcFeMwuue1D1VYIyZ0qFCsp0lKWWPlkXIIjkKk9fXYaWNxvvmWAXrCsXX0VhN1Fe7RodDa3USvzaEPD5vTsxlaqxhSeVM8x8k3nwwe1lhuzjGRAavNNE1SlFIv2vFrt5vQtwNB",
-    "NhanhVN_VerifyToken": "domain=thammydemo&appId=75230",
-    "CareSoft_Domain": "thammydemo",
-    "CareSoft_ApiToken": "Pd_jJlPnlLPhQXE"
+    "NhanhVN_AppId": "",
+    "NhanhVN_Version": "",
+    "NhanhVN_BusinessId": "",
+    "NhanhVN_AccessToken": "",
+    "NhanhVN_VerifyToken": "",
+    "CareSoft_Domain": "",
+    "CareSoft_ApiToken": ""
   }
 }

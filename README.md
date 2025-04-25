@@ -93,10 +93,54 @@ The application uses SQLite to store mappings between Nhanh.vn orders and CareSo
 - **API errors**: Verify your API credentials are correct in the application settings
 - **Mapping issues**: Check the field mappings in the configuration page
 
-## Support
+## How to Use
 
-For questions or feedback, please contact [support@caresoft.vn](mailto:support@caresoft.vn)
+1. **Initial Setup**
 
-## License
+   - Install and configure the application following the installation steps above
+   - Start the application using either development or production mode
+   - Access the application interface at `http://localhost:3000`
 
-© 2024 CareSoft. All rights reserved.
+2. **API Configuration**
+
+   - In the application interface, navigate to the API settings page
+   - Enter your Nhanh.vn credentials:
+     - AppID (e.g., "75230")
+     - Version (e.g., "2.0")
+     - BusinessID
+     - AccessToken
+   - Enter your CareSoft credentials:
+     - Domain (e.g., "thammydemo")
+     - API Token
+   - Save your configuration
+
+3. **Field Mapping Setup**
+
+   - Go to the mapping configuration page
+   - Map essential fields between Nhanh.vn and CareSoft:
+     - Customer information (name, phone, email)
+     - Order details (products, prices, shipping)
+     - Status mappings
+   - Configure any custom field mappings
+   - Save your mapping configuration
+
+4. **Webhook Configuration**
+
+   - Access your Nhanh.vn account at [https://open.nhanh.vn](https://open.nhanh.vn)
+   - Navigate to Settings > Webhooks
+   - Add a new webhook with endpoint: `https://your-domain/api/webhookNhanhVN`
+   - Replace `your-domain` with your actual domain
+   - Ensure your endpoint is accessible via HTTPS
+
+5. **Testing the Integration**
+
+   - Create a test order in Nhanh.vn
+   - Check your CareSoft account for the new deal
+   - Verify all mapped fields are correctly populated
+   - Test order status updates to ensure synchronization
+
+6. **Monitoring and Maintenance**
+   - Regularly check the application logs for any errors
+   - Monitor webhook delivery status in Nhanh.vn
+   - Verify deal creation and updates in CareSoft
+   - Update field mappings as needed
