@@ -278,10 +278,10 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
             </TableCell>
             <TableCell>
                 {isCustom ? (
-                    field.name === 'comment' ? (
+                    field.name === 'comment' || field.name === 'comment.body' ? (
                         <CustomTextField
                             multiline
-                            minRows={4}
+                            minRows={1}
                             value={mapping[field.name] || ""}
                             onChange={(e) => { onMappingChange(field.name, e.target.value) }}
                             placeholder="Nhập giá trị tùy chỉnh"
