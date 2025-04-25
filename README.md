@@ -25,7 +25,7 @@ A middleware application that seamlessly integrates Nhanh.vn orders with CareSof
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/nhanh-vn.git
+   git clone https://github.com/NguyenThanhLong264/nhanh-vn.git
    ```
 
 2. Navigate to the project directory:
@@ -75,20 +75,13 @@ The application will be available at: [http://localhost:3000](http://localhost:3
 
 For the integration to work, you need to set up webhooks in Nhanh.vn to notify this application when orders are created or updated:
 
-1. Start ngrok to create a secure tunnel to your local server:
-
-   ```bash
-   ngrok http 3000
-   ```
-
-2. Copy the HTTPS URL provided by ngrok (e.g., `https://a1b2c3d4.ngrok.io`)
-
-3. Configure webhooks in Nhanh.vn:
+1. Configure webhooks in Nhanh.vn:
    - Go to [https://open.nhanh.vn](https://open.nhanh.vn)
    - Navigate to **Settings > Webhooks**
    - Create two webhooks with the following endpoints:
-     - **Order Creation**: `your-ngrok-url/api/orderAdd`
-     - **Order Updates**: `your-ngrok-url/api/orderUpdate`
+     - `https://your-domain/api/webhookNhanhVN`
+
+Note: Replace `your-domain` with your actual domain name. Ensure your endpoint is accessible via HTTPS as required by Nhanh.vn's webhook system.
 
 ## Database
 
