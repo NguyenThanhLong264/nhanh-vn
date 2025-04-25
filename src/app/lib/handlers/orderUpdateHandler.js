@@ -15,7 +15,9 @@ export async function handleOrderUpdate(body) {
     console.log('handleOrderUpdate - fetchOrderData', fetchOrderData);
 
     const dealData = await mapToDealFormat(fetchOrderData); // Xử lý dữ liệu
-    response = await createCSdeal(dealData);
+    console.log('handleOrderUpdate - dealdata', dealData);
+
+    response = await createCSdeal(dealData, body);
   } else {
     console.log('handleOrderUpdate - else run');
     response = await updateDeal(data, dealId)

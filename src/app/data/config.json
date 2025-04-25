@@ -91,7 +91,7 @@
     "order_status": "map",
     "order_tracking_code": "custom",
     "order_tracking_url": "map",
-    "order_products": "custom",
+    "order_products": "map",
     "custom_fields.id_1": "custom",
     "custom_fields.value_1": "custom",
     "custom_fields.id_2": "custom",

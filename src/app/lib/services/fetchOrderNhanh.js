@@ -5,7 +5,7 @@ import condition from '../../data/condition.json';
 
 export async function fetchFullOrderData(orderId) {
     try {
-        const { NhanhVN_Version, NhanhVN_AppId, NhanhVN_BusinessId, NhanhVN_AccessToken } = condition;
+        const { NhanhVN_Version, NhanhVN_AppId, NhanhVN_BusinessId, NhanhVN_AccessToken } = condition.token;
 
         const formData = new FormData();
         formData.append('version', NhanhVN_Version);
