@@ -1,6 +1,6 @@
 // lib/handlers/orderAddHandler.js
 import { mapToDealFormat } from './commonOrderUtils.js';
-import { sendToExternalApi } from '../services/externalApi';
+import { createCSdeal } from '../services/createCSdeal.js';
 
 export async function handleOrderAdd(body) {
   console.log('Handling orderAdd');
@@ -10,7 +10,7 @@ export async function handleOrderAdd(body) {
   // console.log('handleOrderAdd - dealData:', dealData);
 
   // Gửi dữ liệu đã xử lý tới API bên ngoài
-  const response = await sendToExternalApi(dealData, body);
+  const response = await createCSdeal(dealData, body);
   return {
     status: response.status,
     data: response.data
