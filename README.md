@@ -14,9 +14,8 @@ A middleware application that seamlessly integrates Nhanh.vn orders with CareSof
 
 ## Prerequisites
 
-- Node.js (v18 or higher)
-- npm (v9 or higher)
-- ngrok (for webhook testing)
+- Node.js (v16.20.2 LTS)
+- npm (v8.19.4)
 - Nhanh.vn API credentials (AppID, Version, BusinessID, AccessToken)
 - CareSoft API credentials (Domain, API Token)
 
@@ -77,7 +76,7 @@ For the integration to work, you need to set up webhooks in Nhanh.vn to notify t
 
 1. Configure webhooks in Nhanh.vn:
    - Go to [https://open.nhanh.vn](https://open.nhanh.vn)
-   - Navigate to **Settings > Webhooks**
+   - Navigate to **My App > Choose the app > Edit the webhook**
    - Create two webhooks with the following endpoints:
      - `https://your-domain/api/webhookNhanhVN`
 
