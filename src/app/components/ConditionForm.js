@@ -15,21 +15,6 @@ const ConditionForm = () => {
         setValues(conditions.token);
     }, []);
 
-    // Load data from vercel edge config
-    // useEffect(() => {
-    //     const fetchToken = async () => {
-    //         try {
-    //             const res = await fetch('/api/get-token-vercel');
-    //             const data = await res.json();
-    //             setValues(data.token); // assuming the endpoint returns { token: { ... } }
-    //         } catch (err) {
-    //             console.error('Failed to load token data:', err);
-    //         }
-    //     };
-
-    //     fetchToken();
-    // }, []);
-
     const handleEdit = () => {
         setTempValues({ ...values });
         setEditMode(true);
@@ -52,15 +37,6 @@ const ConditionForm = () => {
             },
             body: JSON.stringify({ token: tempValues })
         });
-
-        // Save updated data to vercel edge config
-        // await fetch('/api/update-token-vercel', {
-        //     method: 'POST',
-        //     headers: {
-        //       'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({ token: tempValues })
-        //   });
     };
 
     const leftFields = Object.entries(values).filter(([key]) => key.startsWith('NhanhVN'));
