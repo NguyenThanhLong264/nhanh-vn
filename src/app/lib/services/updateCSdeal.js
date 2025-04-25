@@ -1,15 +1,15 @@
 // lib/services/deal/updateDeal.js
 import axios from 'axios';
-import { replacePlaceholders, mapOrderStatus, mapPipelineStageId } from '../webhookUtils';
 import condition from '../../data/condition.json';
-import { loadConfig, replacePlaceholders, mapOrderStatus } from '../services/webhookUtils';
-import { getDealIdByOrderId } from '../../lib/db';
+import { loadConfig, replacePlaceholders, mapOrderStatus, mapPipelineStageId } from '../services/webhookUtils';
 
-export async function updateDeal(orderData) {
+export async function updateDeal(data, dealId) {
+    const token = condition.token
+    console.log('Updating deal with data:', data);
+    console.log('Updating deal with dealId:', dealId);
     const config = await loadConfig();
-    const dealId = await getDealIdByOrderId(orderData.orderId)
-    const nhanhStatus = orderData.status || '';
-    const comment = { body: undefined, is_public: undefined, author_id: undefined };
+    const nhanhStatus = data.status || '';
+    const comment = { body: null, is_public: null, author_id: '' };
     const dealUpdate = {};
 
     // 1. Map status + pipeline
@@ -26,8 +26,8 @@ export async function updateDeal(orderData) {
         if (dealField.startsWith('comment.')) {
             const key = dealField.split('.')[1];
             comment[key] = inputType === 'custom'
-                ? replacePlaceholders(value, orderData)
-                : orderData[value] || value;
+                ? replacePlaceholders(value, data)
+                : data[value] || value;
             continue;
         }
 
@@ -40,11 +40,11 @@ export async function updateDeal(orderData) {
         ) continue;
 
         if (inputType === 'custom') {
-            const mappedValue = replacePlaceholders(value, orderData);
+            const mappedValue = replacePlaceholders(value, data);
             if (mappedValue !== value) dealUpdate[dealField] = mappedValue;
         } else {
-            if (orderData.hasOwnProperty(value)) {
-                dealUpdate[dealField] = orderData[value];
+            if (data.hasOwnProperty(value)) {
+                dealUpdate[dealField] = data[value];
             }
         }
     }
@@ -55,13 +55,14 @@ export async function updateDeal(orderData) {
         console.log('updateDeal - Nothing to update');
         return { skip: true };
     }
+    console.log('updatedeal - final deal update', dealUpdate, dealId);
 
     const axiosConfig = {
         method: 'put',
-        url: `https://api.caresoft.vn/${condition.CareSoft_Domain}/api/v1/deal/${dealId}`,
+        url: `https://api.caresoft.vn/${token.CareSoft_Domain}/api/v1/deal/${dealId}`,
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${condition.CareSoft_ApiToken}`,
+            'Authorization': `Bearer ${token.CareSoft_ApiToken}`,
         },
         data: JSON.stringify({ deal: dealUpdate }),
     };
