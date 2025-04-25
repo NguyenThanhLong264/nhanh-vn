@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { NextResponse } from 'next/server';
 import { saveOrderDealMapping } from '../../lib/db';
 import condition from '../../data/condition.json'
 
@@ -26,7 +25,7 @@ export async function sendToExternalApi(dealData, body) {
     console.log('sendToExternalApi - Web 2 response:', JSON.stringify(web2Response.data));
 
     const dealId = web2Response.data.deal?.id;
-    const appid = condition.NhanhVN_AppId;
+    const appid = token.NhanhVN_AppId;
 
     if (orderId && dealId && businessId && appid) {
       await saveOrderDealMapping(orderId.toString(), dealId.toString(), businessId.toString(), appid);

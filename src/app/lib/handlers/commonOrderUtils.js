@@ -109,5 +109,12 @@ export async function mapToDealFormat(orderData) {
   });
   deal.custom_fields = customFieldsMapping;
 
+  // Loại bỏ các giá trị null
+  for (const key in deal) {
+    if (deal[key] === null) {
+      delete deal[key];
+    }
+  }
+
   return deal;
 }
