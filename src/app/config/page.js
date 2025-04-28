@@ -1,8 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
-import ConfigTable from '../components/ConfigTable';
+import ConfigTable from '../../components/ConfigTable';
 import { dealFields, webhookFields } from '../constants/fields';
-import Topbar from '../components/TopBar';
+import Topbar from '../../components/TopBar';
 import { Container } from '@mui/material';
 
 export default function ConfigPage() {
