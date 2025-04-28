@@ -63,7 +63,7 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
                             : field.note
                         } />
                 </TableCell>
-                <TableCell>{field.type}</TableCell>
+                <TableCell align='center'>{field.type}</TableCell>
                 <TableCell colSpan={3}>
                     <Table size='small' style={{ width: '100%', borderCollapse: 'collapse', margin: '10px 0' }}>
                         <TableHead>
@@ -111,7 +111,7 @@ const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChan
                             ? `${field.note}\n${field.guide}`
                             : field.note
                         } /></TableCell>
-                <TableCell>{field.type}</TableCell>
+                <TableCell align='center'>{field.type}</TableCell>
                 <TableCell colSpan={3} align='center' sx={{ p: 0 }}>
                     <Table size='small' style={{ width: '100%', borderCollapse: 'collapse' }}>
                         <TableHead>

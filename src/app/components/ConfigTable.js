@@ -75,8 +75,8 @@ const ConfigTable = ({ dealFields, webhookFields, mapping, inputTypes, onInputTy
                     <TableRow >
                         <TableCell>Tên params</TableCell>
                         <TableCell align='center' sx={{ width: '170px' }}>Loại thông tin</TableCell>
-                        <TableCell align='center' sx={{ width: '170px' }}>Loại input</TableCell>
-                        <TableCell>Webhook Data / Custom Value</TableCell>
+                        <TableCell align='center' sx={{ width: '170px' }}>Kiểu nhập</TableCell>
+                        <TableCell>Dữ liệu kết nối</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -108,8 +108,8 @@ const ConfigTable = ({ dealFields, webhookFields, mapping, inputTypes, onInputTy
                     <TableRow>
                         <TableCell>Tên params</TableCell>
                         <TableCell align='center' sx={{ width: '170px' }}>Loại thông tin</TableCell>
-                        <TableCell align='center' sx={{ width: '170px' }}>Loại input</TableCell>
-                        <TableCell>Webhook Data / Custom Value</TableCell>
+                        <TableCell align='center' sx={{ width: '170px' }}>Kiểu nhập</TableCell>
+                        <TableCell>Dữ liệu kết nối</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -150,8 +150,8 @@ const ConfigTable = ({ dealFields, webhookFields, mapping, inputTypes, onInputTy
                         <TableCell>Tên params</TableCell>
                         <TableCell align='center' sx={{ width: '170px' }}>Loại thông tin</TableCell>
                         <TableCell align='center' sx={{ width: '190px' }}>Mảng sản phẩm</TableCell>
-                        <TableCell align='center' sx={{ width: '170px' }}>Loại input</TableCell>
-                        <TableCell>Webhook Data / Custom Value</TableCell>
+                        <TableCell align='center' sx={{ width: '170px' }}>Kiểu nhập</TableCell>
+                        <TableCell>Dữ liệu kết nối</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
