@@ -17,7 +17,7 @@ const CustomTextField = ({ value, onChange, placeholder = '', multiline = false,
                     width: "100%",
                     "& .MuiOutlinedInput-root": {
                         borderRadius: "12px", // ✅ Rounded border
-                        p: "12px 8px 12px 16px",
+                        p: multiline ? "8.5px 8px 8.5px 16px" : "12px 8px 12px 16px",
                         display: "flex",
                         height: multiline ? "auto" : "40px",
                         alignItems: "center",
@@ -28,12 +28,12 @@ const CustomTextField = ({ value, onChange, placeholder = '', multiline = false,
                         },
                         // on hover
                         "&:hover fieldset": {
-                            borderColor: "#3D55CC", // teal (or any color you like)
+                            borderColor: "#3D55CC",
                             borderWidth: "1.5px",
                         },
                         // on focus
                         "&.Mui-focused fieldset": {
-                            borderColor: "#3D55CC", // darker teal (focus color)
+                            borderColor: "#3D55CC",
                             borderWidth: "2px",
                         },
                     },

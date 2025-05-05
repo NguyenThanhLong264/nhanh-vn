@@ -83,7 +83,7 @@ export default function Page() {
   // console.log("Custom Rows:", customRows);
 
   return (
-    <>
+    <Box sx={{ width: '100%', bgcolor: "#F5F6FA" }}>
       <Topbar onSaveConfig={handleSave} />
       <Box
         sx={{
@@ -115,6 +115,6 @@ export default function Page() {
           onUpdateRow={handleUpdateRow}
         />
       </Box>
-    </>
+    </Box>
   );
 }

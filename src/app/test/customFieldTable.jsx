@@ -1,5 +1,6 @@
 import React from 'react';
 import { Paper, Typography, Table, TableBody, TableCell, TableHead, TableRow, Button, TextField } from '@mui/material';
+import CustomTextField from '@/components/customTextField';
 
 const CustomFieldsTable = ({ rows, onUpdateRow, title }) => {
     const handleCustomFieldChange = (rowIndex, field, value) => {
@@ -59,7 +60,7 @@ const CustomFieldsTable = ({ rows, onUpdateRow, title }) => {
                                             </TableCell>
                                         )}
                                         <TableCell>
-                                            <TextField
+                                            {/* <TextField
                                                 fullWidth
                                                 size="small"
                                                 value={field.id}
@@ -70,10 +71,20 @@ const CustomFieldsTable = ({ rows, onUpdateRow, title }) => {
                                                         e.target.value
                                                     )
                                                 }
+                                            /> */}
+                                            <CustomTextField value={field.id}
+                                                placeholder='Input ID'
+                                                onChange={(e) =>
+                                                    handleCustomFieldChange(
+                                                        rowIndex,
+                                                        `${fieldIndex}.id`,
+                                                        e.target.value
+                                                    )
+                                                }
                                             />
                                         </TableCell>
                                         <TableCell>
-                                            <TextField
+                                            {/* <TextField
                                                 fullWidth
                                                 size="small"
                                                 value={field.value}
@@ -84,6 +95,14 @@ const CustomFieldsTable = ({ rows, onUpdateRow, title }) => {
                                                         e.target.value
                                                     )
                                                 }
+                                            /> */}
+                                            <CustomTextField value={field.value}
+                                                placeholder='Input Value'
+                                                onChange={(e) =>
+                                                    handleCustomFieldChange(
+                                                        rowIndex,
+                                                        `${fieldIndex}.value`,
+                                                        e.target.value)}
                                             />
                                         </TableCell>
                                         <TableCell>

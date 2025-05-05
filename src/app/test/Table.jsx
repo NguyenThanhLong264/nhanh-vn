@@ -1,5 +1,8 @@
 import { Table as MuiTable, TableBody, TableCell, TableHead, TableRow, Switch, Select, MenuItem, TextField, Paper, Typography } from '@mui/material';
 import { webhookFields } from "./newFields";
+import CustomizeSwitch from '@/components/Switch';
+import CustomTextField from '@/components/customTextField';
+import CustomSelection from '@/components/CustomSelection';
 
 export default function NormalTable({ rows, onUpdateRow, title }) {
     return (
@@ -20,37 +23,48 @@ export default function NormalTable({ rows, onUpdateRow, title }) {
                         <TableRow key={i}>
                             <TableCell>{row.name}</TableCell>
                             <TableCell align="center">
-                                <Switch
-                                    checked={row.typeInput === 'map'}
-                                    onChange={(e) => onUpdateRow(row.originalIndex, { 
-                                        typeInput: e.target.checked ? 'map' : 'normal', 
-                                        value: "" 
+                                <CustomizeSwitch checked={row.typeInput === 'map'}
+                                    onChange={(e) => onUpdateRow(row.originalIndex, {
+                                        typeInput: e.target.checked ? 'map' : 'normal',
+                                        value: ""
                                     })}
-                                />
+                                    label={"Map with NhanhVN"} />
                             </TableCell>
                             <TableCell>
                                 {row.typeInput === 'normal' ? (
-                                    <TextField
-                                        fullWidth
-                                        size="small"
+                                    // <TextField
+                                    //     fullWidth
+                                    //     size="small"
+                                    //     placeholder="--Please type--"
+                                    //     value={row.value}
+                                    //     onChange={(e) => onUpdateRow(row.originalIndex, { value: e.target.value })}
+                                    // />
+                                    <CustomTextField
                                         placeholder="--Please type--"
                                         value={row.value}
                                         onChange={(e) => onUpdateRow(row.originalIndex, { value: e.target.value })}
+                                        multiline={row.name === 'comment' || row.name === "comment.body"}
+                                        minRows={1}
                                     />
                                 ) : (
-                                    <Select
-                                        fullWidth
-                                        size="small"
-                                        value={row.value}
-                                        onChange={(e) => onUpdateRow(row.originalIndex, { value: e.target.value })}
-                                    >
-                                        <MenuItem value="">--Chọn--</MenuItem>
-                                        {webhookFields.map((item, index) => (
-                                            <MenuItem value={item.name} key={index}>
-                                                {item.name}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
+                                    // <Select
+                                    //     fullWidth
+                                    //     size="small"
+                                    //     value={row.value}
+                                    //     onChange={(e) => onUpdateRow(row.originalIndex, { value: e.target.value })}
+                                    // >
+                                    //     <MenuItem value="">--Chọn--</MenuItem>
+                                    //     {webhookFields.map((item, index) => (
+                                    //         <MenuItem value={item.name} key={index}>
+                                    //             {item.name}
+                                    //         </MenuItem>
+                                    //     ))}
+                                    // </Select>
+                                    <CustomSelection
+                                    value={row.value}
+                                    onChange={(_, newValue) => onUpdateRow(row.originalIndex, { value: newValue })}
+                                    option={webhookFields.map(item => item.name)}
+                                  />                                  
                                 )}
                             </TableCell>
                         </TableRow>

@@ -3,7 +3,7 @@
     "name": "subject",
     "type": "int",
     "typeInput": "normal",
-    "value": ""
+    "value": "12345"
   },
   {
     "name": "phone",
@@ -26,14 +26,14 @@
   {
     "name": "assignee_id",
     "type": "int",
-    "typeInput": "special",
+    "typeInput": "normal",
     "value": ""
   },
   {
     "name": "pipeline_id",
     "type": "int",
-    "typeInput": "normal",
-    "value": ""
+    "typeInput": "map",
+    "value": "type"
   },
   {
     "name": "estimated_closed_date",
@@ -53,8 +53,12 @@
     "typeInput": "pipeline_stage",
     "value": [
       {
-        "id": "123",
+        "id": "12331",
         "value": "Confirmed"
+      },
+      {
+        "id": "123",
+        "value": "Packing"
       }
     ]
   },
@@ -64,12 +68,16 @@
     "typeInput": "custom",
     "value": [
       {
-        "id": "1",
+        "id": "123",
         "value": "123"
       },
       {
         "id": "12",
-        "value": "323132"
+        "value": "3231323"
+      },
+      {
+        "id": "444",
+        "value": "124"
       }
     ]
   },
@@ -94,7 +102,7 @@
   {
     "name": "comment.body",
     "type": "int",
-    "typeInput": "normal",
+    "typeInput": "map",
     "value": ""
   },
   {
@@ -182,7 +190,7 @@
       },
       {
         "status": "RECEIVED",
-        "value": "Packed"
+        "value": "Packing"
       },
       {
         "status": "COMPLETED",
@@ -193,8 +201,8 @@
   {
     "name": "order_tracking_code",
     "type": "int",
-    "typeInput": "normal",
-    "value": ""
+    "typeInput": "map",
+    "value": "type"
   },
   {
     "name": "order_tracking_url",
@@ -218,7 +226,7 @@
         "name": "is_free",
         "type": "int",
         "typeInput": "map",
-        "value": "id"
+        "value": "discount"
       },
       {
         "name": "unit_price",

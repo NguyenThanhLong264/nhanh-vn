@@ -1,5 +1,7 @@
 import React from "react";
 import { Paper, Typography, Table, TableBody, TableCell, TableHead, TableRow, Button, TextField, Select, MenuItem } from '@mui/material';
+import CustomTextField from "@/components/customTextField";
+import CustomSelection from "@/components/CustomSelection";
 
 const SpecialTable = ({ rows, onUpdateRow, title }) => {
     const nhanhStatus = [
@@ -95,9 +97,7 @@ const SpecialTable = ({ rows, onUpdateRow, title }) => {
                                                 </TableCell>
                                             )}
                                             <TableCell>
-                                                <TextField
-                                                    fullWidth
-                                                    size="small"
+                                                <CustomTextField
                                                     value={stage.id}
                                                     onChange={(e) =>
                                                         handleStageChange(
@@ -105,31 +105,14 @@ const SpecialTable = ({ rows, onUpdateRow, title }) => {
                                                             stageIndex,
                                                             "id",
                                                             e.target.value
-                                                        )
-                                                    }
-                                                />
+                                                        )}
+                                                    placeholder="Input ID" />
                                             </TableCell>
                                             <TableCell>
-                                                <Select
-                                                    fullWidth
-                                                    size="small"
-                                                    value={stage.value}
-                                                    onChange={(e) =>
-                                                        handleStageChange(
-                                                            rowIndex,
-                                                            stageIndex,
-                                                            "value",
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                >
-                                                    <MenuItem value="">--Select--</MenuItem>
-                                                    {nhanhStatus.map((option, index) => (
-                                                        <MenuItem key={index} value={option.value}>
-                                                            {option.value}
-                                                        </MenuItem>
-                                                    ))}
-                                                </Select>
+                                                <CustomSelection value={stage.value}
+                                                    option={nhanhStatus.map((option) => option.value)}
+                                                    onChange={(_, value) =>
+                                                        handleStageChange(rowIndex, stageIndex, "value", value)} />
                                             </TableCell>
                                             <TableCell>
                                                 <Button
@@ -169,26 +152,12 @@ const SpecialTable = ({ rows, onUpdateRow, title }) => {
                                             {status.status}
                                         </TableCell>
                                         <TableCell colSpan={2}>
-                                            <Select
-                                                fullWidth
-                                                size="small"
-                                                value={status.value}
-                                                onChange={(e) =>
-                                                    handleStageChange(
-                                                        rowIndex,
-                                                        statusIndex,
-                                                        "value",
-                                                        e.target.value
-                                                    )
+                                            <CustomSelection value={status.value}
+                                                option={nhanhStatus.map(option => option.value)}
+                                                onChange={(_, newValue) =>
+                                                    handleStageChange(rowIndex, statusIndex, "value", newValue)
                                                 }
-                                            >
-                                                <MenuItem value="">--Select Value--</MenuItem>
-                                                {nhanhStatus.map((option, index) => (
-                                                    <MenuItem key={index} value={option.value}>
-                                                        {option.value}
-                                                    </MenuItem>
-                                                ))}
-                                            </Select>
+                                            />
                                         </TableCell>
                                     </TableRow>
                                 ))}
@@ -197,21 +166,13 @@ const SpecialTable = ({ rows, onUpdateRow, title }) => {
                             <TableRow key={rowIndex}>
                                 <TableCell>{row.name}</TableCell>
                                 <TableCell colSpan={3}>
-                                    <Select
-                                        fullWidth
-                                        size="small"
+                                    <CustomSelection
                                         value={row.value}
-                                        onChange={(e) =>
-                                            onUpdateRow(row.originalIndex, { value: e.target.value })
+                                        option={nhanhStatus.map(option => option.value)}
+                                        onChange={(_, newValue) =>
+                                            onUpdateRow(row.originalIndex, { value: newValue })
                                         }
-                                    >
-                                        <MenuItem value="">--Select--</MenuItem>
-                                        {nhanhStatus.map((option, index) => (
-                                            <MenuItem key={index} value={option.value}>
-                                                {option.value}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
+                                    />
                                 </TableCell>
                             </TableRow>
                         )
