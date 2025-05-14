@@ -83,7 +83,7 @@ const ProductTable = ({
                                 /> */}
                 <CustomizeSwitch
                   checked={field.typeInput === "map"}
-                  label={"Map with Nhanh"}
+                  label={"Mapping"}
                   onChange={(e) => {
                     const newType = e.target.checked ? "map" : "normal";
                     updateSubField(field.parentIndex, field.subFieldIndex, {

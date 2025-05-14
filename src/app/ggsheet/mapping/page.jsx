@@ -13,12 +13,36 @@ export default function GGsheetMapPage() {
   console.log("defaultConfig: ", defaultConfig);
 
   const [rowsConfig, setRowsConfig] = useState([]);
+  const [sheetFields, setSheetFields] = useState(null);
+
+  // Gọi API để lấy dữ liệu hàng đầu tiên
+  useEffect(() => {
+    const fetchFirstRow = async () => {
+      try {
+        const response = await fetch("/api/ggsheet/get_1st_row");
+        if (!response.ok) throw new Error("API request failed");
+
+        const data = await response.json();
+        setSheetFields(data);
+        localStorage.setItem("sheetFields", JSON.stringify(data));
+      } catch (error) {
+        console.error("Error fetching first row:", error);
+      }
+    };
+    fetchFirstRow();
+  }, []);
 
   // Load config từ localStorage hoặc defaultConfig
   useEffect(() => {
     const loadConfig = () => {
       try {
         const savedConfig = localStorage.getItem("ggsheetConfig");
+        const savedSheetFields = localStorage.getItem("sheetFields");
+
+        if (savedSheetFields) {
+          setSheetFields(JSON.parse(savedSheetFields));
+        }
+
         if (savedConfig) {
           setRowsConfig(JSON.parse(savedConfig));
         } else {
@@ -99,7 +123,7 @@ export default function GGsheetMapPage() {
           title="Normal Fields"
           rows={normalRows}
           onUpdateRow={handleUpdateRow}
-          customWebhookFields={defaultConfig}
+          customWebhookFields={sheetFields}
         />
 
         <SpecialTable

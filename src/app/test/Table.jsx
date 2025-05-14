@@ -49,7 +49,7 @@ export default function NormalTable({
                       value: "",
                     })
                   }
-                  label={"Map with NhanhVN"}
+                  label={"Mapping"}
                 />
               </TableCell>
               <TableCell>
