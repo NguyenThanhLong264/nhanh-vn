@@ -32,7 +32,7 @@
     {
         "name": "assignee_id",
         "type": "int",
-        "typeInput": "special",
+        "typeInput": "normal",
         "value": ""
     },
     {

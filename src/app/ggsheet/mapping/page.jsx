@@ -8,9 +8,12 @@ import { Box, Button } from "@mui/material";
 import defaultConfig from "@/app/test/defaultConfig.json";
 import BackButton from "@/components/ggsheet/backbutton";
 import CleanButton from "@/components/ggsheet/cleanbutton";
+import GuideButton from "@/components/ggsheet/guidebutton";
+import { GUIDE_TEXT } from "./guideText";
+import SyncButton from "@/components/ggsheet/syncbutton";
 
 export default function GGsheetMapPage() {
-  console.log("defaultConfig: ", defaultConfig);
+  // console.log("defaultConfig: ", defaultConfig);
 
   const [rowsConfig, setRowsConfig] = useState([]);
   const [sheetFields, setSheetFields] = useState(null);
@@ -117,6 +120,8 @@ export default function GGsheetMapPage() {
       >
         Save Config
       </Button>
+      <SyncButton />
+      <GuideButton tooltipText={GUIDE_TEXT} />
 
       <Box sx={{ p: 3, maxWidth: "1200px", mx: "auto", bgcolor: "#F5F6FA" }}>
         <NormalTable
