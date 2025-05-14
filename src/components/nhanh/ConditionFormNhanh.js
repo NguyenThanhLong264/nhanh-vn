@@ -1,8 +1,8 @@
-import React from 'react'
+import React from 'react';
 import { useState, useEffect } from 'react';
-import { Box, Button, Typography } from '@mui/material'
-import conditions from '../app/data/condition.json'
-import { useRouter } from 'next/navigation'
+import { Box, Button, Typography } from '@mui/material';
+import conditions from '@/app/data/condition.json';
+import { useRouter } from 'next/navigation';
 
 const ConditionForm = () => {
     const router = useRouter()
@@ -42,7 +42,18 @@ const ConditionForm = () => {
     const leftFields = Object.entries(values).filter(([key]) => key.startsWith('NhanhVN'));
     const rightFields = Object.entries(values).filter(([key]) => key.startsWith('CareSoft'));
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', width: '500px', backgroundColor: '#F5F6FA', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+        <Box sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            display: 'flex',
+            flexDirection: 'column',
+            width: '500px',
+            backgroundColor: '#F5F6FA',
+            borderRadius: '8px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+        }}>
             <Box sx={{
                 height: '50px', bgcolor: '#3D55CC', borderRadius: '8px 8px 0 0', p: '8px', alignItems: 'center', display: 'flex',        // ✨ added
                 alignItems: 'center', color: '#D9E1FC', px: '12px'
@@ -84,7 +95,7 @@ const ConditionForm = () => {
             <Box sx={{ display: 'flex', justifyContent: 'center', p: '8px', gap: '8px' }}>
                 {!editMode ? (
                     <>
-                        <Button variant="contained" onClick={() => router.push('/config')}>Go Mapping</Button>
+                        <Button variant="contained" onClick={() => router.push('/nhanhvn/config')}>Go Mapping</Button>
                         <Button variant="contained" onClick={handleEdit}>Edit</Button>
                     </>
                 ) : (

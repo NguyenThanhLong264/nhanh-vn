@@ -6,7 +6,7 @@ import CustomSelection from './CustomSelection';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CustomizeIconButton from './CustomizeIconButton';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import IconTooltip from './IconTooltip';
+import IconTooltip from '../IconTooltip';
 
 const MappingRow = ({ field, webhookFields, mapping, inputTypes, onInputTypeChange, onMappingChange, onDeleteCustomField, onAddPipelineStageMapping, onDeletePipelineStageMapping }) => {
     const isCustom = inputTypes[field.name] === 'custom';
