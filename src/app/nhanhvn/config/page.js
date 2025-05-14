@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import Topbar from '@/components/TopBar';
+import Topbar from '@/components/nhanh/TopBar';
 import { Container } from '@mui/material';
 import NormalTable from '@/app/test/Table';
 import SpecialTable from '@/app/test/specialTable';

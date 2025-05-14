@@ -1,7 +1,7 @@
 import React from "react";
 import { Paper, Typography, Table, TableBody, TableCell, TableHead, TableRow, Button, TextField, Select, MenuItem } from '@mui/material';
-import CustomTextField from "@/components/customTextField";
-import CustomSelection from "@/components/CustomSelection";
+import CustomTextField from "@/components/nhanh/customTextField";
+import CustomSelection from "@/components/nhanh/CustomSelection";
 
 const SpecialTable = ({ rows, onUpdateRow, title }) => {
     const nhanhStatus = [

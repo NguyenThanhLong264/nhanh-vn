@@ -5,7 +5,7 @@ import NormalTable from "./Table";
 import SpecialTable from "./specialTable";
 import ProductTable from "./productTable";
 import CustomFieldsTable from "./customFieldTable";
-import Topbar from "@/components/TopBar";
+import Topbar from "@/components/nhanh/TopBar";
 import { Box } from "@mui/material";
 
 export default function Page() {

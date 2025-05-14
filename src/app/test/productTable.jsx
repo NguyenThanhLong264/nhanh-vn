@@ -1,8 +1,8 @@
 import React from 'react';
 import { Table, TableBody, TableCell, TableHead, TableRow, Select, MenuItem, TextField, Paper, Typography } from '@mui/material';
-import CustomizeSwitch from '@/components/Switch';
-import CustomTextField from '@/components/customTextField';
-import CustomSelection from '@/components/CustomSelection';
+import CustomizeSwitch from '@/components/nhanh/Switch';
+import CustomTextField from '@/components/nhanh/customTextField';
+import CustomSelection from '@/components/nhanh/CustomSelection';
 
 const ProductTable = ({ rows, onUpdateRow, title }) => {
     // Gộp tất cả subFields và thêm thông tin parentIndex + subFieldIndex

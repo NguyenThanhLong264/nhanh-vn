@@ -1,8 +1,8 @@
 import { Table as MuiTable, TableBody, TableCell, TableHead, TableRow, Switch, Select, MenuItem, TextField, Paper, Typography } from '@mui/material';
 import { webhookFields } from "./newFields";
-import CustomizeSwitch from '@/components/Switch';
-import CustomTextField from '@/components/customTextField';
-import CustomSelection from '@/components/CustomSelection';
+import CustomizeSwitch from '@/components/nhanh/Switch';
+import CustomTextField from '@/components/nhanh/customTextField';
+import CustomSelection from '@/components/nhanh/CustomSelection';
 
 export default function NormalTable({ rows, onUpdateRow, title }) {
     return (

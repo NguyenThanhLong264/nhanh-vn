@@ -3,7 +3,7 @@ import MappingRow from './MappingRow';
 import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import { useMemo, useState } from 'react';
 import CustomizeSwitch from './Switch';
-import IconTooltip from './IconTooltip';
+import IconTooltip from '../IconTooltip';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 
