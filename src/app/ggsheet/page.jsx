@@ -6,10 +6,18 @@ import { useRouter } from "next/navigation";
 
 const GgSheetPage = () => {
   const [editMode, setEditMode] = React.useState(false);
-  const [values, setValues] = React.useState(reqApiField);
+  const [values, setValues] = React.useState(() => {
+    // Load from localStorage if available, otherwise use reqApiField
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("ggsheetCondition");
+      return saved ? JSON.parse(saved) : reqApiField;
+    }
+    return reqApiField;
+  });
   const [tempValues, setTempValues] = React.useState({});
 
   const router = useRouter();
+
   const handleEdit = () => {
     setTempValues({ ...values });
     setEditMode(true);
@@ -18,6 +26,10 @@ const GgSheetPage = () => {
   const handleSave = () => {
     setValues(tempValues);
     setEditMode(false);
+    // Save to localStorage
+    if (typeof window !== "undefined") {
+      localStorage.setItem("ggsheetCondition", JSON.stringify(tempValues));
+    }
   };
 
   const handleCancel = () => {
