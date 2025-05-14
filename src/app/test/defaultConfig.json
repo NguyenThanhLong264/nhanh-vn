@@ -57,7 +57,7 @@
         "name": "pipeline_stage_id",
         "type": "int",
         "typeInput": "pipeline_stage",
-        "value": "orderId"
+        "value": []
     },
     {
         "name": "custom_fields",
@@ -147,7 +147,40 @@
         "name": "order_status",
         "type": "int",
         "typeInput": "status",
-        "value": ""
+        "value": [
+            {
+                "status": "ORDER_STARTED",
+                "value": ""
+            },
+            {
+                "status": "BUYER_CONFIRMED",
+                "value": ""
+            },
+            {
+                "status": "SELLER_CONFIRMED",
+                "value": ""
+            },
+            {
+                "status": "SHIPPING",
+                "value": ""
+            },
+            {
+                "status": "RETURNED",
+                "value": ""
+            },
+            {
+                "status": "CANCELED",
+                "value": ""
+            },
+            {
+                "status": "RECEIVED",
+                "value": ""
+            },
+            {
+                "status": "COMPLETED",
+                "value": ""
+            }
+        ]
     },
     {
         "name": "order_tracking_code",

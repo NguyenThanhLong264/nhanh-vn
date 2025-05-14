@@ -93,11 +93,13 @@ export default function GGsheetMapPage() {
       >
         Save Config
       </Button>
+
       <Box sx={{ p: 3, maxWidth: "1200px", mx: "auto", bgcolor: "#F5F6FA" }}>
         <NormalTable
           title="Normal Fields"
           rows={normalRows}
           onUpdateRow={handleUpdateRow}
+          customWebhookFields={defaultConfig}
         />
 
         <SpecialTable
@@ -110,6 +112,7 @@ export default function GGsheetMapPage() {
           title="Order Product Fields"
           rows={productRows}
           onUpdateRow={handleUpdateRow}
+          nhanhProductFields={defaultConfig}
         />
 
         <CustomFieldsTable
