@@ -1,13 +1,11 @@
 'use client';
 import { useState, useEffect } from 'react';
-import ConfigTable from '../../components/ConfigTable';
-import { dealFields, webhookFields } from '../test/newFields';
-import Topbar from '../../components/TopBar';
+import Topbar from '@/components/TopBar';
 import { Container } from '@mui/material';
-import NormalTable from '../test/Table';
-import SpecialTable from '../test/specialTable';
-import ProductTable from '../test/productTable';
-import CustomFieldsTable from '../test/customFieldTable';
+import NormalTable from '@/app/test/Table';
+import SpecialTable from '@/app/test/specialTable';
+import ProductTable from '@/app/test/productTable';
+import CustomFieldsTable from '@/app/test/customFieldTable';
 
 export default function ConfigPage() {
     const [rowsConfig, setRowsConfig] = useState([]);
