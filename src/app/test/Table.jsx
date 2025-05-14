@@ -32,13 +32,6 @@ export default function NormalTable({ rows, onUpdateRow, title }) {
                             </TableCell>
                             <TableCell>
                                 {row.typeInput === 'normal' ? (
-                                    // <TextField
-                                    //     fullWidth
-                                    //     size="small"
-                                    //     placeholder="--Please type--"
-                                    //     value={row.value}
-                                    //     onChange={(e) => onUpdateRow(row.originalIndex, { value: e.target.value })}
-                                    // />
                                     <CustomTextField
                                         placeholder="--Please type--"
                                         value={row.value}
@@ -47,24 +40,11 @@ export default function NormalTable({ rows, onUpdateRow, title }) {
                                         minRows={1}
                                     />
                                 ) : (
-                                    // <Select
-                                    //     fullWidth
-                                    //     size="small"
-                                    //     value={row.value}
-                                    //     onChange={(e) => onUpdateRow(row.originalIndex, { value: e.target.value })}
-                                    // >
-                                    //     <MenuItem value="">--Chọn--</MenuItem>
-                                    //     {webhookFields.map((item, index) => (
-                                    //         <MenuItem value={item.name} key={index}>
-                                    //             {item.name}
-                                    //         </MenuItem>
-                                    //     ))}
-                                    // </Select>
                                     <CustomSelection
-                                    value={row.value}
-                                    onChange={(_, newValue) => onUpdateRow(row.originalIndex, { value: newValue })}
-                                    option={webhookFields.map(item => item.name)}
-                                  />                                  
+                                        value={row.value}
+                                        onChange={(_, newValue) => onUpdateRow(row.originalIndex, { value: newValue })}
+                                        option={webhookFields.map(item => item.name)}
+                                    />
                                 )}
                             </TableCell>
                         </TableRow>

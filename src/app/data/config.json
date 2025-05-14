@@ -1,0 +1,257 @@
+[
+  {
+    "name": "subject",
+    "type": "int",
+    "typeInput": "normal",
+    "value": "12345"
+  },
+  {
+    "name": "phone",
+    "type": "int",
+    "typeInput": "normal",
+    "value": "22e"
+  },
+  {
+    "name": "service_id",
+    "type": "int",
+    "typeInput": "map",
+    "value": "codFee"
+  },
+  {
+    "name": "group_id",
+    "type": "int",
+    "typeInput": "map",
+    "value": "calcTotalMoney"
+  },
+  {
+    "name": "assignee_id",
+    "type": "int",
+    "typeInput": "normal",
+    "value": ""
+  },
+  {
+    "name": "pipeline_id",
+    "type": "int",
+    "typeInput": "map",
+    "value": "type"
+  },
+  {
+    "name": "estimated_closed_date",
+    "type": "int",
+    "typeInput": "normal",
+    "value": ""
+  },
+  {
+    "name": "deal_label",
+    "type": "int",
+    "typeInput": "normal",
+    "value": ""
+  },
+  {
+    "name": "pipeline_stage_id",
+    "type": "int",
+    "typeInput": "pipeline_stage",
+    "value": [
+      {
+        "id": "12331",
+        "value": "Confirmed"
+      },
+      {
+        "id": "123",
+        "value": "Packing"
+      }
+    ]
+  },
+  {
+    "name": "custom_fields",
+    "type": "array",
+    "typeInput": "custom",
+    "value": [
+      {
+        "id": "123",
+        "value": "123"
+      },
+      {
+        "id": "12",
+        "value": "3231323"
+      },
+      {
+        "id": "444",
+        "value": "124"
+      }
+    ]
+  },
+  {
+    "name": "probability",
+    "type": "int",
+    "typeInput": "normal",
+    "value": ""
+  },
+  {
+    "name": "value",
+    "type": "int",
+    "typeInput": "normal",
+    "value": ""
+  },
+  {
+    "name": "comment",
+    "type": "int",
+    "typeInput": "normal",
+    "value": ""
+  },
+  {
+    "name": "comment.body",
+    "type": "int",
+    "typeInput": "map",
+    "value": ""
+  },
+  {
+    "name": "comment.is_public",
+    "type": "int",
+    "typeInput": "normal",
+    "value": ""
+  },
+  {
+    "name": "comment.author_id",
+    "type": "int",
+    "typeInput": "normal",
+    "value": ""
+  },
+  {
+    "name": "order_address_detail",
+    "type": "int",
+    "typeInput": "normal",
+    "value": ""
+  },
+  {
+    "name": "order_buyer_note",
+    "type": "int",
+    "typeInput": "map",
+    "value": ""
+  },
+  {
+    "name": "order_city_id",
+    "type": "int",
+    "typeInput": "normal",
+    "value": ""
+  },
+  {
+    "name": "order_district_id",
+    "type": "int",
+    "typeInput": "normal",
+    "value": ""
+  },
+  {
+    "name": "order_ward_id",
+    "type": "int",
+    "typeInput": "normal",
+    "value": ""
+  },
+  {
+    "name": "order_receiver_name",
+    "type": "int",
+    "typeInput": "normal",
+    "value": ""
+  },
+  {
+    "name": "order_receiver_phone",
+    "type": "int",
+    "typeInput": "normal",
+    "value": ""
+  },
+  {
+    "name": "order_status",
+    "type": "int",
+    "typeInput": "status",
+    "value": [
+      {
+        "status": "ORDER_STARTED",
+        "value": "New"
+      },
+      {
+        "status": "BUYER_CONFIRMED",
+        "value": "SoldOut"
+      },
+      {
+        "status": "SELLER_CONFIRMED",
+        "value": "Success"
+      },
+      {
+        "status": "SHIPPING",
+        "value": "Packed"
+      },
+      {
+        "status": "RETURNED",
+        "value": "Returning"
+      },
+      {
+        "status": "CANCELED",
+        "value": "Confirmed"
+      },
+      {
+        "status": "RECEIVED",
+        "value": "Packing"
+      },
+      {
+        "status": "COMPLETED",
+        "value": "CarrierCanceled"
+      }
+    ]
+  },
+  {
+    "name": "order_tracking_code",
+    "type": "int",
+    "typeInput": "map",
+    "value": "type"
+  },
+  {
+    "name": "order_tracking_url",
+    "type": "int",
+    "typeInput": "map",
+    "value": "customerShipFee"
+  },
+  {
+    "name": "order_products",
+    "type": "int",
+    "typeInput": "product",
+    "value": "",
+    "subFields": [
+      {
+        "name": "sku",
+        "type": "string",
+        "typeInput": "normal",
+        "value": "1234"
+      },
+      {
+        "name": "is_free",
+        "type": "int",
+        "typeInput": "map",
+        "value": "discount"
+      },
+      {
+        "name": "unit_price",
+        "type": "float",
+        "typeInput": "map",
+        "value": "price"
+      },
+      {
+        "name": "quantity",
+        "type": "int",
+        "typeInput": "map",
+        "value": "weight"
+      },
+      {
+        "name": "discount_markup",
+        "type": "float",
+        "typeInput": "normal",
+        "value": "111779"
+      },
+      {
+        "name": "discount_value",
+        "type": "float",
+        "typeInput": "map",
+        "value": ""
+      }
+    ]
+  }
+]
