@@ -1,6 +1,5 @@
 "use client";
-import ConditionForm from "../../components/ConditionForm";
-import { useRouter } from "next/navigation";
+import ConditionForm from "../../components/ConditionFormNhanh";
 
 export default function NhanhPage() {
   return <ConditionForm />;
