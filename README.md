@@ -84,7 +84,7 @@ Note: Replace `your-domain` with your actual domain name. Ensure your endpoint i
 
 ## Database
 
-The application uses SQLite to store mappings between Nhanh.vn orders and CareSoft deals. The database is automatically created and managed by the application.
+The application uses SQLite to store mappings between Nhanh.vn orders and CareSoft deals. The database is automatically created and managed by the application. This feature is use for update deals if it already exsit.
 
 ## Troubleshooting
 
@@ -99,28 +99,30 @@ The application uses SQLite to store mappings between Nhanh.vn orders and CareSo
    - Install and configure the application following the installation steps above
    - Start the application using either development or production mode
    - Access the application interface at `http://localhost:3000`
+   - **Ensure the application is accessible via HTTPS** (e.g., ngrok, localtunel, mkcert)
 
 2. **API Configuration**
 
    - In the application interface, navigate to the API settings page
    - Enter your Nhanh.vn credentials:
-     - AppID (e.g., "75230")
-     - Version (e.g., "2.0")
-     - BusinessID
-     - AccessToken
-   - Enter your CareSoft credentials:
-     - Domain (e.g., "thammydemo")
-     - API Token
+      ![credentials](public/guidePic/credentials.png)
    - Save your configuration
 
 3. **Field Mapping Setup**
 
    - Go to the mapping configuration page
    - Map essential fields between Nhanh.vn and CareSoft:
-     - Customer information (name, phone, email)
-     - Order details (products, prices, shipping)
-     - Status mappings
-   - Configure any custom field mappings
+      + You can choose between map with params of NhanhVN webhook, or customize. When in the customize, you can still able to use the params of Nhanh by use: {{nhanh params}}. Example: "Đơn hàng của {{customerName}}" (with {{product}}, it auto changr to the list of product in order)
+      ![mapping](public/guidePic/mapping1.png)
+   - Some special case:
+      + pipeline_stage_id: with each id of the pipeline_stage_id, you can map it with 1 status on nhanh, and if the status recive that not mapped, it use the default of that pipeline_id.
+      ![pipeline](public/guidePic/pipeline.png)
+      + order_status: in CareSoft we have different status, you can choose the status of nhanh to map with it.
+      ![order_status](public/guidePic/order_status.png)
+      + order_products: in CareSoft we have the order_products array with it parrams, and you can choose to map with the params of product of NhanhVN. But you need to have the products both CareSoft and Nhanh have there SKU = id (then it can display on deals, if not then turn the switch to: "Sản phẩm chưa nhập trên CareSoft")
+      ![order_products](public/guidePic/order_product.png)
+      + custom_fields: CareSoft have the customs fields, you need to use the correct id and value of it. Example:
+      ![custom_fields](public/guidePic/custom_field.png)
    - Save your mapping configuration
 
 4. **Webhook Configuration**
