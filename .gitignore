@@ -24,6 +24,7 @@
 .DS_Store
 *.pem
 .env*
+bash.exe.stackdump
 
 # debug
 npm-debug.log*

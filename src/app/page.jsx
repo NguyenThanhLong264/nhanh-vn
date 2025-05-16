@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Box, Button, Typography } from "@mui/material";
-import reqApiField from "./form.json";
+import reqApiField from "@/app/data/form.json";
 import { useRouter } from "next/navigation";
 
 const GgSheetPage = () => {
@@ -96,10 +96,7 @@ const GgSheetPage = () => {
       >
         {!editMode ? (
           <>
-            <Button
-              variant="contained"
-              onClick={() => router.push("/ggsheet/mapping")}
-            >
+            <Button variant="contained" onClick={() => router.push("/mapping")}>
               To Mapping
             </Button>
             <Button variant="contained" onClick={handleEdit}>
