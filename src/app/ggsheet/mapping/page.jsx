@@ -13,8 +13,6 @@ import { GUIDE_TEXT } from "./guideText";
 import SyncButton from "@/components/ggsheet/syncbutton";
 
 export default function GGsheetMapPage() {
-  // console.log("defaultConfig: ", defaultConfig);
-
   const [rowsConfig, setRowsConfig] = useState([]);
   const [sheetFields, setSheetFields] = useState(null);
 
