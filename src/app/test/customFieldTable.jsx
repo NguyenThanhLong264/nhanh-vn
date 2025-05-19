@@ -60,25 +60,13 @@ const CustomFieldsTable = ({ rows, onUpdateRow, title }) => {
                                             </TableCell>
                                         )}
                                         <TableCell>
-                                            {/* <TextField
-                                                fullWidth
-                                                size="small"
-                                                value={field.id}
-                                                onChange={(e) =>
-                                                    handleCustomFieldChange(
-                                                        rowIndex,
-                                                        `${fieldIndex}.id`,
-                                                        e.target.value
-                                                    )
-                                                }
-                                            /> */}
                                             <CustomTextField value={field.id}
                                                 placeholder='Input ID'
-                                                onChange={(e) =>
+                                                onBlur={(newVal) =>
                                                     handleCustomFieldChange(
                                                         rowIndex,
                                                         `${fieldIndex}.id`,
-                                                        e.target.value
+                                                        newVal
                                                     )
                                                 }
                                             />

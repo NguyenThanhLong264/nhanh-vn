@@ -203,36 +203,36 @@
             {
                 "name": "sku",
                 "type": "string",
-                "typeInput": "custom",
+                "typeInput": "normal",
                 "value": ""
             },
             {
                 "name": "is_free",
                 "type": "int",
-                "typeInput": "custom"
+                "typeInput": "normal"
             },
             {
                 "name": "unit_price",
                 "type": "float",
-                "typeInput": "custom",
+                "typeInput": "normal",
                 "value": ""
             },
             {
                 "name": "quantity",
                 "type": "int",
-                "typeInput": "custom",
+                "typeInput": "normal",
                 "value": ""
             },
             {
                 "name": "discount_markup",
                 "type": "float",
-                "typeInput": "custom",
+                "typeInput": "normal",
                 "value": ""
             },
             {
                 "name": "discount_value",
                 "type": "float",
-                "typeInput": "custom",
+                "typeInput": "normal",
                 "value": ""
             }
         ]

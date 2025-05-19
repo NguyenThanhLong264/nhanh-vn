@@ -107,7 +107,7 @@ const SpecialTable = ({ rows, onUpdateRow, title }) => {
                   (Array.isArray(row.value) ? row.value : []).map(
                     (stage, stageIndex) => (
                       <TableRow key={`${rowIndex}-${stageIndex}`}>
-                          {stageIndex === 0 && (
+                        {stageIndex === 0 && (
                           <TableCell
                             rowSpan={
                               (Array.isArray(row.value)
@@ -121,13 +121,8 @@ const SpecialTable = ({ rows, onUpdateRow, title }) => {
                         <TableCell>
                           <CustomTextField
                             value={stage.id}
-                            onChange={(e) =>
-                              handleStageChange(
-                                rowIndex,
-                                stageIndex,
-                                "id",
-                                e.target.value
-                              )
+                            onBlur={(newVal) =>
+                              handleStageChange(rowIndex, stageIndex, "id", newVal)
                             }
                             placeholder="Input ID"
                           />

@@ -95,23 +95,12 @@ const ProductTable = ({
               </TableCell>
               <TableCell>
                 {field.typeInput === "normal" ? (
-                  // <TextField
-                  //     fullWidth
-                  //     size="small"
-                  //     placeholder="--Please type--"
-                  //     value={field.value || ''}
-                  //     onChange={(e) =>
-                  //         updateSubField(field.parentIndex, field.subFieldIndex, {
-                  //             value: e.target.value
-                  //         })
-                  //     }
-                  // />
                   <CustomTextField
                     value={field.value}
                     placeholder="Input value"
-                    onChange={(e) =>
+                    onBlur={(newVal) =>
                       updateSubField(field.parentIndex, field.subFieldIndex, {
-                        value: e.target.value,
+                        value: newVal,
                       })
                     }
                   />

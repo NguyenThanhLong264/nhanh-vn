@@ -57,8 +57,8 @@ export default function NormalTable({
                   <CustomTextField
                     placeholder="--Please type--"
                     value={row.value}
-                    onChange={(e) =>
-                      onUpdateRow(row.originalIndex, { value: e.target.value })
+                    onBlur={(newVal) =>
+                      onUpdateRow(row.originalIndex, { value: newVal })
                     }
                     multiline={
                       row.name === "comment" || row.name === "comment.body"
