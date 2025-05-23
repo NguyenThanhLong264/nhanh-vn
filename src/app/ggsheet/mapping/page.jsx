@@ -1,16 +1,16 @@
 "use client";
 import { useState, useEffect } from "react";
-import NormalTable from "@/app/test/Table";
-import SpecialTable from "@/app/test/specialTable";
-import ProductTable from "@/app/test/productTable";
-import CustomFieldsTable from "@/app/test/customFieldTable";
+import NormalTable from "@/components/Table/Table.jsx";
+import SpecialTable from "@/components/Table/specialTable";
+import ProductTable from "@/components/Table/productTable";
+import CustomFieldsTable from "@/components/Table/customFieldTable";
 import { Box, Button } from "@mui/material";
 import defaultConfig from "@/app/test/defaultConfig.json";
-import BackButton from "@/components/ggsheet/backbutton";
-import CleanButton from "@/components/ggsheet/cleanbutton";
-import GuideButton from "@/components/ggsheet/guidebutton";
 import { GUIDE_TEXT } from "./guideText";
-import SyncButton from "@/components/ggsheet/syncbutton";
+import BackButton from "@/components/Button/backbutton";
+import CleanButton from "@/components/Button/cleanbutton";
+import GuideButton from "@/components/Button/guidebutton";
+import SyncButton from "@/components/Button/syncbutton";
 
 export default function GGsheetMapPage() {
   const [rowsConfig, setRowsConfig] = useState([]);

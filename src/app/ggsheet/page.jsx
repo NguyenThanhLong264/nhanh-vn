@@ -1,34 +1,45 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Button, Typography } from "@mui/material";
-import reqApiField from "./form.json";
+import reqApiField from "./defaultGGSheetCondition.json";
 import { useRouter } from "next/navigation";
 
 const GgSheetPage = () => {
-  const [editMode, setEditMode] = React.useState(false);
-  const [values, setValues] = React.useState(() => {
-    // Load from localStorage if available, otherwise use reqApiField
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("ggsheetCondition");
-      return saved ? JSON.parse(saved) : reqApiField;
-    }
-    return reqApiField;
-  });
-  const [tempValues, setTempValues] = React.useState({});
-
   const router = useRouter();
+  const [editMode, setEditMode] = useState(false);
+  const [values, setValues] = useState(reqApiField)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchConditions = async () => {
+      try {
+        const res = await fetch('api/ggsheet/get_env');
+        if (!res.ok) throw new Error("Failed to fetch config");
+        const data = await res.json();
+        setValues((prev) => ({
+          ...prev,
+          ...data,
+        }));
+      } catch (err) {
+        console.error("Error loading config:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchConditions()
+  }, [])
 
   const handleEdit = () => {
-    setTempValues({ ...values });
+    setValues({ ...values });
     setEditMode(true);
   };
 
   const handleSave = () => {
-    setValues(tempValues);
+    setValues(values);
     setEditMode(false);
     // Save to localStorage
     if (typeof window !== "undefined") {
-      localStorage.setItem("ggsheetCondition", JSON.stringify(tempValues));
+      localStorage.setItem("ggSpreadId", JSON.stringify(values.GGSheetSpreadsheetId));
     }
   };
 
@@ -75,11 +86,11 @@ const GgSheetPage = () => {
               </Typography>
               <input
                 type="text"
-                value={editMode ? tempValues[key] || "" : values[key] || ""}
+                value={editMode ? values[key] || "" : values[key] || ""}
                 onChange={(e) =>
-                  setTempValues({ ...tempValues, [key]: e.target.value })
+                  setValues({ ...values, [key]: e.target.value })
                 }
-                disabled={!editMode}
+                disabled={!editMode || key !== "GGSheetSpreadsheetId"}
                 style={{
                   width: "100%",
                   padding: "8px",
