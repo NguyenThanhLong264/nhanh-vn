@@ -18,11 +18,20 @@ export default function GGsheetMapPage() {
 
   // Gọi API để lấy dữ liệu hàng đầu tiên
   useEffect(() => {
+    console.log("ggSpreadId:", localStorage.getItem("ggSpreadId"));
+
     const fetchFirstRow = async () => {
       try {
-        const response = await fetch("/api/ggsheet/get_1st_row");
+        const response = await fetch("/api/ggsheet/get_1st_row", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            spreadsheetId: localStorage.getItem("ggSpreadId"), // Chuỗi bạn muốn phân tích
+          }),
+        });
         if (!response.ok) throw new Error("API request failed");
-
         const data = await response.json();
         setSheetFields(data);
         localStorage.setItem("sheetFields", JSON.stringify(data));

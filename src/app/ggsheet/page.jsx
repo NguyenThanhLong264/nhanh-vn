@@ -7,13 +7,13 @@ import { useRouter } from "next/navigation";
 const GgSheetPage = () => {
   const router = useRouter();
   const [editMode, setEditMode] = useState(false);
-  const [values, setValues] = useState(reqApiField)
-  const [loading, setLoading] = useState(true)
+  const [values, setValues] = useState(reqApiField);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchConditions = async () => {
       try {
-        const res = await fetch('api/ggsheet/get_env');
+        const res = await fetch("api/ggsheet/get_env");
         if (!res.ok) throw new Error("Failed to fetch config");
         const data = await res.json();
         setValues((prev) => ({
@@ -25,9 +25,9 @@ const GgSheetPage = () => {
       } finally {
         setLoading(false);
       }
-    }
-    fetchConditions()
-  }, [])
+    };
+    fetchConditions();
+  }, []);
 
   const handleEdit = () => {
     setValues({ ...values });
@@ -39,7 +39,10 @@ const GgSheetPage = () => {
     setEditMode(false);
     // Save to localStorage
     if (typeof window !== "undefined") {
-      localStorage.setItem("ggSpreadId", JSON.stringify(values.GGSheetSpreadsheetId));
+      localStorage.setItem(
+        "ggSpreadId",
+        values.GGSheetSpreadsheetId // Remove JSON.stringify
+      );
     }
   };
 

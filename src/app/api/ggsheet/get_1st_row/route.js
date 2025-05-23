@@ -1,18 +1,14 @@
-import { NextResponse } from 'next/server';
-
-export async function GET() {
+export async function POST(req) {
+    const apiKey = process.env.GOOGLE_SHEETS_API_KEY
     try {
         // Lấy giá trị từ localStorage (chạy trên server nên cần kiểm tra)
-        let spreadsheetId = '1Uc7NIf2QiD0cSz_8ie0D5QT1_xazUYAca5HvUm4I4gY';
-        let apiKey = 'AIzaSyAn4gthKnJFyZwDwfes2GSTAskBl6_dLwU';
-
-        if (typeof localStorage !== 'undefined') {
-            const savedConfig = localStorage.getItem('ggsheetCondition');
-            if (savedConfig) {
-                const config = JSON.parse(savedConfig);
-                spreadsheetId = config.GGSheetSpreadsheetId || spreadsheetId;
-                apiKey = config.GGSheetApi || apiKey;
-            }
+        const body = await req.json();
+        const spreadsheetId = body.spreadsheetId?.trim();
+        if (!spreadsheetId) {
+            return Response.json(
+                { error: "Spreadsheet ID is required" },
+                { status: 400 }
+            );
         }
 
         const range = 'Sheet1!1:1';
@@ -22,6 +18,8 @@ export async function GET() {
         );
 
         if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Google Sheets API error details:', errorData);
             throw new Error(`Google Sheets API error: ${response.status}`);
         }
 
@@ -33,10 +31,10 @@ export async function GET() {
             name: item
         }));
 
-        return NextResponse.json(result);
+        return Response.json(result);
     } catch (error) {
         console.error('Error fetching Google Sheets data:', error);
-        return NextResponse.json(
+        return Response.json(
             { error: 'Failed to fetch data from Google Sheets' },
             { status: 500 }
         );
