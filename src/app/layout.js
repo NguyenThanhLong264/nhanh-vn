@@ -9,7 +9,9 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <ClientProvider>
-          {children}
+          <main>
+            {children}
+          </main>
         </ClientProvider>
       </body>
     </html>
