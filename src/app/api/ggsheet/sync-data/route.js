@@ -5,22 +5,19 @@ import { ggsheetCreateDeal, ggsheetMapDeal } from '@/app/lib/ggsheet/dealhandle'
 export async function POST(request) {
   try {
     const { config, sheetFields, spreadId } = await request.json();
-    console.log("CONFIG", config);
-
     const sheetResponse = await getFullsheet(spreadId);
     const objects = await createObjects(sheetResponse);
 
-    // Process each object and create deals
-    const dealPromises = objects.map(async (item) => {
+    const createdDeals = [];
+    for (const item of objects) {
       const dealData = await ggsheetMapDeal(item, config);
-      return await ggsheetCreateDeal(dealData, sheetFields);
-    });
-
-    const results = await Promise.all(dealPromises);
+      const result = await ggsheetCreateDeal(dealData, sheetFields);
+      createdDeals.push(result);
+    }
 
     return Response.json({
       success: true,
-      createdDeals: results.length
+      createdDeals: createdDeals
     });
   } catch (error) {
     console.error("Error syncing data:", error);

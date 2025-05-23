@@ -7,6 +7,7 @@ const CleanButton = ({ text = "Refresh", storageName, value }) => {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleConfirm = async () => {
+    localStorage.setItem(storageName, JSON.stringify(value));
     if (storageName && value !== undefined) {
       try {
         const response = await fetch("/api/config/save", {

@@ -5,29 +5,39 @@ const CS_Domain = process.env.CARESOFT_DOMAIN;
 const CS_ApiToken = process.env.CARESOFT_API;
 
 export async function ggsheetCreateDeal(data) {
-    try {
-        const axiosConfig = {
-            method: 'post',
-            maxBodyLength: Infinity,
-            url: `https://api.caresoft.vn/${CS_Domain}/api/v1/deal`,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${CS_ApiToken}`,
-            },
-            data: JSON.stringify({ deal: data }),
+    const maxRetries = 3;
+    let retryCount = 0;
+    const baseDelay = 1000; // 1 second
+    const requestDelay = 100; // 100ms delay between requests
+
+    while (retryCount < maxRetries) {
+        try {
+            await new Promise(resolve => setTimeout(resolve, requestDelay));
+            const axiosConfig = {
+                method: 'post',
+                maxBodyLength: Infinity,
+                url: `https://api.caresoft.vn/${CS_Domain}/api/v1/deal`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${CS_ApiToken}`,
+                },
+                data: JSON.stringify({ deal: data }),
+            };
+            const CSresponse = await axios.request(axiosConfig);
+            return {
+                status: 200,
+                data: CSresponse.data,
+            };
+        } catch (error) {
+            if (error.response?.status !== 429 || retryCount >= maxRetries) {
+                throw error;
+            }
+            retryCount++;
+            const delay = baseDelay * Math.pow(2, retryCount);
+            await new Promise(resolve => setTimeout(resolve, delay));
         }
-        const CSresponse = await axios.request(axiosConfig);
-        return {
-            status: 200,
-            data: CSresponse.data,
-        };
-    } catch (error) {
-        console.error('Error creating CSdeal:', error);
-        return {
-            status: 500,
-            error: 'Internal Server Error',
-        };
     }
+    throw new Error('Max retries reached');
 }
 
 export async function ggsheetMapDeal(data, config) {
