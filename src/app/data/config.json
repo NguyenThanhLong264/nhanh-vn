@@ -1,45 +1,57 @@
 [
   {
+    "name": "username",
+    "type": "int",
+    "typeInput": "map",
+    "value": "customerName"
+  },
+  {
     "name": "subject",
     "type": "int",
     "typeInput": "normal",
-    "value": "12345"
+    "value": "Đơn của {{customerName}}"
   },
   {
     "name": "phone",
     "type": "int",
-    "typeInput": "normal",
-    "value": "22e"
+    "typeInput": "map",
+    "value": "customerMobile"
+  },
+  {
+    "name": "email",
+    "type": "email",
+    "typeInput": "map",
+    "value": "customerEmail"
   },
   {
     "name": "service_id",
     "type": "int",
-    "typeInput": "map",
-    "value": "codFee"
+    "typeInput": "normal",
+    "value": ""
   },
   {
     "name": "group_id",
     "type": "int",
-    "typeInput": "map",
-    "value": "calcTotalMoney"
+    "typeInput": "normal",
+    "value": ""
   },
   {
     "name": "assignee_id",
     "type": "int",
     "typeInput": "normal",
-    "value": ""
+    "value": "228869982"
   },
   {
     "name": "pipeline_id",
     "type": "int",
-    "typeInput": "map",
-    "value": "type"
+    "typeInput": "normal",
+    "value": "24"
   },
   {
     "name": "estimated_closed_date",
     "type": "int",
-    "typeInput": "normal",
-    "value": ""
+    "typeInput": "map",
+    "value": "deliveryDate"
   },
   {
     "name": "deal_label",
@@ -53,12 +65,16 @@
     "typeInput": "pipeline_stage",
     "value": [
       {
-        "id": "12331",
-        "value": "Confirmed"
+        "id": "174",
+        "value": "New"
       },
       {
-        "id": "123",
-        "value": "Packing"
+        "id": "175",
+        "value": "Confirming"
+      },
+      {
+        "id": "178",
+        "value": "Success"
       }
     ]
   },
@@ -68,16 +84,16 @@
     "typeInput": "custom",
     "value": [
       {
-        "id": "123",
-        "value": "123"
+        "id": "11454",
+        "value": "{{orderId}}"
       },
       {
-        "id": "12",
-        "value": "3231323"
+        "id": "7561",
+        "value": "111779"
       },
       {
-        "id": "444",
-        "value": "124"
+        "id": "10678",
+        "value": "5"
       }
     ]
   },
@@ -90,26 +106,26 @@
   {
     "name": "value",
     "type": "int",
-    "typeInput": "normal",
-    "value": ""
+    "typeInput": "map",
+    "value": "calcTotalMoney"
   },
   {
     "name": "comment",
     "type": "int",
     "typeInput": "normal",
-    "value": ""
+    "value": "Thông tin hoá đơn:\nNgười mua: {{customerName}} - {{customerMobile}}\nNgày mua hàng: {{createdDateTime}}\nTrạng thái: {{statusDescription}}\nMô tả: {{description}}\nDanh sách mặt hàng:\n{{products}}\nTổng tiền hàng: {{calcTotalMoney}}"
   },
   {
     "name": "comment.body",
     "type": "int",
     "typeInput": "map",
-    "value": ""
+    "value": "reason"
   },
   {
     "name": "comment.is_public",
     "type": "int",
     "typeInput": "normal",
-    "value": ""
+    "value": "0"
   },
   {
     "name": "comment.author_id",
@@ -120,44 +136,44 @@
   {
     "name": "order_address_detail",
     "type": "int",
-    "typeInput": "normal",
-    "value": ""
+    "typeInput": "map",
+    "value": "customerAddress"
   },
   {
     "name": "order_buyer_note",
     "type": "int",
     "typeInput": "map",
-    "value": ""
+    "value": "description"
   },
   {
     "name": "order_city_id",
     "type": "int",
-    "typeInput": "normal",
-    "value": ""
+    "typeInput": "map",
+    "value": "shipToCityLocationId"
   },
   {
     "name": "order_district_id",
     "type": "int",
-    "typeInput": "normal",
-    "value": ""
+    "typeInput": "map",
+    "value": "shipToDistrictLocationId"
   },
   {
     "name": "order_ward_id",
     "type": "int",
-    "typeInput": "normal",
-    "value": ""
+    "typeInput": "map",
+    "value": "shipToWardLocationId"
   },
   {
     "name": "order_receiver_name",
     "type": "int",
-    "typeInput": "normal",
-    "value": ""
+    "typeInput": "map",
+    "value": "customerName"
   },
   {
     "name": "order_receiver_phone",
     "type": "int",
-    "typeInput": "normal",
-    "value": ""
+    "typeInput": "map",
+    "value": "customerMobile"
   },
   {
     "name": "order_status",
@@ -170,31 +186,31 @@
       },
       {
         "status": "BUYER_CONFIRMED",
-        "value": "SoldOut"
+        "value": "CustomerConfirming"
       },
       {
         "status": "SELLER_CONFIRMED",
-        "value": "Success"
-      },
-      {
-        "status": "SHIPPING",
-        "value": "Packed"
-      },
-      {
-        "status": "RETURNED",
-        "value": "Returning"
-      },
-      {
-        "status": "CANCELED",
         "value": "Confirmed"
       },
       {
+        "status": "SHIPPING",
+        "value": "Shipping"
+      },
+      {
+        "status": "RETURNED",
+        "value": "Returned"
+      },
+      {
+        "status": "CANCELED",
+        "value": "Canceled"
+      },
+      {
         "status": "RECEIVED",
-        "value": "Packing"
+        "value": "Pickup"
       },
       {
         "status": "COMPLETED",
-        "value": "CarrierCanceled"
+        "value": "Success"
       }
     ]
   },
@@ -202,13 +218,13 @@
     "name": "order_tracking_code",
     "type": "int",
     "typeInput": "map",
-    "value": "type"
+    "value": "depotId"
   },
   {
     "name": "order_tracking_url",
     "type": "int",
     "typeInput": "map",
-    "value": "customerShipFee"
+    "value": "trackingUrl"
   },
   {
     "name": "order_products",
@@ -219,14 +235,13 @@
       {
         "name": "sku",
         "type": "string",
-        "typeInput": "normal",
-        "value": "1234"
+        "typeInput": "map",
+        "value": "id"
       },
       {
         "name": "is_free",
         "type": "int",
-        "typeInput": "map",
-        "value": "discount"
+        "typeInput": "normal"
       },
       {
         "name": "unit_price",
@@ -238,19 +253,19 @@
         "name": "quantity",
         "type": "int",
         "typeInput": "map",
-        "value": "weight"
+        "value": "quantity"
       },
       {
         "name": "discount_markup",
         "type": "float",
-        "typeInput": "normal",
-        "value": "111779"
+        "typeInput": "map",
+        "value": "discount"
       },
       {
         "name": "discount_value",
         "type": "float",
         "typeInput": "map",
-        "value": ""
+        "value": "discount"
       }
     ]
   }
