@@ -1,6 +1,6 @@
 import React from 'react';
 import { Paper, Typography, Table, TableBody, TableCell, TableHead, TableRow, Button, TextField } from '@mui/material';
-import CustomTextField from '@/components/nhanh/customTextField';
+import CustomTextField from '@/components/Input/customTextField';
 
 const CustomFieldsTable = ({ rows, onUpdateRow, title }) => {
     const handleCustomFieldChange = (rowIndex, field, value) => {
