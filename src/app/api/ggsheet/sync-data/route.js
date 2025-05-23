@@ -1,36 +1,32 @@
 // nhanh-vn/src/app/api/ggsheet/sync-data/route.js
-import { NextResponse } from 'next/server';
+import { createObjects, getFullsheet } from '@/app/lib/ggsheet/sheetApi';
+import { ggsheetCreateDeal, ggsheetMapDeal } from '@/app/lib/ggsheet/dealhandle';
 
 export async function POST(request) {
   try {
-    const { config, sheetFields } = await request.json();
+    const { config, sheetFields, spreadId } = await request.json();
+    console.log("CONFIG", config);
 
-    // 1. Gọi Google Sheets API nội bộ với thông tin từ config
-    const sheetResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/ggsheet/fetch-ggsheet`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ config, sheetFields })
-    });
-    const sheetData = await sheetResponse.json();
+    const sheetResponse = await getFullsheet(spreadId);
+    const objects = await createObjects(sheetResponse);
 
-    // 2. Áp dụng mapping rules
-    const transformedData = transformData(sheetData);
-
-    // 3. Gửi đến web khác
-    const webResponse = await fetch('https://api.web-khac.com/data', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(transformedData)
+    // Process each object and create deals
+    const dealPromises = objects.map(async (item) => {
+      const dealData = await ggsheetMapDeal(item, config);
+      return await ggsheetCreateDeal(dealData, sheetFields);
     });
 
-    return NextResponse.json({ success: true });
+    const results = await Promise.all(dealPromises);
+
+    return Response.json({
+      success: true,
+      createdDeals: results.length
+    });
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("Error syncing data:", error);
+    return Response.json(
+      { error: "Failed to sync data" },
+      { status: 500 }
+    );
   }
-}
-
-// Hàm transform data
-function transformData(data) {
-  // Logic mapping của bạn ở đây
-  return data;
 }
