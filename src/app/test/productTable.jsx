@@ -11,9 +11,9 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import CustomizeSwitch from "@/components/nhanh/Switch";
-import CustomTextField from "@/components/nhanh/customTextField";
-import CustomSelection from "@/components/nhanh/CustomSelection";
+import CustomizeSwitch from "@/components/Button/Switch";
+import CustomTextField from "@/components/Input/customTextField";
+import CustomSelection from "@/components/Input/CustomSelection";
 
 const ProductTable = ({
   rows,

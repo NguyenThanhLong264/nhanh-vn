@@ -12,8 +12,8 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import CustomTextField from "@/components/nhanh/customTextField";
-import CustomSelection from "@/components/nhanh/CustomSelection";
+import CustomTextField from "@/components/Input/customTextField";
+import CustomSelection from "@/components/Input/CustomSelection";
 
 const SpecialTable = ({ rows, onUpdateRow, title }) => {
   const nhanhStatus = [
