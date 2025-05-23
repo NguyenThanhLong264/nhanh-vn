@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { configClassify, replacePlaceholders } from "@/app/lib/services/webhookUtils.js";
+import { configClassify } from "@/app/lib/services/webhookUtils.js";
 
 const CS_Domain = process.env.CARESOFT_DOMAIN;
 const CS_ApiToken = process.env.CARESOFT_API;
@@ -93,4 +93,11 @@ function cleanEmptyValues(obj) {
             value !== null && value !== undefined && value !== ""
         )
     );
+}
+
+function replacePlaceholders(template, data) {
+    return template.replace(/\{\{(.*?)\}\}/g, (match, key) => {
+        const trimmedKey = key.trim();
+        return data[trimmedKey] || '';
+    });
 }
