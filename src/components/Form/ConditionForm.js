@@ -1,8 +1,8 @@
-import React from 'react';
+import React from 'react'
 import { useState, useEffect } from 'react';
-import { Box, Button, Typography } from '@mui/material';
-import conditions from '@/app/data/condition.json';
-import { useRouter } from 'next/navigation';
+import { Box, Button, Typography } from '@mui/material'
+import conditions from '@/app/data/condition.json'
+import { useRouter } from 'next/navigation'
 
 const ConditionForm = () => {
     const router = useRouter()
@@ -12,8 +12,22 @@ const ConditionForm = () => {
 
     // // Load initial data from the JSON file
     useEffect(() => {
-        setValues(conditions.token);
+        async function fetchConfig() {
+            try {
+                const res = await fetch('/api/conditions/get?name=apiKey');
+                const data = await res.json();
+                if (!res.ok) {
+                    console.warn('Config not found:', data.error);
+                    return;
+                }
+                setValues(data);
+            } catch (err) {
+                console.error('Error fetching config:', err);
+            }
+        }
+        fetchConfig();
     }, []);
+
 
     const handleEdit = () => {
         setTempValues({ ...values });
@@ -28,38 +42,34 @@ const ConditionForm = () => {
     const handleSave = async () => {
         setValues(tempValues);
         setEditMode(false);
-
-        // Save updated data to backend API or local server endpoint
-        await fetch('/api/editable-box', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ token: tempValues })
-        });
+        try {
+            const res = await fetch('/api/conditions/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(tempValues)
+            });
+            if (!res.ok) {
+                const err = await res.json();
+                alert(`Saving failed: ${err.error || 'Unknown error'}`);
+                return;
+            }
+            alert("Saving Successful");
+        } catch (error) { alert(`Saving failed: ${error.message}`); }
     };
+
 
     const leftFields = Object.entries(values).filter(([key]) => key.startsWith('NhanhVN'));
     const rightFields = Object.entries(values).filter(([key]) => key.startsWith('CareSoft'));
     return (
-        <Box sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            display: 'flex',
-            flexDirection: 'column',
-            width: '500px',
-            backgroundColor: '#F5F6FA',
-            borderRadius: '8px',
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
-        }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', width: '500px', backgroundColor: '#F5F6FA', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
             <Box sx={{
                 height: '50px', bgcolor: '#3D55CC', borderRadius: '8px 8px 0 0', p: '8px', alignItems: 'center', display: 'flex',        // ✨ added
                 alignItems: 'center', color: '#D9E1FC', px: '12px'
             }}>Các Token cần thiết
             </Box>
-            <Box sx={{ display: 'flex', p: '12px', gap: '12px' }}>
+            <Box sx={{ display: 'flex', p: '12px', gap: '12px', minHeight: '395px' }}>
                 {/* Left Column */}
                 <Box sx={{ flex: 1 }}>
                     {leftFields.map(([key]) => (
@@ -95,7 +105,7 @@ const ConditionForm = () => {
             <Box sx={{ display: 'flex', justifyContent: 'center', p: '8px', gap: '8px' }}>
                 {!editMode ? (
                     <>
-                        <Button variant="contained" onClick={() => router.push('/nhanhvn/config')}>Go Mapping</Button>
+                        <Button variant="contained" onClick={() => router.push('/config')}>Go Mapping</Button>
                         <Button variant="contained" onClick={handleEdit}>Edit</Button>
                     </>
                 ) : (

@@ -1,5 +1,6 @@
 import { handleOrderAdd } from './orderAddHandler.js';
 import { handleOrderUpdate } from './orderUpdateHandler.js';
+import { NextResponse } from 'next/server'; 
 
 export async function webhookDispatcher(event, body) {
     switch (event) {
@@ -21,9 +22,9 @@ export async function webhookDispatcher(event, body) {
 
         default:
             console.warn(`Unsupported webhook event: ${event}`);
-            return {
-                status: 400,
-                data: { message: `Event "${event}" not supported` },
-            };
+            return NextResponse.json(
+                { message: `Event "${event}" not supported` },
+                { status: 400 }
+            );
     }
 }

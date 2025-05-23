@@ -1,15 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import ConfirmationForm from "./comfirmationForm";
+import ConfirmationForm from "../Form/comfirmationForm";
 
 const CleanButton = ({ text = "Refresh", storageName, value }) => {
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (storageName && value !== undefined) {
-      localStorage.setItem(storageName, JSON.stringify(value));
-      window.location.reload();
+      try {
+        const response = await fetch("/api/config/save", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(value),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to save config");
+        }
+
+        const result = await response.json();
+        console.log("Save result:", result);
+        window.location.reload();
+      } catch (error) {
+        console.error("Save error:", error);
+        alert("Failed to save configuration");
+      }
     }
     setShowConfirm(false);
   };
