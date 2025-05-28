@@ -17,16 +17,12 @@ export async function getFullsheet(spreadId) {
     }
 }
 
-export async function createObjects(values) {
-    const headers = values[0].map(header => {
-        // Format headers with single quotes
-        return header.trim().replace(/['"]/g, '');
-    });
+export async function createObjects(values, headers) {
+    const headerNames = headers.map(h => h.name);
     const rows = values.slice(1);
-
     const objects = rows.map(row =>
         Object.fromEntries(
-            headers.map((key, i) => [key, row[i] || ''])
+            headerNames.map((key, i) => [key, row[i] || ''])
         )
     );
 

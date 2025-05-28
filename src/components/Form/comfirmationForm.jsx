@@ -14,7 +14,7 @@ const ConfirmationForm = ({
   question = "Are you sure to continue?",
 }) => {
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} PaperProps={{ sx: { width: '400px', maxWidth: '90%' }, }}>
       <DialogTitle>Confirmation</DialogTitle>
       <DialogContent>{question}</DialogContent>
       <DialogActions>
@@ -25,7 +25,7 @@ const ConfirmationForm = ({
           Yes
         </Button>
       </DialogActions>
-    </Dialog>
+    </Dialog >
   );
 };
 
