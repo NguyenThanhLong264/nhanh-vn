@@ -14,7 +14,14 @@ export async function POST(req) {
 
         return NextResponse.json({ message: 'Done', results });
     } catch (error) {
-        console.error('Sync error:', error);
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+        console.error('Sync error:', {
+            message: error.message,
+            response: error.response,
+        });
+
+        return NextResponse.json({
+            error: error.response?.message || error.message || 'Internal server error',
+            details: error.response || null,
+        }, { status: 500 });
     }
 }

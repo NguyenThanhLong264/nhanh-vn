@@ -51,7 +51,7 @@ const SyncButton = ({ text = "Sync" }) => {
       setShowSyncProcess(true);
 
       let numError = 0;
-      const errorIndexes = [];
+      const errorDetails = [];
 
       for (let i = 0; i < syncObjs.length; i++) {
         const obj = syncObjs[i];
@@ -74,15 +74,21 @@ const SyncButton = ({ text = "Sync" }) => {
           console.log(`✅ Synced item ${i + 1}/${syncObjs.length}`);
         } catch (error) {
           numError++;
-          errorIndexes.push(i);
+          errorDetails.push({
+            row: i + 2,
+            message: error.message || "Unknow Error"
+          });
           console.error(`❌ Error syncing item ${i + 1}:`, error.message);
         }
         await new Promise((r) => setTimeout(r, 100));
       }
 
       let message = `✅ Sync completed: ${syncObjs.length} items, ❌ ${numError} errors.`;
-      if (numError > 0 && errorIndexes.length > 0) {
-        message += `\n⚠️ Errors at rows: ${errorIndexes.map(i => i + 2).join(', ')}`;
+      if (numError > 0) {
+        message += `\n⚠️ Errors at rows:\n`;
+        message += errorDetails
+          .map((err) => `• Row ${err.row}: ${err.message}`)
+          .join("\n");
       }
       alert(message);
     } catch (parseError) {

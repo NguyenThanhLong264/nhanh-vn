@@ -7,7 +7,7 @@ const CS_ApiToken = process.env.CARESOFT_API;
 export async function ggsheetCreateDeal(data) {
     const maxRetries = 3;
     let retryCount = 0;
-    const baseDelay = 300; // vẫn giữ để dùng cho retry
+    const baseDelay = 300;
 
     while (retryCount < maxRetries) {
         try {
@@ -28,10 +28,19 @@ export async function ggsheetCreateDeal(data) {
             };
         } catch (error) {
             if (error.response?.status !== 429 || retryCount >= maxRetries) {
-                throw error;
+                const errorMessage =
+                    error.response?.data?.message ||
+                    error.response?.statusText ||
+                    error.message ||
+                    "Unknown error";
+
+                const customError = new Error(errorMessage);
+                customError.response = error.response?.data; // giữ lại cả response nếu cần
+                throw customError;
             }
+
             retryCount++;
-            const delay = baseDelay * Math.pow(2, retryCount); // giữ lại exponential backoff khi gặp lỗi 429
+            const delay = baseDelay * Math.pow(2, retryCount);
             await new Promise(resolve => setTimeout(resolve, delay));
         }
     }
