@@ -1,7 +1,6 @@
 export async function POST(req) {
     const apiKey = process.env.GOOGLE_SHEETS_API_KEY
     try {
-        // Lấy giá trị từ localStorage (chạy trên server nên cần kiểm tra)
         const body = await req.json();
         const spreadsheetId = body.spreadsheetId?.trim();
         if (!spreadsheetId) {
