@@ -32,7 +32,6 @@ const SyncButton = ({ text = "Sync" }) => {
       return;
     }
     const data = await res.json();
-    console.log("Data:", data);
     setSyncObjs(data.objs);
     setSyncItems(data.total);
     setShowStartSync(true);

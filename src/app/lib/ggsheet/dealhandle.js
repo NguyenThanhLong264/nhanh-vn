@@ -7,12 +7,10 @@ const CS_ApiToken = process.env.CARESOFT_API;
 export async function ggsheetCreateDeal(data) {
     const maxRetries = 3;
     let retryCount = 0;
-    const baseDelay = 1000; // 1 second
-    const requestDelay = 100; // 100ms delay between requests
+    const baseDelay = 300; // vẫn giữ để dùng cho retry
 
     while (retryCount < maxRetries) {
         try {
-            await new Promise(resolve => setTimeout(resolve, requestDelay));
             const axiosConfig = {
                 method: 'post',
                 maxBodyLength: Infinity,
@@ -33,12 +31,14 @@ export async function ggsheetCreateDeal(data) {
                 throw error;
             }
             retryCount++;
-            const delay = baseDelay * Math.pow(2, retryCount);
+            const delay = baseDelay * Math.pow(2, retryCount); // giữ lại exponential backoff khi gặp lỗi 429
             await new Promise(resolve => setTimeout(resolve, delay));
         }
     }
+
     throw new Error('Max retries reached');
 }
+
 
 export async function ggsheetMapDeal(data, config) {
     const { normal, special, product, custom } = configClassify(config);
@@ -58,11 +58,11 @@ export async function ggsheetMapDeal(data, config) {
         if (typeInput === "pipeline_stage") {
             const matchedStage = value.find(stage => stage.value === data.status);
             deal[name] = matchedStage ? matchedStage.id : "";
-            console.log(`Pipeline stage mapping: ${data.status} -> ${deal[name]}`);
+            // console.log(`Pipeline stage mapping: ${data.status} -> ${deal[name]}`);
         } else if (typeInput === "status") {
             const matchedStatus = value.find(status => status.value === data.status);
             deal[name] = matchedStatus ? matchedStatus.status : "ORDER_STARTED";
-            console.log(`Order status mapping: ${data.status} -> ${deal[name]}`);
+            // console.log(`Order status mapping: ${data.status} -> ${deal[name]}`);
         }
     });
 
@@ -93,7 +93,7 @@ export async function ggsheetMapDeal(data, config) {
         }
     });
     const cleanedDeal = cleanEmptyValues(deal);
-    console.log("Final cleaned deal", cleanedDeal);
+    // console.log("Final cleaned deal", cleanedDeal);
     return cleanedDeal;
 }
 

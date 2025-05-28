@@ -8,6 +8,7 @@ const BackButton = () => {
 
   return (
     <IconButton
+      aria-label="back"
       onClick={() => router.back()}
       sx={{
         position: "fixed",

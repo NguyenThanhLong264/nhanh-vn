@@ -6,7 +6,6 @@ export async function POST(req) {
     try {
         const body = await req.json();
         const { config, obj } = body;
-        console.log("Obj: ", obj)
         if (!config || !obj) {
             return NextResponse.json({ error: 'Missing required data' }, { status: 400 });
         }
