@@ -13,7 +13,7 @@ const SyncButton = ({ text = "Sync" }) => {
   const [syncObjs, setSyncObjs] = useState([]);
   const [syncItems, setSyncItems] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
-
+  let numError = 0;
   const handleConfirm = async () => {
     const sheetFields = JSON.parse(localStorage.getItem("sheetFields"));
     const spreadId = localStorage.getItem("ggSpreadId");
@@ -51,6 +51,7 @@ const SyncButton = ({ text = "Sync" }) => {
       setCurrentIndex(0);
       setShowSyncProcess(true);
 
+
       for (let i = 0; i < syncObjs.length; i++) {
         const obj = syncObjs[i];
         setCurrentIndex(i);
@@ -71,6 +72,7 @@ const SyncButton = ({ text = "Sync" }) => {
           }
           console.log(`✅ Synced item ${i + 1}/${syncObjs.length}`);
         } catch (error) {
+          numError++
           console.error(`❌ Error syncing item ${i + 1}:`, error.message);
         }
         await new Promise((r) => setTimeout(r, 100));
@@ -79,7 +81,7 @@ const SyncButton = ({ text = "Sync" }) => {
       console.error("Invalid config in localStorage:", parseError);
     } finally {
       setShowSyncProcess(false)
-      alert("Sync completed")
+      alert(`Sync completed ${currentIndex} items, ${numError} errors!`)
     }
   };
 
