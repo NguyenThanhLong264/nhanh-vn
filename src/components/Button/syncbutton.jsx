@@ -51,6 +51,7 @@ const SyncButton = ({ text = "Sync" }) => {
       setShowSyncProcess(true);
 
       let numError = 0;
+      const errorIndexes = [];
 
       for (let i = 0; i < syncObjs.length; i++) {
         const obj = syncObjs[i];
@@ -73,18 +74,24 @@ const SyncButton = ({ text = "Sync" }) => {
           console.log(`✅ Synced item ${i + 1}/${syncObjs.length}`);
         } catch (error) {
           numError++;
+          errorIndexes.push(i);
           console.error(`❌ Error syncing item ${i + 1}:`, error.message);
         }
         await new Promise((r) => setTimeout(r, 100));
       }
 
-      alert(`✅ Sync completed: ${syncObjs.length} items, ❌ ${numError} errors.`);
+      let message = `✅ Sync completed: ${syncObjs.length} items, ❌ ${numError} errors.`;
+      if (numError > 0 && errorIndexes.length > 0) {
+        message += `\n⚠️ Errors at rows: ${errorIndexes.map(i => i + 2).join(', ')}`;
+      }
+      alert(message);
     } catch (parseError) {
       console.error("Invalid config in localStorage:", parseError);
     } finally {
       setShowSyncProcess(false);
     }
   };
+
 
   return (
     <>
